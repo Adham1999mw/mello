@@ -1,28 +1,33 @@
 import "server-only";
-import { createServerClient } from "@supabase/ssr";
-import { cookies } from "next/headers";
+import { createServerClient, serializeCookieHeader } from "@supabase/ssr";
+import type { NextApiRequest, NextApiResponse } from "next";
+import type { GetServerSidePropsContext } from "next";
 
-// Supabase client for Server Components, Route Handlers and Server Actions.
-export async function createClient() {
-  const cookieStore = await cookies();
+type ReqRes =
+  | { req: NextApiRequest; res: NextApiResponse }
+  | Pick<GetServerSidePropsContext, "req" | "res">;
 
+// Supabase client for API routes and getServerSideProps (Pages Router).
+// Usage: `const supabase = createClient({ req, res })`
+export function createClient({ req, res }: ReqRes) {
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
         getAll() {
-          return cookieStore.getAll();
+          return Object.entries(req.cookies).map(([name, value]) => ({
+            name,
+            value: value ?? "",
+          }));
         },
         setAll(cookiesToSet) {
-          try {
-            cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options),
-            );
-          } catch {
-            // Called from a Server Component, where cookies can't be set.
-            // Safe to ignore once session refresh is handled in proxy/middleware.
-          }
+          res.setHeader(
+            "Set-Cookie",
+            cookiesToSet.map(({ name, value, options }) =>
+              serializeCookieHeader(name, value, options),
+            ),
+          );
         },
       },
     },

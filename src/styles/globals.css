@@ -12,6 +12,18 @@
   --color-foreground: var(--mui-palette-text-primary);
   --color-primary: var(--mui-palette-primary-main);
   --color-secondary: var(--mui-palette-secondary-main);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-geist-sans), var(--font-arabic), sans-serif;
   --font-mono: var(--font-geist-mono);
+}
+
+body {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+#__next {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
 }

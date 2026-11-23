@@ -1,9 +1,15 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Cache Components is left off for now: Redux creates its store with
-  // Math.random() during render, which Cache Components rejects at prerender.
-  // We can revisit enabling it once the store's data layer is in place.
+  // Built-in Pages Router i18n routing: `/` = Arabic (default), `/en` = English.
+  i18n: {
+    locales: ["ar", "en"],
+    defaultLocale: "ar",
+  },
+  // Bundle Emotion + MUI's Next.js adapter together with MUI so they share one
+  // @emotion/react instance on the server. Without this, Turbopack loads a second
+  // copy and MUI ignores the RTL / CSS-layer Emotion cache during SSR.
+  transpilePackages: ["@emotion/react", "@emotion/styled", "@emotion/cache", "@mui/material-nextjs"],
   turbopack: {
     rules: {
       "*.css": {
