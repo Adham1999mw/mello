@@ -1,0 +1,17 @@
+/*
+ * Layer order matters: MUI's Emotion styles are emitted inside `@layer mui`
+ * (see AppRouterCacheProvider's `enableCssLayer`). Placing `mui` before
+ * `components` and `utilities` lets Tailwind utility classes override MUI
+ * styles without `!important`, while Tailwind's preflight (`base`) stays below MUI.
+ */
+@layer theme, base, mui, components, utilities;
+@import "tailwindcss";
+
+@theme inline {
+  --color-background: var(--mui-palette-background-default);
+  --color-foreground: var(--mui-palette-text-primary);
+  --color-primary: var(--mui-palette-primary-main);
+  --color-secondary: var(--mui-palette-secondary-main);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
