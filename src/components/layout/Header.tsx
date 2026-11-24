@@ -1,5 +1,7 @@
 import Link from "next/link";
+import { localePath } from "@/i18n/static";
 import { useTranslation, type MessageKey } from "@/i18n/useTranslation";
+import { assetPath } from "@/lib/assetPath";
 import { useHideOnScroll } from "./useHideOnScroll";
 
 // Text links, shown on desktop only (md and up).
@@ -23,7 +25,7 @@ const navLinks: { href: string; label: MessageKey }[] = [
 // The row is as tall as the monogram (25px phone, 30px desktop); HeroSection leaves room for it.
 // Other pages: always the solid bar.
 export default function Header({ overlay = false }: { overlay?: boolean }) {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const { hidden, atTop } = useHideOnScroll();
 
   const position = overlay ? "fixed" : "sticky";
@@ -33,14 +35,14 @@ export default function Header({ overlay = false }: { overlay?: boolean }) {
       : "bg-ivory/95 py-5 text-burgundy shadow-[0_8px_24px_rgb(62_6_20/0.12)] backdrop-blur-md md:py-6";
   const color = overlay && atTop ? "text-champagne" : "";
   // Slide a little past the edge so the shadow goes too.
-  const slide = hidden ? "max-md:-translate-y-[calc(100%+32px)]" : "translate-y-0";
+  const slide = hidden ? "-translate-y-[calc(100%+32px)] md:translate-y-0" : "translate-y-0";
 
   return (
     <header
       className={`${position} ${look} ${color} ${slide} inset-x-0 top-0 z-50 flex items-center justify-between px-5 md:px-14
                   transition-[translate,background-color,color,padding,box-shadow] duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]`}
     >
-      <Link href="/" aria-label={t("common.brand")} className="block">
+      <Link href={localePath(locale)} aria-label={t("common.brand")} className="block">
         <Monogram />
       </Link>
 
@@ -48,7 +50,7 @@ export default function Header({ overlay = false }: { overlay?: boolean }) {
         {navLinks.map((link) => (
           <Link
             key={link.href}
-            href={link.href}
+            href={localePath(locale, link.href)}
             className="text-xs leading-none tracking-[0.22em] uppercase hover:opacity-70 rtl:text-sm rtl:tracking-normal rtl:normal-case"
           >
             {t(link.label)}
@@ -79,7 +81,7 @@ export default function Header({ overlay = false }: { overlay?: boolean }) {
 // The ND monogram in the current text color: the cream logo image is used as a mask
 // over a `currentColor` fill, so it turns burgundy with the rest of the ivory bar.
 // The image's edges are partly see-through, so the mask is stacked 3 times to make it solid.
-const monogramMask = Array(3).fill("url(/brand/needle-monogram-cream.webp)").join(", ");
+const monogramMask = Array(3).fill(`url(${assetPath("/brand/needle-monogram-cream.webp")})`).join(", ");
 
 function Monogram() {
   return (

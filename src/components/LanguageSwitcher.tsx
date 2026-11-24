@@ -2,6 +2,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import Button from "@mui/material/Button";
 import { useTranslation } from "@/i18n/useTranslation";
+import { localePath, stripLocale } from "@/i18n/static";
 
 // Switches between Arabic and English, keeping the current page.
 export default function LanguageSwitcher({ className }: { className?: string }) {
@@ -12,8 +13,7 @@ export default function LanguageSwitcher({ className }: { className?: string }) 
   return (
     <Button
       component={Link}
-      href={asPath}
-      locale={nextLocale}
+      href={localePath(nextLocale, stripLocale(asPath))}
       variant="text"
       size="small"
       className={className}

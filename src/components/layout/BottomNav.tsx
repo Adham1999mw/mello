@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import { isHomePage, localePath, stripLocale } from "@/i18n/static";
 import { useTranslation, type MessageKey } from "@/i18n/useTranslation";
 import { useHideOnScroll } from "./useHideOnScroll";
 
@@ -52,8 +53,8 @@ const tabs: Tab[] = [
 ];
 
 export default function BottomNav() {
-  const { t } = useTranslation();
-  const { pathname } = useRouter();
+  const { t, locale } = useTranslation();
+  const { pathname, asPath } = useRouter();
   const { hidden } = useHideOnScroll();
   const inHeroTop = useInHeroTop(pathname);
 
@@ -61,8 +62,9 @@ export default function BottomNav() {
   // but never in the first quarter of the hero.
   const hide = hidden || inHeroTop;
 
-  // Home is active only on "/"; other tabs also on their sub-pages (e.g. /shop/dresses).
-  const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
+  // Home is active only on the home page; other tabs also on their sub-pages (e.g. /shop/dresses).
+  const currentPath = stripLocale(asPath); // "/en/shop/" -> "/shop"
+  const isActive = (href: string) => (href === "/" ? isHomePage(pathname) : currentPath.startsWith(href));
 
   return (
     <nav
@@ -78,7 +80,7 @@ export default function BottomNav() {
         return (
           <Link
             key={tab.href}
-            href={tab.href}
+            href={localePath(locale, tab.href)}
             aria-current={active ? "page" : undefined}
             className={`flex min-h-11 flex-1 flex-col items-center justify-center gap-1.5 transition-colors
                         ${active ? "text-burgundy" : "text-ink/50 hover:text-ink/75"}`}
@@ -100,7 +102,7 @@ export default function BottomNav() {
 // Pages without a hero always return false.
 function useInHeroTop(pathname: string) {
   // The homepage opens at the top of its hero, so start hidden there (no flash on load).
-  const [inTop, setInTop] = useState(pathname === "/");
+  const [inTop, setInTop] = useState(isHomePage(pathname));
 
   useEffect(() => {
     const hero = document.getElementById("hero");

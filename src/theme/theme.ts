@@ -1,14 +1,21 @@
 import { createTheme } from "@mui/material/styles";
-import { COLORS, FONTS, LAYOUT } from "./brand";
+import { BREAKPOINTS, COLORS, FONTS, LAYOUT } from "./brand";
 
-// MUI theme built from the brand tokens. `cssVariables` exposes the palette as
-// `--mui-*` CSS variables, which Tailwind reads in globals.css.
+// Brand theme built from the constants in ./brand.ts.
+// `cssVariables` exposes the palette as `--mui-*` CSS variables, which Tailwind
+// reads in globals.css so both systems share the same colors.
+// MUI breakpoints are min-width (`theme.breakpoints.up`), so styles stay mobile-first.
 export default function createAppTheme(direction: "rtl" | "ltr") {
-  const isArabic = direction === "rtl";
+  const isRtl = direction === "rtl";
+  const sans = isRtl ? `${FONTS.arSans}` : `${FONTS.sans}, ${FONTS.arSans}`;
+  const display = isRtl ? FONTS.arDisplay : FONTS.display;
+  // Arabic letters need more line height than Latin ones.
+  const headingLineHeight = isRtl ? 1.5 : 1.12;
 
   return createTheme({
     direction,
     cssVariables: true,
+    breakpoints: { values: { xs: BREAKPOINTS.xs, sm: BREAKPOINTS.sm, md: BREAKPOINTS.md, lg: BREAKPOINTS.lg, xl: BREAKPOINTS.xl } },
     palette: {
       mode: "light",
       primary: {
@@ -18,27 +25,29 @@ export default function createAppTheme(direction: "rtl" | "ltr") {
         contrastText: COLORS.champagne,
       },
       secondary: { main: COLORS.champagne, contrastText: COLORS.burgundyDeep },
-      background: { default: COLORS.ivory, paper: COLORS.ivory },
-      text: { primary: COLORS.ink },
+      background: { default: COLORS.ivory, paper: COLORS.white },
+      text: { primary: COLORS.ink, secondary: COLORS.inkMuted },
     },
     shape: { borderRadius: LAYOUT.radius },
     typography: {
-      fontFamily: FONTS.sans,
-      // Headings use the serif. Arabic letters need more line height.
-      h1: { fontFamily: FONTS.display, fontWeight: 400, lineHeight: isArabic ? 1.5 : 1.12 },
-      h2: { fontFamily: FONTS.display, fontWeight: 400, lineHeight: isArabic ? 1.5 : 1.15 },
-      h3: { fontFamily: FONTS.display, fontWeight: 400, lineHeight: isArabic ? 1.5 : 1.2 },
-      h4: { fontFamily: FONTS.display, fontWeight: 500, lineHeight: isArabic ? 1.5 : 1.25 },
-      // English buttons: small, uppercase, wide spacing. Arabic has no capitals, so
-      // it gets a bigger size and normal spacing instead.
-      button: isArabic
+      fontFamily: sans,
+      h1: { fontFamily: display, fontWeight: 400, lineHeight: headingLineHeight },
+      h2: { fontFamily: display, fontWeight: 400, lineHeight: headingLineHeight },
+      h3: { fontFamily: display, fontWeight: 400, lineHeight: headingLineHeight },
+      h4: { fontFamily: display, fontWeight: 400, lineHeight: headingLineHeight },
+      // English: small uppercase with wide spacing. Arabic has no capitals, so it gets
+      // a bigger size and normal spacing instead.
+      button: isRtl
         ? { fontWeight: 500, fontSize: "15px", textTransform: "none", letterSpacing: 0 }
-        : { fontWeight: 500, fontSize: "12px", textTransform: "uppercase", letterSpacing: "0.24em" },
+        : { fontWeight: 500, fontSize: "12px", textTransform: "uppercase", letterSpacing: "0.2em" },
     },
     components: {
       MuiButton: {
         defaultProps: { disableElevation: true },
         styleOverrides: { root: { minHeight: LAYOUT.minTapTarget } },
+      },
+      MuiIconButton: {
+        styleOverrides: { root: { minWidth: LAYOUT.minTapTarget, minHeight: LAYOUT.minTapTarget } },
       },
     },
   });

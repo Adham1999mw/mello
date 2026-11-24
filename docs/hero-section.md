@@ -3,7 +3,7 @@
 Approved design: **version A**. Preview: https://claude.ai/artifact/3CYzSHyztviKVtWJQDnT5L
 (open it and switch between English and العربية to see both directions).
 
-Follow [CLAUDE.md](../CLAUDE.md) and [design-system.md](design-system.md):
+Follow [CLAUDE.md](../CLAUDE.md) and [design-guidelines.md](design-guidelines.md):
 **build the phone layout first**, then add the desktop layout from `md` (768px) up.
 All colors, fonts and sizes come from `src/theme/brand.ts` and the Tailwind brand utilities.
 

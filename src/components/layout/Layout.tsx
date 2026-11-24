@@ -1,4 +1,5 @@
 import { useRouter } from "next/router";
+import { isHomePage } from "@/i18n/static";
 import BottomNav from "./BottomNav";
 import Header from "./Header";
 
@@ -7,7 +8,7 @@ import Header from "./Header";
 // On the homepage the header floats over the burgundy hero, as in the approved design.
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { pathname } = useRouter();
-  const isHome = pathname === "/";
+  const isHome = isHomePage(pathname);
 
   return (
     <div className="relative flex min-h-screen flex-col bg-ivory text-ink">

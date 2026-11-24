@@ -8,23 +8,40 @@
 @import "tailwindcss";
 
 /*
- * Design tokens for Tailwind. The values live in src/theme/brand.ts; MUI turns them
- * into `--mui-*` CSS variables and these lines point Tailwind at them.
- * Use: bg-burgundy, text-champagne, text-champagne/60, bg-ivory, text-ink, font-display, font-sans.
+ * Brand tokens for Tailwind. Values come from src/theme/brand.ts (keep in sync).
+ * Tailwind is mobile-first: unprefixed utilities are for phones, and
+ * `sm:` / `md:` / `lg:` / `xl:` add changes from that width UP.
  */
 @theme inline {
-  --color-burgundy: var(--mui-palette-primary-main);
-  --color-burgundy-deep: var(--mui-palette-primary-dark);
-  --color-wine: var(--mui-palette-primary-light);
-  --color-champagne: var(--mui-palette-secondary-main);
-  --color-ivory: var(--mui-palette-background-default);
-  --color-ink: var(--mui-palette-text-primary);
+  --color-background: var(--mui-palette-background-default);
+  --color-foreground: var(--mui-palette-text-primary);
+  --color-primary: var(--mui-palette-primary-main);
+  --color-secondary: var(--mui-palette-secondary-main);
 
-  /* Same stacks as FONTS in brand.ts: keep them in sync. */
-  --font-display: var(--font-cormorant), var(--font-amiri), serif;
-  --font-sans: var(--font-jost), var(--font-cairo), sans-serif;
+  --color-burgundy: #3e0614;
+  --color-burgundy-deep: #2a040d;
+  --color-wine: #5a0a16;
+  --color-champagne: #eed3b8;
+  --color-leather: #edd5bd;
+  --color-ivory: #fbf4ec;
+  --color-ink: #2a040d;
+  --color-ink-muted: #6e4a50;
 
+  --font-sans: var(--nd-font-sans), var(--nd-font-ar-sans), "Helvetica Neue", Arial, sans-serif;
+  /* Latin faces have no Arabic glyphs, so Arabic text falls through to Amiri / Cairo. */
+  --font-display: var(--nd-font-display), var(--nd-font-ar-display), "Times New Roman", serif;
+  --font-ar-sans: var(--nd-font-ar-sans), Tahoma, sans-serif;
+  --font-ar-display: var(--nd-font-ar-display), "Times New Roman", serif;
+  --font-mono: ui-monospace, Menlo, monospace;
+
+  /* LAYOUT.radius: buttons, inputs and small cards */
   --radius-brand: 2px;
+
+  --breakpoint-sm: 40rem; /* 640px */
+  --breakpoint-md: 48rem; /* 768px */
+  --breakpoint-lg: 64rem; /* 1024px */
+  --breakpoint-xl: 80rem; /* 1280px */
+  --breakpoint-2xl: 96rem; /* 1536px */
 }
 
 body {

@@ -11,19 +11,16 @@ import Layout from "@/components/layout/Layout";
 import StoreProvider from "@/store/StoreProvider";
 import createAppTheme from "@/theme/theme";
 import createEmotionCache from "@/lib/emotion/createEmotionCache";
-import { getDirection, toLocale } from "@/i18n/config";
+import { getDirection } from "@/i18n/config";
+import { useLocale } from "@/i18n/useLocale";
 import "@/styles/globals.css";
 
-// Brand fonts (see src/theme/brand.ts). Headings: Cormorant Garamond / Amiri.
-// Body, buttons and menus: Jost / Cairo.
-const cormorant = Cormorant_Garamond({
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
-  style: ["normal", "italic"],
-});
+// Brand fonts (see src/theme/brand.ts): display + body for Latin and Arabic.
+const cormorant = Cormorant_Garamond({ subsets: ["latin"], weight: ["400", "500"], style: ["normal", "italic"] });
 const jost = Jost({ subsets: ["latin"], weight: ["300", "400", "500"] });
-const amiri = Amiri({ subsets: ["arabic"], weight: ["400", "700"], style: ["normal", "italic"] });
-const cairo = Cairo({ subsets: ["arabic"], weight: ["400", "500", "600"] });
+// Amiri italic is used for the emphasised phrase in Arabic headlines.
+const amiri = Amiri({ subsets: ["arabic", "latin"], weight: ["400", "700"], style: ["normal", "italic"] });
+const cairo = Cairo({ subsets: ["arabic", "latin"] });
 
 // One client-side Emotion cache per direction (created once, reused on navigation).
 const clientCaches = {
@@ -33,8 +30,8 @@ const clientCaches = {
 
 type MyAppProps = AppProps & { emotionCache?: EmotionCache };
 
-export default function MyApp({ Component, pageProps, router, emotionCache }: MyAppProps) {
-  const locale = toLocale(router.locale);
+export default function MyApp({ Component, pageProps, emotionCache }: MyAppProps) {
+  const locale = useLocale();
   const dir = getDirection(locale);
   const theme = useMemo(() => createAppTheme(dir), [dir]);
 
@@ -58,10 +55,10 @@ export default function MyApp({ Component, pageProps, router, emotionCache }: My
       {/* Expose fonts as CSS variables on :root so portals (dialogs, menus) get them too */}
       <style jsx global>{`
         :root {
-          --font-cormorant: ${cormorant.style.fontFamily};
-          --font-jost: ${jost.style.fontFamily};
-          --font-amiri: ${amiri.style.fontFamily};
-          --font-cairo: ${cairo.style.fontFamily};
+          --nd-font-display: ${cormorant.style.fontFamily};
+          --nd-font-sans: ${jost.style.fontFamily};
+          --nd-font-ar-display: ${amiri.style.fontFamily};
+          --nd-font-ar-sans: ${cairo.style.fontFamily};
         }
       `}</style>
       <ThemeProvider theme={theme}>
