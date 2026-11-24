@@ -7,6 +7,7 @@ import { AppCacheProvider } from "@mui/material-nextjs/v16-pagesRouter";
 import CssBaseline from "@mui/material/CssBaseline";
 import GlobalStyles from "@mui/material/GlobalStyles";
 import { ThemeProvider } from "@mui/material/styles";
+import Layout from "@/components/layout/Layout";
 import StoreProvider from "@/store/StoreProvider";
 import createAppTheme from "@/theme/theme";
 import createEmotionCache from "@/lib/emotion/createEmotionCache";
@@ -14,11 +15,16 @@ import { getDirection } from "@/i18n/config";
 import { useLocale } from "@/i18n/useLocale";
 import "@/styles/globals.css";
 
-// Brand fonts (see src/theme/brand.ts): display + body for Latin and Arabic.
-const cormorant = Cormorant_Garamond({ subsets: ["latin"], weight: ["400", "500"], style: ["normal", "italic"] });
+// Brand fonts (see src/theme/brand.ts). Headings: Cormorant Garamond / Amiri.
+// Body, buttons and menus: Jost / Cairo.
+const cormorant = Cormorant_Garamond({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  style: ["normal", "italic"],
+});
 const jost = Jost({ subsets: ["latin"], weight: ["300", "400", "500"] });
-const amiri = Amiri({ subsets: ["arabic", "latin"], weight: ["400", "700"] });
-const cairo = Cairo({ subsets: ["arabic", "latin"] });
+const amiri = Amiri({ subsets: ["arabic"], weight: ["400", "700"], style: ["normal", "italic"] });
+const cairo = Cairo({ subsets: ["arabic"], weight: ["400", "500", "600"] });
 
 // One client-side Emotion cache per direction (created once, reused on navigation).
 const clientCaches = {
@@ -53,16 +59,18 @@ export default function MyApp({ Component, pageProps, emotionCache }: MyAppProps
       {/* Expose fonts as CSS variables on :root so portals (dialogs, menus) get them too */}
       <style jsx global>{`
         :root {
-          --nd-font-display: ${cormorant.style.fontFamily};
-          --nd-font-sans: ${jost.style.fontFamily};
-          --nd-font-ar-display: ${amiri.style.fontFamily};
-          --nd-font-ar-sans: ${cairo.style.fontFamily};
+          --font-cormorant: ${cormorant.style.fontFamily};
+          --font-jost: ${jost.style.fontFamily};
+          --font-amiri: ${amiri.style.fontFamily};
+          --font-cairo: ${cairo.style.fontFamily};
         }
       `}</style>
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <StoreProvider>
-          <Component {...pageProps} />
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
         </StoreProvider>
       </ThemeProvider>
     </AppCacheProvider>

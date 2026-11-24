@@ -1,89 +1,27 @@
-/**
- * Needle brand constants: the single source of truth for colors, fonts,
- * breakpoints and layout sizes. Import from here instead of hard-coding values.
- *
- * - MUI reads these through `src/theme/theme.ts`.
- * - Tailwind reads the same values through the `@theme` block in
- *   `src/styles/globals.css` (keep the two in sync when you change a value here).
- *
- * See docs/design-guidelines.md for how to use them.
- */
+// Needle design tokens: the single source for colors, fonts and layout values.
+// MUI reads them in theme.ts, and Tailwind gets them through MUI's CSS variables
+// (see globals.css). Change a value here and both systems update.
 
-export const BRAND = {
-  name: "Needle",
-  tagline: "Women's wear",
-  origin: "Made in Egypt",
-} as const;
-
-/** Brand palette, sampled from the logo and the leather label. */
 export const COLORS = {
-  /** Logo background. Main brand color: hero, header, primary buttons. */
-  burgundy: "#3E0614",
-  /** Darker burgundy for depth: gradients, footer, hover on burgundy. */
-  burgundyDeep: "#2A040D",
-  /** Label ink and size tab. Accents on light backgrounds. */
-  wine: "#5A0A16",
-  /** Logo lettering. Text and buttons on burgundy. */
-  champagne: "#EED3B8",
-  /** Leather label surface. Cards and highlighted panels. */
-  leather: "#EDD5BD",
-  /** Light page background. */
-  ivory: "#FBF4EC",
-  /** Body text on light backgrounds. */
-  ink: "#2A040D",
-  /** Secondary text on light backgrounds. */
-  inkMuted: "#6E4A50",
-  white: "#FFFFFF",
+  burgundy: "#3E0614", // main brand color: hero, dark sections, primary buttons on light pages
+  burgundyDeep: "#2A040D", // deeper shade: gradients, text on champagne buttons
+  champagne: "#EED3B8", // logo cream: text and icons on burgundy, primary button fill on burgundy
+  wine: "#5A0A16", // lighter burgundy: hover states, accents
+  leather: "#EDD5BD", // leather-label cream
+  ivory: "#FBF4EC", // light page background
+  ink: "#2B1A1D", // body text on light backgrounds
 } as const;
 
-/**
- * Font families. The CSS variables are set in `src/pages/_app.tsx` by next/font.
- * Latin: Cormorant Garamond (display) + Jost (body/labels).
- * Arabic: Amiri (display) + Cairo (body/labels).
- */
-export const FONT_VARS = {
-  display: "--nd-font-display",
-  sans: "--nd-font-sans",
-  arDisplay: "--nd-font-ar-display",
-  arSans: "--nd-font-ar-sans",
-} as const;
-
+// Each stack holds one Latin font and one Arabic font. The browser picks the Arabic
+// font for Arabic letters on its own, so the same stack works in both languages.
+// The `--font-*` variables are set by next/font in _app.tsx.
 export const FONTS = {
-  display: `var(${FONT_VARS.display}), "Times New Roman", serif`,
-  sans: `var(${FONT_VARS.sans}), "Helvetica Neue", Arial, sans-serif`,
-  arDisplay: `var(${FONT_VARS.arDisplay}), "Times New Roman", serif`,
-  arSans: `var(${FONT_VARS.arSans}), Tahoma, sans-serif`,
+  display: "var(--font-cormorant), var(--font-amiri), serif", // headings
+  sans: "var(--font-jost), var(--font-cairo), sans-serif", // body, buttons, menus
 } as const;
-
-/**
- * Breakpoints in px. MOBILE FIRST: base styles are for phones (0 and up);
- * each breakpoint only ADDS changes from that width upwards (min-width).
- * These match Tailwind's defaults (sm/md/lg/xl/2xl) and are passed to MUI.
- */
-export const BREAKPOINTS = {
-  xs: 0,
-  sm: 640,
-  md: 768,
-  lg: 1024,
-  xl: 1280,
-  "2xl": 1536,
-} as const;
-
-/** The phone widths every screen must be checked at first. */
-export const MOBILE_TEST_WIDTHS = [360, 390, 430] as const;
 
 export const LAYOUT = {
-  /** Minimum height/width of anything tappable (buttons, icons, links). */
-  minTapTarget: 44,
-  /** Side padding on phones, then from `md` up. */
-  gutterMobile: 16,
-  gutterDesktop: 56,
-  /** Max width of page content. */
-  contentMaxWidth: 1280,
-  /** Base body font size on phones (never below 16px for inputs, to stop iOS zoom). */
-  baseFontSize: 16,
-  /** Radius for buttons and inputs. The brand look is sharp, so keep it small. */
-  radius: 2,
+  radius: 2, // px, buttons and cards
+  minTapTarget: 44, // px, smallest size for anything you can tap
+  pagePadding: { phone: 20, desktop: 56 }, // px, side padding of sections
 } as const;
-
-export type BrandColor = keyof typeof COLORS;

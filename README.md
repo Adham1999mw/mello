@@ -13,11 +13,6 @@ E-commerce storefront for the Mello clothing brand.
 - **Supabase** for database, auth and storage (`src/lib/supabase`), called from the browser
 - **Hosting: GitHub Pages** (static export, see [Deploying](#deploying))
 
-## Design rules
-
-**Mobile first, always**, and brand colors/fonts come only from `src/theme/brand.ts`.
-See [CLAUDE.md](CLAUDE.md) and [docs/design-guidelines.md](docs/design-guidelines.md).
-
 ## Getting started
 
 ```bash
@@ -48,7 +43,8 @@ the result is in `out/`.
 
 - New localized pages go in `src/pages/[locale]/` and add
   `export { getStaticPaths, getStaticProps } from "@/i18n/static";`.
-  Build links with `localePath(locale, "/products")` from `@/i18n/static`.
+  Build links with `const localePath = useLocalePath()` then `href={localePath("/shop")}`, and
+  wrap plain `public/` file URLs (image `src`, CSS `url()`) in `asset("/brand/...")`, both from `@/i18n/static`.
 - Strings live in `src/i18n/messages/en.ts` and `ar.ts` (Arabic must match the English keys; TypeScript checks this).
 - In a component: `const { t, locale, dir } = useTranslation();` then `t("home.title")`.
 - RTL: `<html dir>` is set per locale, MUI flips via `stylis-plugin-rtl` + `theme.direction`, and Tailwind's
@@ -67,5 +63,5 @@ src/
   lib/supabase/   Supabase clients (browser + server)
   store/          Redux store, typed hooks, RTK Query base API
   styles/         global CSS (Tailwind)
-  theme/          brand constants (brand.ts) + MUI theme
+  theme/          MUI theme
 ```

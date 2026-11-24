@@ -3,7 +3,7 @@
 Approved design: **version A**. Preview: https://claude.ai/artifact/3CYzSHyztviKVtWJQDnT5L
 (open it and switch between English and العربية to see both directions).
 
-Follow [CLAUDE.md](../CLAUDE.md) and [design-guidelines.md](design-guidelines.md):
+Follow [CLAUDE.md](../CLAUDE.md) and [design-system.md](design-system.md):
 **build the phone layout first**, then add the desktop layout from `md` (768px) up.
 All colors, fonts and sizes come from `src/theme/brand.ts` and the Tailwind brand utilities.
 
@@ -17,7 +17,7 @@ A full-width burgundy band at the top of the homepage:
 2. **Brand block**: the cream NEEDLE logo (monogram + wordmark + "Women's wear").
 3. **Copy**: small eyebrow, serif headline with one italic phrase, two buttons.
 4. **Leather label**: the cream "Made in Egypt" label with the size tab, hanging from a
-   dashed thread. It swings once and settles when the page loads.
+   dashed thread. It keeps swinging gently from side to side.
 5. **Stitched seam** (dashed line) and a row of three service notes at the bottom.
 
 ## 2. Files
@@ -47,7 +47,7 @@ the logo, because it is above the fold.
 | Primary button text | `COLORS.burgundyDeep` | `text-burgundy-deep` |
 | Headline font | `FONTS.display` (Cormorant Garamond / Amiri) | `font-display` |
 | Everything else | `FONTS.sans` (Jost / Cairo) | `font-sans` |
-| Button radius | `LAYOUT.radius` (2px) | `rounded-[2px]` |
+| Button radius | `LAYOUT.radius` (2px) | `rounded-brand` |
 | Min tap size | `LAYOUT.minTapTarget` (44px) | `min-h-11 min-w-11` |
 
 Background (both layouts):
@@ -185,14 +185,12 @@ ring: 2px champagne outline, 3px offset. In Arabic: Cairo, 15px, no letter-spaci
   the label wrapper down to the label. Phone 58px tall, desktop 76px.
 - Label: `rotate: -3deg`, `transform-origin` at the top of the thread
   (`50% -54px` phone, `50% -70px` desktop), shadow `drop-shadow(0 18px 22px rgb(0 0 0 / .45))`.
-- **Swing on load** (once, 3.2s, `cubic-bezier(.45, 0, .25, 1)`, 0.3s delay):
+- **Swing** (1.6s each way, `ease-in-out`, `infinite alternate`):
 
 ```css
 @keyframes sway {
-  0%   { rotate: 7deg; }
-  35%  { rotate: -6deg; }
-  65%  { rotate: -1deg; }
-  100% { rotate: -3deg; }
+  from { rotate: 4deg; }
+  to   { rotate: -10deg; }
 }
 @media (prefers-reduced-motion: reduce) { .label { animation: none; } }
 ```
@@ -299,6 +297,6 @@ A starting point. Unprefixed classes are the phone layout; `md:` adds the deskto
 - [ ] Every icon and button is at least 44×44px to tap.
 - [ ] Arabic (`/`) mirrors correctly and uses Amiri / Cairo; English (`/en`) uses Cormorant / Jost.
 - [ ] No hex colors or font names in the component; only brand tokens.
-- [ ] The label swings once on load and stays still with reduced motion turned on.
+- [ ] The label keeps swinging, and stays still with reduced motion turned on.
 - [ ] Logo has `priority`; all images have `sizes`.
 - [ ] `npm run lint` and `npm run build` pass.

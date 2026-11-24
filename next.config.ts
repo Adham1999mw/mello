@@ -15,6 +15,8 @@ const nextConfig: NextConfig = {
   trailingSlash: true,
   // There is no image optimization server on GitHub Pages.
   images: { unoptimized: true },
+  // Lets the app prefix plain asset URLs with the base path (see `asset()` in src/i18n/static.ts).
+  env: { NEXT_PUBLIC_BASE_PATH: basePath ?? "" },
   // Bundle Emotion + MUI's Next.js adapter together with MUI so they share one
   // @emotion/react instance on the server. Without this, Turbopack loads a second
   // copy and MUI ignores the RTL / CSS-layer Emotion cache during SSR.

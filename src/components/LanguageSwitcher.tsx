@@ -5,7 +5,7 @@ import { useTranslation } from "@/i18n/useTranslation";
 import { localePath, stripLocale } from "@/i18n/static";
 
 // Switches between Arabic and English, keeping the current page.
-export default function LanguageSwitcher() {
+export default function LanguageSwitcher({ className }: { className?: string }) {
   const { asPath } = useRouter();
   const { t, locale } = useTranslation();
   const nextLocale = locale === "ar" ? "en" : "ar";
@@ -16,6 +16,7 @@ export default function LanguageSwitcher() {
       href={localePath(nextLocale, stripLocale(asPath))}
       variant="text"
       size="small"
+      className={className}
     >
       {t("common.language")}
     </Button>

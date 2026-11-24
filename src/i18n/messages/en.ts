@@ -4,10 +4,33 @@ const en = {
     brand: "Mello",
     language: "العربية",
   },
+  nav: {
+    home: "Home",
+    account: "Account",
+    newIn: "New in",
+    shop: "Shop",
+    ourStory: "Our story",
+    search: "Search",
+    bag: "Bag",
+    menu: "Menu",
+  },
   home: {
     title: "Mello",
     tagline: "Our store is coming soon.",
     shopNow: "Shop now",
+    hero: {
+      eyebrow: "New season",
+      headlineStart: "Pieces made to ",
+      headlineEm: "fit you",
+      headlineEnd: ", stitch by stitch",
+      shop: "Shop the collection",
+      newArrivals: "New arrivals",
+      noteDelivery: "Free delivery in Cairo",
+      noteReturns: "Easy returns",
+      noteCod: "Cash on delivery",
+      logoAlt: "Needle, women's wear",
+      labelAlt: "Needle leather label, Made in Egypt",
+    },
   },
 };
 
