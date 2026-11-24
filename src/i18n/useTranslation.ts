@@ -1,6 +1,6 @@
-import { useRouter } from "next/router";
 import { useCallback } from "react";
-import { getDirection, toLocale } from "./config";
+import { getDirection } from "./config";
+import { useLocale } from "./useLocale";
 import ar from "./messages/ar";
 import en, { type Messages } from "./messages/en";
 
@@ -17,8 +17,7 @@ export type MessageKey = Paths<Messages>;
  * `{name}` placeholders are replaced from `vars`.
  */
 export function useTranslation() {
-  const { locale: routerLocale } = useRouter();
-  const locale = toLocale(routerLocale);
+  const locale = useLocale();
   const messages = dictionaries[locale];
 
   const t = useCallback(

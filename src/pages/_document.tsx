@@ -26,7 +26,8 @@ export default function Document(props: Props) {
 }
 
 Document.getInitialProps = async (ctx: DocumentContext) => {
-  const locale = toLocale(ctx.locale);
+  // The `[locale]` route segment; pages outside it (like `/`) are Arabic.
+  const locale = toLocale(typeof ctx.query.locale === "string" ? ctx.query.locale : undefined);
   const dir = getDirection(locale);
   const initialProps = await documentGetInitialProps(ctx, {
     // Must match the client cache chosen in _app.tsx for this locale

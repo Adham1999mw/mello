@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
 import { useTranslation, type MessageKey } from "@/i18n/useTranslation";
+import { useCurrentPath, useLocalePath } from "@/i18n/static";
 import { useHideOnScroll } from "./useHideOnScroll";
 
 // Phone-only tab bar fixed to the bottom of the screen (same pattern as the Luma website).
@@ -53,7 +53,9 @@ const tabs: Tab[] = [
 
 export default function BottomNav() {
   const { t } = useTranslation();
-  const { pathname } = useRouter();
+  const localePath = useLocalePath();
+  // Current page without its locale prefix, e.g. "/" or "/shop".
+  const pathname = useCurrentPath();
   const { hidden } = useHideOnScroll();
   const inHeroTop = useInHeroTop(pathname);
 
@@ -78,7 +80,7 @@ export default function BottomNav() {
         return (
           <Link
             key={tab.href}
-            href={tab.href}
+            href={localePath(tab.href)}
             aria-current={active ? "page" : undefined}
             className={`flex min-h-11 flex-1 flex-col items-center justify-center gap-1.5 transition-colors
                         ${active ? "text-burgundy" : "text-ink/50 hover:text-ink/75"}`}

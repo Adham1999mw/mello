@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useTranslation, type MessageKey } from "@/i18n/useTranslation";
+import { asset, useLocalePath } from "@/i18n/static";
 import LeatherLabel from "./LeatherLabel";
 
 // Homepage hero (spec: src/docs/hero-section.md, design: version A).
@@ -17,6 +18,7 @@ const notes: MessageKey[] = ["home.hero.noteDelivery", "home.hero.noteReturns", 
 
 export default function HeroSection() {
   const { t } = useTranslation();
+  const localePath = useLocalePath();
 
   return (
     // Top padding leaves room for the header that floats on top (Header `overlay`):
@@ -31,7 +33,7 @@ export default function HeroSection() {
         {/* Start side: logo, then the copy */}
         <div className="grid justify-items-center gap-[18px] md:justify-items-start md:gap-[30px]">
           <Image
-            src="/brand/needle-logo-cream.webp"
+            src={asset("/brand/needle-logo-cream.webp")}
             alt={t("home.hero.logoAlt")}
             width={807}
             height={606}
@@ -52,10 +54,10 @@ export default function HeroSection() {
             </h1>
 
             <div className="grid w-full max-w-80 gap-2.5 md:w-auto md:max-w-none md:grid-flow-col">
-              <Link href="/shop" className={`${button} border-champagne bg-champagne text-burgundy-deep`}>
+              <Link href={localePath("/shop")} className={`${button} border-champagne bg-champagne text-burgundy-deep`}>
                 {t("home.hero.shop")}
               </Link>
-              <Link href="/shop?sort=new" className={`${button} border-champagne/45 text-champagne`}>
+              <Link href={localePath("/shop?sort=new")} className={`${button} border-champagne/45 text-champagne`}>
                 {t("home.hero.newArrivals")}
               </Link>
             </div>

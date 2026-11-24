@@ -11,7 +11,8 @@ import Layout from "@/components/layout/Layout";
 import StoreProvider from "@/store/StoreProvider";
 import createAppTheme from "@/theme/theme";
 import createEmotionCache from "@/lib/emotion/createEmotionCache";
-import { getDirection, toLocale } from "@/i18n/config";
+import { getDirection } from "@/i18n/config";
+import { useLocale } from "@/i18n/useLocale";
 import "@/styles/globals.css";
 
 // Brand fonts (see src/theme/brand.ts). Headings: Cormorant Garamond / Amiri.
@@ -33,8 +34,8 @@ const clientCaches = {
 
 type MyAppProps = AppProps & { emotionCache?: EmotionCache };
 
-export default function MyApp({ Component, pageProps, router, emotionCache }: MyAppProps) {
-  const locale = toLocale(router.locale);
+export default function MyApp({ Component, pageProps, emotionCache }: MyAppProps) {
+  const locale = useLocale();
   const dir = getDirection(locale);
   const theme = useMemo(() => createAppTheme(dir), [dir]);
 
