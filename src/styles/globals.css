@@ -7,13 +7,24 @@
 @layer theme, base, mui, components, utilities;
 @import "tailwindcss";
 
+/*
+ * Design tokens for Tailwind. The values live in src/theme/brand.ts; MUI turns them
+ * into `--mui-*` CSS variables and these lines point Tailwind at them.
+ * Use: bg-burgundy, text-champagne, text-champagne/60, bg-ivory, text-ink, font-display, font-sans.
+ */
 @theme inline {
-  --color-background: var(--mui-palette-background-default);
-  --color-foreground: var(--mui-palette-text-primary);
-  --color-primary: var(--mui-palette-primary-main);
-  --color-secondary: var(--mui-palette-secondary-main);
-  --font-sans: var(--font-geist-sans), var(--font-arabic), sans-serif;
-  --font-mono: var(--font-geist-mono);
+  --color-burgundy: var(--mui-palette-primary-main);
+  --color-burgundy-deep: var(--mui-palette-primary-dark);
+  --color-wine: var(--mui-palette-primary-light);
+  --color-champagne: var(--mui-palette-secondary-main);
+  --color-ivory: var(--mui-palette-background-default);
+  --color-ink: var(--mui-palette-text-primary);
+
+  /* Same stacks as FONTS in brand.ts: keep them in sync. */
+  --font-display: var(--font-cormorant), var(--font-amiri), serif;
+  --font-sans: var(--font-jost), var(--font-cairo), sans-serif;
+
+  --radius-brand: 2px;
 }
 
 body {
@@ -26,4 +37,78 @@ body {
   display: flex;
   flex: 1;
   flex-direction: column;
+}
+
+/* Hero background: burgundy with soft light at the top and depth at the bottom */
+@layer components {
+  .hero-bg {
+    background:
+      radial-gradient(120% 70% at 50% 18%, rgb(110 18 38 / 0.55), transparent 60%),
+      radial-gradient(90% 60% at 50% 100%, --theme(--color-burgundy-deep), transparent 70%),
+      --theme(--color-burgundy);
+  }
+
+  /* Fine leather grain on top of the hero background */
+  .hero-bg::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    opacity: 0.18;
+    pointer-events: none;
+    background-image: radial-gradient(rgb(0 0 0 / 0.5) 0.6px, transparent 0.7px);
+    background-size: 3px 3px;
+  }
+}
+
+/*
+ * Hero leather label: a pendulum hanging from the top of its thread.
+ *
+ * The motion follows real pendulum physics:
+ * - At rest it hangs straight down (0deg), under the pivot.
+ * - A breeze pushes it, and air drag makes each swing about 22% smaller than the last.
+ * - Every swing takes the same time, whatever its size. That time depends only on the
+ *   pendulum's length (T = 2π√(L/g)), so the bigger desktop label swings a bit slower.
+ * - Between turning points the angle follows a sine curve: fastest at the bottom,
+ *   slowing to a stop at each end. The "sine" timing functions below draw that curve.
+ *
+ * One loop = a breeze push + 10 swings (5% + 9 × 10% + 5%). It ends moving the same way
+ * the next push starts, so the loop joins without a jump.
+ * No motion for people who turn on "reduce motion".
+ */
+@layer components {
+  .hero-label {
+    --swing-time: 7s; /* phone: 10 swings of 0.7s */
+    transform-origin: 50% 0;
+    filter: drop-shadow(0 18px 22px rgb(0 0 0 / 0.45));
+    animation: label-swing var(--swing-time) linear infinite;
+  }
+
+  @media (width >= 48rem) {
+    .hero-label {
+      --swing-time: 8.7s; /* desktop: longer pendulum (~1.5×), so √1.5 ≈ 1.24× slower */
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-label {
+      animation: none;
+    }
+  }
+}
+
+/* Timing functions: start fast and slow down / slow down and speed up / start slow and speed up */
+@keyframes label-swing {
+  0% { rotate: 0deg; animation-timing-function: cubic-bezier(0.61, 1, 0.88, 1); }
+  5% { rotate: 8deg; animation-timing-function: cubic-bezier(0.37, 0, 0.63, 1); }
+  15% { rotate: -6.2deg; animation-timing-function: cubic-bezier(0.37, 0, 0.63, 1); }
+  25% { rotate: 4.9deg; animation-timing-function: cubic-bezier(0.37, 0, 0.63, 1); }
+  35% { rotate: -3.8deg; animation-timing-function: cubic-bezier(0.37, 0, 0.63, 1); }
+  45% { rotate: 3deg; animation-timing-function: cubic-bezier(0.37, 0, 0.63, 1); }
+  55% { rotate: -2.3deg; animation-timing-function: cubic-bezier(0.37, 0, 0.63, 1); }
+  65% { rotate: 1.8deg; animation-timing-function: cubic-bezier(0.37, 0, 0.63, 1); }
+  75% { rotate: -1.4deg; animation-timing-function: cubic-bezier(0.37, 0, 0.63, 1); }
+  85% { rotate: 1.1deg; animation-timing-function: cubic-bezier(0.37, 0, 0.63, 1); }
+  95% { rotate: -0.9deg; animation-timing-function: cubic-bezier(0.12, 0, 0.39, 0); }
+  100% { rotate: 0deg; }
 }
