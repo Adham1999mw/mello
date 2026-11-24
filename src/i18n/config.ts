@@ -1,4 +1,4 @@
-// Keep in sync with `i18n.locales` in next.config.ts.
+// Supported locales. Each localized page is pre-rendered once per locale (see ./static.ts).
 export const locales = ["ar", "en"] as const;
 export type Locale = (typeof locales)[number];
 export const defaultLocale: Locale = "ar";
