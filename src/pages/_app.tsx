@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from "react";
 import type { AppProps } from "next/app";
 import Head from "next/head";
-import { Geist, Geist_Mono, Cairo } from "next/font/google";
+import { Amiri, Cairo, Cormorant_Garamond, Jost } from "next/font/google";
 import type { EmotionCache } from "@emotion/react";
 import { AppCacheProvider } from "@mui/material-nextjs/v16-pagesRouter";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -13,8 +13,10 @@ import createEmotionCache from "@/lib/emotion/createEmotionCache";
 import { getDirection, toLocale } from "@/i18n/config";
 import "@/styles/globals.css";
 
-const geistSans = Geist({ subsets: ["latin"] });
-const geistMono = Geist_Mono({ subsets: ["latin"] });
+// Brand fonts (see src/theme/brand.ts): display + body for Latin and Arabic.
+const cormorant = Cormorant_Garamond({ subsets: ["latin"], weight: ["400", "500"], style: ["normal", "italic"] });
+const jost = Jost({ subsets: ["latin"], weight: ["300", "400", "500"] });
+const amiri = Amiri({ subsets: ["arabic", "latin"], weight: ["400", "700"] });
 const cairo = Cairo({ subsets: ["arabic", "latin"] });
 
 // One client-side Emotion cache per direction (created once, reused on navigation).
@@ -50,9 +52,10 @@ export default function MyApp({ Component, pageProps, router, emotionCache }: My
       {/* Expose fonts as CSS variables on :root so portals (dialogs, menus) get them too */}
       <style jsx global>{`
         :root {
-          --font-geist-sans: ${geistSans.style.fontFamily};
-          --font-geist-mono: ${geistMono.style.fontFamily};
-          --font-arabic: ${cairo.style.fontFamily};
+          --nd-font-display: ${cormorant.style.fontFamily};
+          --nd-font-sans: ${jost.style.fontFamily};
+          --nd-font-ar-display: ${amiri.style.fontFamily};
+          --nd-font-ar-sans: ${cairo.style.fontFamily};
         }
       `}</style>
       <ThemeProvider theme={theme}>

@@ -12,6 +12,11 @@ E-commerce storefront for the Mello clothing brand.
 - **i18n: Arabic (default, RTL) and English** via Next's built-in i18n routing (`/` = Arabic, `/en` = English)
 - **Supabase** for database, auth and storage (`src/lib/supabase`)
 
+## Design rules
+
+**Mobile first, always**, and brand colors/fonts come only from `src/theme/brand.ts`.
+See [CLAUDE.md](CLAUDE.md) and [docs/design-guidelines.md](docs/design-guidelines.md).
+
 ## Getting started
 
 ```bash
@@ -42,5 +47,5 @@ src/
   lib/supabase/   Supabase clients (browser + server)
   store/          Redux store, typed hooks, RTK Query base API
   styles/         global CSS (Tailwind)
-  theme/          MUI theme
+  theme/          brand constants (brand.ts) + MUI theme
 ```
