@@ -74,10 +74,11 @@ champagne text on ivory or leather (too little contrast).
 
 | Role            | Latin               | Arabic | Tailwind       |
 | --------------- | ------------------- | ------ | -------------- |
-| Display (headings) | Cormorant Garamond | Noto Kufi Arabic (ExtraLight 200) | `font-display` |
-| Body, labels, buttons | Jost           | Alexandria | `font-sans` (default) |
+| Display (headings) | Cormorant Garamond | Markazi Text  | `font-display` |
+| Body, labels, buttons | Jost           | IBM Plex Sans Arabic  | `font-sans` (default) |
 
-- Headings use the display face at weight 400. Italic is for one or two emphasized words.
+- Headings use the display face at weight 400 (Arabic: Markazi Text at 500, a size up). Italic is for
+  one or two emphasized words in English. Markazi has no italic, so Arabic emphasis uses color (`text-leather`).
 - Small labels and buttons in English are uppercase with wide letter spacing
   (about `0.2em`). Arabic text is never uppercased or letter-spaced.
 - Body text is 16px on phones.

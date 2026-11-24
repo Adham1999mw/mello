@@ -28,7 +28,7 @@
   --color-ink-muted: #6e4a50;
 
   --font-sans: var(--nd-font-sans), var(--nd-font-ar-sans), "Helvetica Neue", Arial, sans-serif;
-  /* Latin faces have no Arabic glyphs, so Arabic text falls through to Noto Kufi Arabic / Alexandria. */
+  /* Latin faces have no Arabic glyphs, so Arabic text falls through to Markazi Text / IBM Plex Sans Arabic. */
   --font-display: var(--nd-font-display), var(--nd-font-ar-display), "Times New Roman", serif;
   --font-ar-sans: var(--nd-font-ar-sans), Tahoma, sans-serif;
   --font-ar-display: var(--nd-font-ar-display), "Times New Roman", serif;

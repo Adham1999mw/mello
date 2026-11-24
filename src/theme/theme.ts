@@ -11,8 +11,8 @@ export default function createAppTheme(direction: "rtl" | "ltr") {
   const display = isRtl ? FONTS.arDisplay : FONTS.display;
   // Arabic letters need more line height than Latin ones.
   const headingLineHeight = isRtl ? 1.5 : 1.12;
-  // The Arabic display face is set thin (ExtraLight) for the same fine look as Cormorant.
-  const headingWeight = isRtl ? 200 : 400;
+  // Arabic headings use Markazi Text at 500 (see docs/design-guidelines.md).
+  const headingWeight = isRtl ? 500 : 400;
 
   return createTheme({
     direction,

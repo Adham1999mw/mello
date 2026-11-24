@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from "react";
 import type { AppProps } from "next/app";
 import Head from "next/head";
-import { Alexandria, Cormorant_Garamond, Jost, Noto_Kufi_Arabic } from "next/font/google";
+import { Cormorant_Garamond, IBM_Plex_Sans_Arabic, Jost, Markazi_Text } from "next/font/google";
 import type { EmotionCache } from "@emotion/react";
 import { AppCacheProvider } from "@mui/material-nextjs/v16-pagesRouter";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -18,10 +18,9 @@ import "@/styles/globals.css";
 // Brand fonts (see src/theme/brand.ts): display + body for Latin and Arabic.
 const cormorant = Cormorant_Garamond({ subsets: ["latin"], weight: ["400", "500"], style: ["normal", "italic"] });
 const jost = Jost({ subsets: ["latin"], weight: ["300", "400", "500"] });
-// Arabic: a thin Kufi for headings (matches the fine lines of the logo and Cormorant)
-// and a geometric sans for text (the Arabic partner of Jost).
-const notoKufi = Noto_Kufi_Arabic({ subsets: ["arabic"], weight: ["200", "300", "400"] });
-const alexandria = Alexandria({ subsets: ["arabic"], weight: ["300", "400", "500"] });
+// Arabic: Markazi Text (editorial Naskh serif, no italic) + IBM Plex Sans Arabic.
+const markazi = Markazi_Text({ subsets: ["arabic", "latin"], weight: ["400", "500", "600"] });
+const plexArabic = IBM_Plex_Sans_Arabic({ subsets: ["arabic", "latin"], weight: ["300", "400", "500", "600"] });
 
 // One client-side Emotion cache per direction (created once, reused on navigation).
 const clientCaches = {
@@ -58,8 +57,8 @@ export default function MyApp({ Component, pageProps, emotionCache }: MyAppProps
         :root {
           --nd-font-display: ${cormorant.style.fontFamily};
           --nd-font-sans: ${jost.style.fontFamily};
-          --nd-font-ar-display: ${notoKufi.style.fontFamily};
-          --nd-font-ar-sans: ${alexandria.style.fontFamily};
+          --nd-font-ar-display: ${markazi.style.fontFamily};
+          --nd-font-ar-sans: ${plexArabic.style.fontFamily};
         }
       `}</style>
       <ThemeProvider theme={theme}>
