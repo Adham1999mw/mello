@@ -38,3 +38,4 @@ Arabic is the default locale and is right-to-left. Use logical properties and ut
 Every user-facing string goes in both `src/i18n/messages/en.ts` and `ar.ts`.
 
 Full details: [docs/design-guidelines.md](docs/design-guidelines.md).
+Homepage hero build spec: [docs/hero-section.md](docs/hero-section.md).
