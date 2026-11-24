@@ -45,8 +45,8 @@ the logo, because it is above the fold.
 | Secondary text, eyebrow, footer notes | champagne at 62% opacity | `text-champagne/60` |
 | Outline button border | champagne at 45% opacity | `border-champagne/45` |
 | Primary button text | `COLORS.burgundyDeep` | `text-burgundy-deep` |
-| Headline font | `FONTS.display` (Cormorant Garamond / Amiri) | `font-display` |
-| Everything else | `FONTS.sans` (Jost / Cairo) | `font-sans` |
+| Headline font | `FONTS.display` (Cormorant Garamond / Markazi Text) | `font-display` |
+| Everything else | `FONTS.sans` (Jost / IBM Plex Sans Arabic) | `font-sans` |
 | Button radius | `LAYOUT.radius` (2px) | `rounded-brand` |
 | Min tap size | `LAYOUT.minTapTarget` (44px) | `min-h-11 min-w-11` |
 
@@ -161,8 +161,8 @@ Jost 400, 11px (12px desktop), `letter-spacing: .32em`, uppercase, champagne/62%
 ### Headline
 
 `<h1>`, Cormorant Garamond 400, 30px phone / 52px desktop, `line-height: 1.12`,
-`text-wrap: balance`. The phrase "fit you" is `<em>` (italic). Arabic: Amiri,
-`line-height: 1.5`, 30px phone / 48px desktop.
+`text-wrap: balance`. The phrase "fit you" is `<em>` (italic). Arabic: Markazi Text 500,
+`line-height: 1.3`, 36px phone / 56px desktop; the `<em>` is upright in leather color (Markazi has no italic).
 
 ### Buttons
 
@@ -177,7 +177,7 @@ Jost 400, 11px (12px desktop), `letter-spacing: .32em`, uppercase, champagne/62%
 
 Use MUI `Button` (`variant="contained" color="secondary"` and `variant="outlined"`) or a
 plain link styled with Tailwind; both are fine as long as the tokens are used. Visible focus
-ring: 2px champagne outline, 3px offset. In Arabic: Cairo, 15px, no letter-spacing, no uppercase.
+ring: 2px champagne outline, 3px offset. In Arabic: IBM Plex Sans Arabic, 15px, no letter-spacing, no uppercase.
 
 ### Thread and label
 
@@ -199,7 +199,7 @@ ring: 2px champagne outline, 3px offset. In Arabic: Cairo, 15px, no letter-spaci
 
 - Seam: `border-top: 1.5px dashed` champagne/40.
 - Notes: Jost 400, 10px, `letter-spacing: .2em`, uppercase, champagne/62%, `white-space: nowrap`
-  on each item, `flex-wrap: wrap`. Arabic: Cairo 14px, no letter-spacing.
+  on each item, `flex-wrap: wrap`. Arabic: IBM Plex Sans Arabic 14px, no letter-spacing.
 
 ### Top bar icons
 
@@ -295,7 +295,7 @@ A starting point. Unprefixed classes are the phone layout; `md:` adds the deskto
 - [ ] Matches the preview at **360, 390 and 430px** wide first, then at 768px and 1280px.
 - [ ] No horizontal scroll at any width.
 - [ ] Every icon and button is at least 44×44px to tap.
-- [ ] Arabic (`/`) mirrors correctly and uses Amiri / Cairo; English (`/en`) uses Cormorant / Jost.
+- [ ] Arabic (`/`) mirrors correctly and uses Markazi Text / IBM Plex Sans Arabic; English (`/en`) uses Cormorant / Jost.
 - [ ] No hex colors or font names in the component; only brand tokens.
 - [ ] The label keeps swinging, and stays still with reduced motion turned on.
 - [ ] Logo has `priority`; all images have `sizes`.
