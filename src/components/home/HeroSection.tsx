@@ -47,9 +47,11 @@ export default function HeroSection() {
               {t("home.hero.eyebrow")}
             </p>
 
-            <h1 className="max-w-[15ch] font-display text-[30px] leading-[1.12] text-balance md:text-[52px] rtl:leading-[1.5] md:rtl:text-[48px]">
+            {/* Arabic: thin Kufi (200); the highlighted phrase is heavier instead of italic,
+                because Arabic has no real italics. */}
+            <h1 className="max-w-[15ch] font-display text-[30px] leading-[1.12] text-balance md:text-[52px] rtl:leading-[1.5] rtl:font-extralight md:rtl:text-[44px]">
               {t("home.hero.headlineStart")}
-              <em>{t("home.hero.headlineEm")}</em>
+              <em className="rtl:font-normal rtl:not-italic">{t("home.hero.headlineEm")}</em>
               {t("home.hero.headlineEnd")}
             </h1>
 

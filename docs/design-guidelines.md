@@ -74,8 +74,8 @@ champagne text on ivory or leather (too little contrast).
 
 | Role            | Latin               | Arabic | Tailwind       |
 | --------------- | ------------------- | ------ | -------------- |
-| Display (headings) | Cormorant Garamond | Amiri  | `font-display` |
-| Body, labels, buttons | Jost           | Cairo  | `font-sans` (default) |
+| Display (headings) | Cormorant Garamond | Noto Kufi Arabic (ExtraLight 200) | `font-display` |
+| Body, labels, buttons | Jost           | Alexandria | `font-sans` (default) |
 
 - Headings use the display face at weight 400. Italic is for one or two emphasized words.
 - Small labels and buttons in English are uppercase with wide letter spacing

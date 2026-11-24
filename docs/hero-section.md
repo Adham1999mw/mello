@@ -17,7 +17,7 @@ A full-width burgundy band at the top of the homepage:
 2. **Brand block**: the cream NEEDLE logo (monogram + wordmark + "Women's wear").
 3. **Copy**: small eyebrow, serif headline with one italic phrase, two buttons.
 4. **Leather label**: the cream "Made in Egypt" label with the size tab, hanging from a
-   dashed thread. It keeps swinging gently from side to side.
+   dashed thread. It keeps swinging slowly and gently from side to side, forever.
 5. **Stitched seam** (dashed line) and a row of three service notes at the bottom.
 
 ## 2. Files
@@ -45,8 +45,8 @@ the logo, because it is above the fold.
 | Secondary text, eyebrow, footer notes | champagne at 62% opacity | `text-champagne/60` |
 | Outline button border | champagne at 45% opacity | `border-champagne/45` |
 | Primary button text | `COLORS.burgundyDeep` | `text-burgundy-deep` |
-| Headline font | `FONTS.display` (Cormorant Garamond / Amiri) | `font-display` |
-| Everything else | `FONTS.sans` (Jost / Cairo) | `font-sans` |
+| Headline font | `FONTS.display` (Cormorant Garamond / Noto Kufi Arabic) | `font-display` |
+| Everything else | `FONTS.sans` (Jost / Alexandria) | `font-sans` |
 | Button radius | `LAYOUT.radius` (2px) | `rounded-brand` |
 | Min tap size | `LAYOUT.minTapTarget` (44px) | `min-h-11 min-w-11` |
 
@@ -161,7 +161,8 @@ Jost 400, 11px (12px desktop), `letter-spacing: .32em`, uppercase, champagne/62%
 ### Headline
 
 `<h1>`, Cormorant Garamond 400, 30px phone / 52px desktop, `line-height: 1.12`,
-`text-wrap: balance`. The phrase "fit you" is `<em>` (italic). Arabic: Amiri,
+`text-wrap: balance`. The phrase "fit you" is `<em>` (italic). Arabic: Noto Kufi Arabic ExtraLight (200); Arabic has no real italics, so the
+`<em>` phrase is set heavier (400) instead of slanted,
 `line-height: 1.5`, 30px phone / 48px desktop.
 
 ### Buttons
@@ -177,7 +178,7 @@ Jost 400, 11px (12px desktop), `letter-spacing: .32em`, uppercase, champagne/62%
 
 Use MUI `Button` (`variant="contained" color="secondary"` and `variant="outlined"`) or a
 plain link styled with Tailwind; both are fine as long as the tokens are used. Visible focus
-ring: 2px champagne outline, 3px offset. In Arabic: Cairo, 15px, no letter-spacing, no uppercase.
+ring: 2px champagne outline, 3px offset. In Arabic: Alexandria, 15px, no letter-spacing, no uppercase.
 
 ### Thread and label
 
@@ -185,21 +186,21 @@ ring: 2px champagne outline, 3px offset. In Arabic: Cairo, 15px, no letter-spaci
   the label wrapper down to the label. Phone 58px tall, desktop 76px.
 - Label: `rotate: -3deg`, `transform-origin` at the top of the thread
   (`50% -54px` phone, `50% -70px` desktop), shadow `drop-shadow(0 18px 22px rgb(0 0 0 / .45))`.
-- **Swing** (1.6s each way, `ease-in-out`, `infinite alternate`):
+- **Swing** (slow and gentle forever: 2.4s per swing on phones, 3s on desktop, sine easing, `infinite alternate`):
 
 ```css
-@keyframes sway {
-  from { rotate: 4deg; }
-  to   { rotate: -10deg; }
+@keyframes label-swing {
+  from { rotate: 2.5deg; }
+  to   { rotate: -2.5deg; }
 }
-@media (prefers-reduced-motion: reduce) { .label { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .hero-label { animation: none; } }
 ```
 
 ### Seam and footer notes
 
 - Seam: `border-top: 1.5px dashed` champagne/40.
 - Notes: Jost 400, 10px, `letter-spacing: .2em`, uppercase, champagne/62%, `white-space: nowrap`
-  on each item, `flex-wrap: wrap`. Arabic: Cairo 14px, no letter-spacing.
+  on each item, `flex-wrap: wrap`. Arabic: Alexandria 14px, no letter-spacing.
 
 ### Top bar icons
 
@@ -295,8 +296,8 @@ A starting point. Unprefixed classes are the phone layout; `md:` adds the deskto
 - [ ] Matches the preview at **360, 390 and 430px** wide first, then at 768px and 1280px.
 - [ ] No horizontal scroll at any width.
 - [ ] Every icon and button is at least 44×44px to tap.
-- [ ] Arabic (`/`) mirrors correctly and uses Amiri / Cairo; English (`/en`) uses Cormorant / Jost.
+- [ ] Arabic (`/`) mirrors correctly and uses Noto Kufi Arabic / Alexandria; English (`/en`) uses Cormorant / Jost.
 - [ ] No hex colors or font names in the component; only brand tokens.
-- [ ] The label keeps swinging, and stays still with reduced motion turned on.
+- [ ] The label swings without stopping, and stays still with reduced motion turned on.
 - [ ] Logo has `priority`; all images have `sizes`.
 - [ ] `npm run lint` and `npm run build` pass.

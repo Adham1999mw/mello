@@ -1,11 +1,13 @@
 import type { GetStaticPaths, GetStaticProps } from "next";
 import { locales, type Locale } from "./config";
 
-// The site is a static export (GitHub Pages), so Next's built-in i18n routing is not
-// available. Instead every localized page lives under `src/pages/[locale]/` and is
-// pre-rendered once per locale with these helpers:
+// Localized pages live under `src/pages/[locale]/` (`/ar/...`, `/en/...`). This works both on
+// the real server and as static files on GitHub Pages, where Next's built-in i18n routing is
+// not available. Static pages are pre-rendered once per locale with these helpers:
 //
 //   export { getStaticPaths, getStaticProps } from "@/i18n/static";
+//
+// Server-only pages (`*.server.tsx`) use `getServerSideProps` instead and read `params.locale`.
 //
 // `/` also serves the Arabic home page (see src/pages/index.tsx).
 export const getStaticPaths: GetStaticPaths = async () => ({

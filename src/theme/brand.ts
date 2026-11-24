@@ -39,7 +39,7 @@ export const COLORS = {
 /**
  * Font families. The CSS variables are set in `src/pages/_app.tsx` by next/font.
  * Latin: Cormorant Garamond (display) + Jost (body/labels).
- * Arabic: Amiri (display) + Cairo (body/labels).
+ * Arabic: Noto Kufi Arabic, thin (display) + Alexandria (body/labels).
  */
 export const FONT_VARS = {
   display: "--nd-font-display",

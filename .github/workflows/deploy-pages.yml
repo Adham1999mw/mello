@@ -27,8 +27,14 @@ jobs:
       - id: pages
         uses: actions/configure-pages@v5
       - run: npm ci
+      # Pages that need a server (`*.server.tsx` / `*.server.ts` under src/pages) can't be
+      # static files, so leave them out of this build. This only changes the CI checkout.
+      - name: Remove server-only pages
+        run: find src/pages -name "*.server.tsx" -o -name "*.server.ts" | xargs rm -f
       - run: npm run build
         env:
+          # Build plain static files for GitHub Pages (see next.config.ts)
+          STATIC_EXPORT: "true"
           # e.g. "/mello", so links and assets work at https://<user>.github.io/mello/
           PAGES_BASE_PATH: ${{ steps.pages.outputs.base_path }}
           NEXT_PUBLIC_SUPABASE_URL: ${{ vars.NEXT_PUBLIC_SUPABASE_URL }}

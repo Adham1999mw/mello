@@ -10,8 +10,8 @@ E-commerce storefront for the Mello clothing brand.
   - The MUI theme (`src/theme/theme.ts`) exposes its palette as CSS variables, which Tailwind maps to `bg-primary`, `text-foreground`, etc.
 - **Redux Toolkit + RTK Query** (`src/store`) for client state and API caching
 - **i18n: Arabic (default, RTL) and English**: pages live under `src/pages/[locale]/` and are pre-rendered for both (`/` and `/ar/` = Arabic, `/en/` = English)
-- **Supabase** for database, auth and storage (`src/lib/supabase`), called from the browser
-- **Hosting: GitHub Pages** (static export, see [Deploying](#deploying))
+- **Supabase** for database, auth and storage (`src/lib/supabase`): from the browser, or on the server in `getServerSideProps` / API routes
+- **Hosting**: a real Node server (full features) and a GitHub Pages preview (static files); see [Deploying](#deploying)
 
 ## Design rules
 
@@ -30,19 +30,34 @@ Open http://localhost:3000.
 
 ## Deploying
 
-The site is a static export (`output: "export"` in `next.config.ts`) deployed to GitHub Pages by
-`.github/workflows/deploy-pages.yml` on every push to `main`. It is served at
-`https://<user>.github.io/mello/`; the workflow passes `/mello` in as `PAGES_BASE_PATH`.
+The same code builds two ways (see `next.config.ts`):
 
-One-time setup: repo **Settings → Pages → Source: GitHub Actions**. For Supabase, add
+| | Real server | GitHub Pages |
+| --- | --- | --- |
+| Build | `npm run build` then `npm start` (Vercel, a VPS, …) | `.github/workflows/deploy-pages.yml` on every push to `main` |
+| Mode | default | `STATIC_EXPORT=true` (static files in `out/`) |
+| `getServerSideProps`, Supabase on the server | yes | no: `*.server.tsx` pages are left out |
+| API routes (`pages/api`) | yes | skipped |
+| `next/image` optimization | yes | no (plain images) |
+| URL | `/`, `/ar/`, `/en/` | `https://<user>.github.io/mello/`, `/mello/en/`, … |
+
+**Pages that need the server**: name the file `*.server.tsx`, e.g.
+`src/pages/[locale]/orders.server.tsx` is the page `/en/orders/` and can use `getServerSideProps`
+with the Supabase server client (`src/lib/supabase/server.ts`). The Pages workflow deletes these
+files from its build, so the GitHub Pages preview simply doesn't have them (and the build never fails).
+Every other page must work as static files: use `getStaticProps` / `getStaticPaths`, or call
+Supabase from the browser.
+
+**GitHub Pages setup** (one time): repo **Settings → Pages → Source: GitHub Actions**. For Supabase, add
 `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` under
 **Settings → Secrets and variables → Actions → Variables**.
+On Pages the site lives under `/mello`, so wrap image and CSS asset paths in
+`assetPath("/brand/x.webp")` (`src/lib/assetPath.ts`); links from `next/link` get it automatically.
 
-Because there is no server, these Next.js features are off limits: API routes (`pages/api`),
-`getServerSideProps`, middleware, `next/image` optimization and Next's built-in i18n routing.
-Use `getStaticProps` / `getStaticPaths` and call Supabase from the browser instead
-(row level security protects the data). Test a production build locally with `npm run build`;
-the result is in `out/`.
+**Server setup**: set the same two Supabase variables on your host, then `npm run build && npm start`.
+
+To try the Pages build locally: `STATIC_EXPORT=true npm run build` (output in `out/`). It fails if a
+`*.server.tsx` page exists, because CI removes those first.
 
 ## Translations (ar / en)
 

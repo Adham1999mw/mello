@@ -1,22 +1,31 @@
 import type { NextConfig } from "next";
 
-// The site is deployed to GitHub Pages as plain static files, so there is no Node server:
-// no API routes, getServerSideProps, middleware or Next's built-in i18n routing.
-// Arabic/English pages are pre-rendered under `src/pages/[locale]/` instead (see src/i18n/static.ts).
+// Two ways to build the same code:
 //
-// On GitHub Pages the site lives under /<repo-name>; the deploy workflow passes that in
-// as PAGES_BASE_PATH. Locally it is empty, so the site runs at /.
-const basePath = process.env.PAGES_BASE_PATH || undefined;
+// 1. Real server (default): `npm run build` + `npm start`. Everything works:
+//    getServerSideProps, API routes (`pages/api`), Supabase on the server, image optimization.
+//
+// 2. GitHub Pages (static files, no server): the deploy workflow sets STATIC_EXPORT=true.
+//    - API routes are skipped automatically.
+//    - Pages that need the server are named `*.server.tsx` (e.g. `pages/[locale]/orders.server.tsx`)
+//      and the workflow removes them before building, so they are not on GitHub Pages.
+//    - The site lives under /<repo-name>, passed in as PAGES_BASE_PATH.
+//
+// Both modes use the same URLs: `/` and `/ar/` (Arabic), `/en/` (English), from `src/pages/[locale]/`.
+const isStaticExport = process.env.STATIC_EXPORT === "true";
+const basePath = isStaticExport ? process.env.PAGES_BASE_PATH || undefined : undefined;
 
 const nextConfig: NextConfig = {
-  output: "export",
+  output: isStaticExport ? "export" : undefined,
   basePath,
   // next/image and CSS `url()` don't add basePath on their own; `assetPath()` uses this.
   env: { NEXT_PUBLIC_BASE_PATH: basePath ?? "" },
-  // `/en/` -> `en/index.html`, which is how GitHub Pages serves folders.
+  // `/en/` -> `en/index.html` on GitHub Pages; kept on the server too so URLs match.
   trailingSlash: true,
-  // There is no image optimization server on GitHub Pages.
-  images: { unoptimized: true },
+  // GitHub Pages has no image optimization server; the real server does.
+  images: { unoptimized: isStaticExport },
+  // `orders.server.tsx` is the page `/orders` (server builds only, see above).
+  pageExtensions: ["tsx", "ts", "server.tsx", "server.ts"],
   // Bundle Emotion + MUI's Next.js adapter together with MUI so they share one
   // @emotion/react instance on the server. Without this, Turbopack loads a second
   // copy and MUI ignores the RTL / CSS-layer Emotion cache during SSR.

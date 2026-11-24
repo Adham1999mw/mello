@@ -8,8 +8,8 @@ type ReqRes =
   | Pick<GetServerSidePropsContext, "req" | "res">;
 
 // Supabase client for API routes and getServerSideProps (Pages Router).
-// NOTE: unused while the site is a static export on GitHub Pages (no server). Kept for
-// when the store moves to a host with a server; use ./client.ts in the meantime.
+// Works on the real server only: use it in `*.server.tsx` pages and in `pages/api`.
+// (On GitHub Pages there is no server; there, pages call ./client.ts from the browser.)
 // Usage: `const supabase = createClient({ req, res })`
 export function createClient({ req, res }: ReqRes) {
   return createServerClient(

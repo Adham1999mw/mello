@@ -37,5 +37,12 @@ Arabic is the default locale and is right-to-left. Use logical properties and ut
 (`ms-*`, `pe-*`, `start-*`, `text-start`, `margin-inline-start`) instead of left/right.
 Every user-facing string goes in both `src/i18n/messages/en.ts` and `ar.ts`.
 
+## 4. Server and GitHub Pages
+
+The same code runs on a real server and as static files on GitHub Pages (see README → Deploying).
+Pages that need the server (`getServerSideProps`, Supabase server client) are named
+`*.server.tsx`; they are left out of the GitHub Pages build. All other pages must work as
+static files. Wrap `/public` asset paths in `assetPath()` for `next/image` and CSS `url()`.
+
 Full details: [docs/design-guidelines.md](docs/design-guidelines.md).
 Homepage hero build spec: [docs/hero-section.md](docs/hero-section.md).

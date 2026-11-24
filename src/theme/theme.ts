@@ -11,6 +11,8 @@ export default function createAppTheme(direction: "rtl" | "ltr") {
   const display = isRtl ? FONTS.arDisplay : FONTS.display;
   // Arabic letters need more line height than Latin ones.
   const headingLineHeight = isRtl ? 1.5 : 1.12;
+  // The Arabic display face is set thin (ExtraLight) for the same fine look as Cormorant.
+  const headingWeight = isRtl ? 200 : 400;
 
   return createTheme({
     direction,
@@ -31,10 +33,10 @@ export default function createAppTheme(direction: "rtl" | "ltr") {
     shape: { borderRadius: LAYOUT.radius },
     typography: {
       fontFamily: sans,
-      h1: { fontFamily: display, fontWeight: 400, lineHeight: headingLineHeight },
-      h2: { fontFamily: display, fontWeight: 400, lineHeight: headingLineHeight },
-      h3: { fontFamily: display, fontWeight: 400, lineHeight: headingLineHeight },
-      h4: { fontFamily: display, fontWeight: 400, lineHeight: headingLineHeight },
+      h1: { fontFamily: display, fontWeight: headingWeight, lineHeight: headingLineHeight },
+      h2: { fontFamily: display, fontWeight: headingWeight, lineHeight: headingLineHeight },
+      h3: { fontFamily: display, fontWeight: headingWeight, lineHeight: headingLineHeight },
+      h4: { fontFamily: display, fontWeight: headingWeight, lineHeight: headingLineHeight },
       // English: small uppercase with wide spacing. Arabic has no capitals, so it gets
       // a bigger size and normal spacing instead.
       button: isRtl
