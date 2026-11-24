@@ -47,8 +47,9 @@ export default function HeroSection() {
               {t("home.hero.eyebrow")}
             </p>
 
-            <h1 className="max-w-[15ch] font-display text-[30px] leading-[1.12] text-balance md:text-[52px] rtl:leading-[1.5] md:rtl:text-[48px]">
+            <h1 className="max-w-[15ch] font-display text-[30px] leading-[1.12] text-balance md:text-[52px] rtl:text-[36px] rtl:leading-[1.3] rtl:font-medium md:rtl:text-[56px] rtl:[&_em]:not-italic rtl:[&_em]:text-leather">
               {t("home.hero.headlineStart")}
+              {/* Markazi Text has no italic, so in Arabic the phrase is set off by color instead. */}
               <em>{t("home.hero.headlineEm")}</em>
               {t("home.hero.headlineEnd")}
             </h1>

@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from "react";
 import type { AppProps } from "next/app";
 import Head from "next/head";
-import { Amiri, Cairo, Cormorant_Garamond, Jost } from "next/font/google";
+import { Cormorant_Garamond, IBM_Plex_Sans_Arabic, Jost, Markazi_Text } from "next/font/google";
 import type { EmotionCache } from "@emotion/react";
 import { AppCacheProvider } from "@mui/material-nextjs/v16-pagesRouter";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -18,9 +18,9 @@ import "@/styles/globals.css";
 // Brand fonts (see src/theme/brand.ts): display + body for Latin and Arabic.
 const cormorant = Cormorant_Garamond({ subsets: ["latin"], weight: ["400", "500"], style: ["normal", "italic"] });
 const jost = Jost({ subsets: ["latin"], weight: ["300", "400", "500"] });
-// Amiri italic is used for the emphasised phrase in Arabic headlines.
-const amiri = Amiri({ subsets: ["arabic", "latin"], weight: ["400", "700"], style: ["normal", "italic"] });
-const cairo = Cairo({ subsets: ["arabic", "latin"] });
+// Arabic: Markazi Text (editorial Naskh serif, no italic) + IBM Plex Sans Arabic.
+const markazi = Markazi_Text({ subsets: ["arabic", "latin"], weight: ["400", "500", "600"] });
+const plexArabic = IBM_Plex_Sans_Arabic({ subsets: ["arabic", "latin"], weight: ["300", "400", "500", "600"] });
 
 // One client-side Emotion cache per direction (created once, reused on navigation).
 const clientCaches = {
@@ -57,8 +57,8 @@ export default function MyApp({ Component, pageProps, emotionCache }: MyAppProps
         :root {
           --nd-font-display: ${cormorant.style.fontFamily};
           --nd-font-sans: ${jost.style.fontFamily};
-          --nd-font-ar-display: ${amiri.style.fontFamily};
-          --nd-font-ar-sans: ${cairo.style.fontFamily};
+          --nd-font-ar-display: ${markazi.style.fontFamily};
+          --nd-font-ar-sans: ${plexArabic.style.fontFamily};
         }
       `}</style>
       <ThemeProvider theme={theme}>
