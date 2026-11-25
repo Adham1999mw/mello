@@ -100,6 +100,11 @@ export type Database = {
           description_en: string | null;
           is_active: boolean;
           is_featured: boolean;
+          // Added by 20261126000000_lookbook_feature_image.sql
+          feature_image_url: string | null;
+          feature_image_alt_ar: string | null;
+          feature_image_alt_en: string | null;
+          feature_image_fit: "cover" | "contain";
           created_at: string;
           updated_at: string;
         };
@@ -113,6 +118,10 @@ export type Database = {
           description_en?: string | null;
           is_active?: boolean;
           is_featured?: boolean;
+          feature_image_url?: string | null;
+          feature_image_alt_ar?: string | null;
+          feature_image_alt_en?: string | null;
+          feature_image_fit?: "cover" | "contain";
           created_at?: string;
           updated_at?: string;
         };
@@ -246,6 +255,11 @@ export type Database = {
           sizes: Json | null;
           default_color_slug: string | null;
           default_variant_id: number | null;
+          // Added by 20261126000000_lookbook_feature_image.sql
+          feature_image_url: string | null;
+          feature_image_alt_ar: string | null;
+          feature_image_alt_en: string | null;
+          feature_image_fit: string | null;
         };
         Relationships: [];
       };

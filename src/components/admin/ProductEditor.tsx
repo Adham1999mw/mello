@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import Alert from "@mui/material/Alert";
-import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -13,6 +12,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Snackbar from "@mui/material/Snackbar";
 import Switch from "@mui/material/Switch";
 import TextField from "@mui/material/TextField";
+import { Button, Typography, typography } from "@/components/ui";
 import { localePath } from "@/i18n/static";
 import { useTranslation } from "@/i18n/useTranslation";
 import {
@@ -29,6 +29,7 @@ import {
   type ImageForm,
   type ProductForm,
 } from "@/lib/admin/api";
+import FeatureImageEditor from "./FeatureImageEditor";
 import ImagesEditor from "./ImagesEditor";
 import VariantsEditor, { variantKey, type VariantErrors } from "./VariantsEditor";
 import { useAdminError } from "./useAdminError";
@@ -57,6 +58,8 @@ export default function ProductEditor({ id }: { id: number | null }) {
   const [confirmDelete, setConfirmDelete] = useState(false);
   // Saved photos removed in this edit: their files are deleted after the next save.
   const removedFiles = useRef<string[]>([]);
+  // The lookbook image as saved in the database (an upload that replaces it is not saved yet).
+  const savedFeatureUrl = useRef<string | null>(null);
   // Slug follows the English name until you edit it yourself.
   const [slugTouched, setSlugTouched] = useState(Boolean(id));
 
@@ -66,7 +69,10 @@ export default function ProductEditor({ id }: { id: number | null }) {
       .then(([opts, product]) => {
         if (!active) return;
         setOptions(opts);
-        if (product) setForm(product);
+        if (product) {
+          setForm(product);
+          savedFeatureUrl.current = product.feature_image_url;
+        }
         else setNotFound(true);
       })
       .catch((e) => active && setLoadError(toMessage(e)));
@@ -144,7 +150,10 @@ export default function ProductEditor({ id }: { id: number | null }) {
       setSaved(true);
       // Reload, so new variants and photos get their ids.
       const fresh = await getAdminProduct(newId);
-      if (fresh) setForm(fresh);
+      if (fresh) {
+        setForm(fresh);
+        savedFeatureUrl.current = fresh.feature_image_url;
+      }
       if (!form.id) {
         setSlugTouched(true);
         await router.replace(localePath(locale, `/admin/product?id=${newId}`), undefined, { shallow: true });
@@ -175,15 +184,20 @@ export default function ProductEditor({ id }: { id: number | null }) {
     else removedFiles.current.push(img.url);
   }
 
+  function handleRemoveFeatureImage(url: string) {
+    if (url === savedFeatureUrl.current) removedFiles.current.push(url); // delete after the save
+    else deleteStorageFiles([url]); // never saved: delete the upload now
+  }
+
   return (
     <form onSubmit={handleSave} noValidate className="flex flex-col gap-6">
       <div className="flex flex-col gap-1">
-        <Link href={localePath(locale, "/admin")} className="flex min-h-11 items-center text-sm text-ink-muted">
+        <Link href={localePath(locale, "/admin")} className={`flex min-h-11 items-center text-ink-muted ${typography("bodySm")}`}>
           {locale === "ar" ? "→" : "←"} {t("admin.form.back")}
         </Link>
-        <h1 className="font-display text-3xl text-burgundy">
+        <Typography variant="h1" color="burgundy">
           {form.id ? t("admin.form.editTitle") : t("admin.form.newTitle")}
-        </h1>
+        </Typography>
       </div>
 
       <Section title={t("admin.form.basics")}>
@@ -256,11 +270,6 @@ export default function ProductEditor({ id }: { id: number | null }) {
             label={t("admin.form.active")}
             sx={{ minHeight: 44, m: 0 }}
           />
-          <FormControlLabel
-            control={<Switch checked={form.is_featured} onChange={(e) => set({ is_featured: e.target.checked })} />}
-            label={t("admin.form.featured")}
-            sx={{ minHeight: 44, m: 0 }}
-          />
         </div>
       </Section>
 
@@ -286,14 +295,23 @@ export default function ProductEditor({ id }: { id: number | null }) {
         />
       </Section>
 
+      <Section title={t("admin.form.lookbookTitle")}>
+        <FeatureImageEditor
+          value={form}
+          onChange={set}
+          onRemove={handleRemoveFeatureImage}
+          coverUrl={form.images[0]?.url ?? null}
+        />
+      </Section>
+
       {/* Save bar: stays at the bottom of the screen on phones, easy to reach with a thumb. */}
       <div className="sticky bottom-0 z-30 -mx-4 flex flex-col gap-2 border-t border-ink/10 bg-ivory/95 px-4 py-3 backdrop-blur md:static md:mx-0 md:flex-row-reverse md:border-0 md:bg-transparent md:px-0">
         {saveError && <Alert severity="error" className="md:flex-1">{saveError}</Alert>}
-        <Button type="submit" variant="contained" size="large" fullWidth disabled={saving} className="md:w-auto">
+        <Button type="submit" fullWidth="mobile" disabled={saving}>
           {saving ? t("admin.form.saving") : t("admin.form.save")}
         </Button>
         {form.id && (
-          <Button color="error" fullWidth disabled={saving} onClick={() => setConfirmDelete(true)} className="md:w-auto">
+          <Button variant="text" tone="danger" fullWidth="mobile" disabled={saving} onClick={() => setConfirmDelete(true)}>
             {t("admin.form.delete")}
           </Button>
         )}
@@ -305,8 +323,10 @@ export default function ProductEditor({ id }: { id: number | null }) {
           <p>{t("admin.form.deleteConfirm")}</p>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setConfirmDelete(false)}>{t("admin.form.cancel")}</Button>
-          <Button color="error" variant="contained" onClick={handleDelete}>
+          <Button variant="text" tone="ink" size="sm" onClick={() => setConfirmDelete(false)}>
+            {t("admin.form.cancel")}
+          </Button>
+          <Button tone="danger" size="sm" onClick={handleDelete}>
             {t("admin.form.confirmDelete")}
           </Button>
         </DialogActions>
@@ -320,7 +340,9 @@ export default function ProductEditor({ id }: { id: number | null }) {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="flex flex-col gap-4 rounded-brand bg-white/60 p-4 shadow-sm md:p-6">
-      <h2 className="font-display text-2xl text-burgundy">{title}</h2>
+      <Typography variant="h2" color="burgundy">
+        {title}
+      </Typography>
       {children}
     </section>
   );

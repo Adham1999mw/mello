@@ -66,6 +66,7 @@ The same values are used by Tailwind and MUI.
 | `ivory`        | `#FBF4EC` | `bg-ivory`        | Light page background                       |
 | `ink`          | `#2A040D` | `text-ink`        | Body text on light backgrounds              |
 | `inkMuted`     | `#6E4A50` | `text-ink-muted`  | Secondary text on light backgrounds         |
+| `danger`       | `#9B1C1C` | `text-danger`     | Errors and delete actions                   |
 
 Pairings: champagne on burgundy, burgundy or ink on ivory/leather. Do not put
 champagne text on ivory or leather (too little contrast).
@@ -82,6 +83,70 @@ champagne text on ivory or leather (too little contrast).
 - Small labels and buttons in English are uppercase with wide letter spacing
   (about `0.2em`). Arabic text is never uppercased or letter-spaced.
 - Body text is 16px on phones.
+
+### Type scale (`Typography`)
+
+All text styles live in `src/components/ui/Typography.tsx`. Use `<Typography variant="...">`,
+or `typography("...")` for a class string on an element that can't be a Typography.
+
+| Variant | Use | Default element |
+| ------- | --- | --------------- |
+| `display` | Hero headline | `h1` |
+| `h1` | Page and section titles | `h1` |
+| `h2` | Sub-section titles | `h2` |
+| `h3` | Featured item name (lookbook) | `h3` |
+| `h4` | Product card name | `h4` |
+| `subtitle` | Small sans headings in forms and lists | `h3` |
+| `eyebrow` | Small uppercase line above a title | `p` |
+| `label` | Nav links, small text actions | `span` |
+| `button` | Button text (Button uses it) | `span` |
+| `note` | Tiniest uppercase text: service notes, tab bar | `span` |
+| `body` / `bodySm` / `caption` | Body, secondary, meta text | `p` / `p` / `span` |
+| `price` / `priceSm` | Featured price / grid price | `p` |
+
+Props: `as` (element), `color` (`inherit` `ink` `muted` `burgundy` `champagne` `danger`),
+`italic` (English only; Arabic stays upright). The Arabic adjustments (no uppercase or
+letter spacing, a size up, Markazi Text 500) are built into every variant.
+
+## Buttons
+
+All buttons come from `src/components/ui`. Live examples: `/ar/design-system/`, `/en/design-system/`.
+
+**`Button`**: `variant` × `tone`, plus `size` and `fullWidth`.
+
+| `variant` | Use |
+| --------- | --- |
+| `solid` (default) | The main action on a screen. One per screen. |
+| `outline` | Second action next to a solid one |
+| `text` | Quiet actions: Cancel, Remove, Sign out |
+| `link` | Underlined "View all" style links |
+
+| `tone` | Use |
+| ------ | --- |
+| `burgundy` (default) | On ivory, white and leather |
+| `champagne` | On burgundy (hero, admin top bar) |
+| `ink` | Neutral, on light backgrounds |
+| `danger` | Delete and other actions that can't be undone |
+
+- `size`: `sm` 44px, `md` 48px (default), `lg` 48px phone / 52px desktop (hero).
+- `fullWidth="mobile"`: full width on phones, natural width from `md` up (the usual main action).
+- `href` renders a `next/link`; without it, a `<button type="button">`. Also `disabled`, `startIcon`, `endIcon`.
+
+**`IconButton`**: a 44×44px icon-only button. `label` is required (screen readers).
+`variant="plain"` (default) or `"outline"` (round, e.g. carousel arrows); `tone="current"`
+(default, takes the parent's color) or any button tone.
+
+```tsx
+import { Button, IconButton, Typography } from "@/components/ui";
+
+<Typography variant="h1" as="h2" italic>{t("home.products.title")}</Typography>
+<Button href={localePath(locale, "/shop")} fullWidth="mobile">{t("home.hero.shop")}</Button>
+<Button variant="text" tone="danger" onClick={remove}>{t("admin.form.remove")}</Button>
+<IconButton label={t("nav.search")}><SearchIcon /></IconButton>
+```
+
+Small custom controls (color dots, photo bullets, the lookbook progress bar) are not buttons in
+this sense and keep their own styles, but still need a 44px tap area.
 
 ## Shape and spacing
 

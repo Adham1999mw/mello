@@ -34,6 +34,8 @@ export const COLORS = {
   /** Secondary text on light backgrounds. */
   inkMuted: "#6E4A50",
   white: "#FFFFFF",
+  /** Errors and destructive actions (delete, remove). Readable on ivory, white and leather. */
+  danger: "#9B1C1C",
 } as const;
 
 /**

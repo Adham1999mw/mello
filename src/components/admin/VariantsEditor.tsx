@@ -1,9 +1,9 @@
 import { useRef, useState } from "react";
-import Button from "@mui/material/Button";
 import Chip from "@mui/material/Chip";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
 import TextField from "@mui/material/TextField";
+import { Button, Typography } from "@/components/ui";
 import { useTranslation } from "@/i18n/useTranslation";
 import type { AdminColor, AdminSize, VariantForm } from "@/lib/admin/api";
 
@@ -78,15 +78,19 @@ export default function VariantsEditor({ slug, colors, sizes, variants, onChange
   }
 
   if (colors.length === 0 || sizes.length === 0) {
-    return <p className="text-ink-muted">{t("admin.form.noOptions")}</p>;
+    return <Typography color="muted">{t("admin.form.noOptions")}</Typography>;
   }
 
   return (
     <div className="flex flex-col gap-5">
-      <p className="text-sm text-ink-muted">{t("admin.form.variantsHelp")}</p>
+      <Typography variant="bodySm" color="muted">
+        {t("admin.form.variantsHelp")}
+      </Typography>
 
       <fieldset>
-        <legend className="mb-2 font-medium">{t("admin.form.colors")}</legend>
+        <Typography as="legend" variant="subtitle" className="mb-2">
+          {t("admin.form.colors")}
+        </Typography>
         <div className="flex flex-wrap gap-2">
           {colors.map((c) => {
             const on = colorIds.includes(c.id);
@@ -111,7 +115,9 @@ export default function VariantsEditor({ slug, colors, sizes, variants, onChange
       </fieldset>
 
       <fieldset>
-        <legend className="mb-2 font-medium">{t("admin.form.sizes")}</legend>
+        <Typography as="legend" variant="subtitle" className="mb-2">
+          {t("admin.form.sizes")}
+        </Typography>
         <div className="flex flex-wrap gap-2">
           {sizes.map((s) => {
             const on = sizeIds.includes(s.id);
@@ -135,16 +141,18 @@ export default function VariantsEditor({ slug, colors, sizes, variants, onChange
       </fieldset>
 
       {variants.length === 0 ? (
-        <p className="text-ink-muted">{t("admin.form.noVariants")}</p>
+        <Typography color="muted">{t("admin.form.noVariants")}</Typography>
       ) : (
         <>
           <div className="flex flex-col gap-3 rounded-brand bg-leather/50 p-3 md:flex-row md:items-end">
-            <span className="text-sm font-medium md:mb-3">{t("admin.form.fillAll")}</span>
+            <Typography variant="bodySm" as="span" className="font-medium md:mb-3">
+              {t("admin.form.fillAll")}
+            </Typography>
             <div className="grid grid-cols-2 gap-3 md:flex-1">
               <NumberField label={t("admin.form.fillPrice")} value={fillPrice} onChange={setFillPrice} decimal />
               <NumberField label={t("admin.form.fillStock")} value={fillStock} onChange={setFillStock} />
             </div>
-            <Button variant="outlined" onClick={applyToAll} disabled={fillPrice === "" && fillStock === ""}>
+            <Button variant="outline" onClick={applyToAll} disabled={fillPrice === "" && fillStock === ""}>
               {t("admin.form.apply")}
             </Button>
           </div>
@@ -153,9 +161,9 @@ export default function VariantsEditor({ slug, colors, sizes, variants, onChange
             .filter((c) => colorIds.includes(c.id))
             .map((color) => (
               <section key={color.id} className="flex flex-col gap-2">
-                <h3 className="flex items-center gap-2 font-medium">
+                <Typography variant="subtitle" className="flex items-center gap-2">
                   <Swatch hex={color.hex} /> {name(color)}
-                </h3>
+                </Typography>
                 {variants
                   .filter((v) => v.color_id === color.id)
                   .map((v) => {

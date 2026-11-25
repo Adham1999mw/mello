@@ -27,6 +27,7 @@ export default function createAppTheme(direction: "rtl" | "ltr") {
         contrastText: COLORS.champagne,
       },
       secondary: { main: COLORS.champagne, contrastText: COLORS.burgundyDeep },
+      error: { main: COLORS.danger, contrastText: COLORS.white },
       background: { default: COLORS.ivory, paper: COLORS.white },
       text: { primary: COLORS.ink, secondary: COLORS.inkMuted },
     },

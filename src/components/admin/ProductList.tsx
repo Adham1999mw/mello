@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Alert from "@mui/material/Alert";
-import Button from "@mui/material/Button";
 import Chip from "@mui/material/Chip";
 import CircularProgress from "@mui/material/CircularProgress";
 import TextField from "@mui/material/TextField";
+import { Button, Typography } from "@/components/ui";
 import { localePath } from "@/i18n/static";
 import { useTranslation } from "@/i18n/useTranslation";
 import { listAdminProducts, type AdminProductRow } from "@/lib/admin/api";
@@ -51,14 +51,10 @@ export default function ProductList() {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-        <h1 className="font-display text-3xl text-burgundy">{t("admin.products")}</h1>
-        <Button
-          component={Link}
-          href={localePath(locale, "/admin/product")}
-          variant="contained"
-          size="large"
-          className="w-full md:w-auto"
-        >
+        <Typography variant="h1" color="burgundy">
+          {t("admin.products")}
+        </Typography>
+        <Button href={localePath(locale, "/admin/product")} fullWidth="mobile">
           {t("admin.list.add")}
         </Button>
       </div>
@@ -78,14 +74,16 @@ export default function ProductList() {
         </div>
       )}
       {data && data.items.length === 0 && (
-        <p className="py-10 text-center text-ink-muted">
+        <Typography color="muted" className="py-10 text-center">
           {query ? t("admin.list.noResults") : t("admin.list.empty")}
-        </p>
+        </Typography>
       )}
 
       {data && data.items.length > 0 && (
         <>
-          <p className="text-sm text-ink-muted">{t("admin.list.total", { count: data.total })}</p>
+          <Typography variant="bodySm" color="muted">
+            {t("admin.list.total", { count: data.total })}
+          </Typography>
           <ul className="flex flex-col gap-2 md:grid md:grid-cols-2 md:gap-3">
             {data.items.map((p) => (
               <li key={p.id}>
@@ -98,11 +96,13 @@ export default function ProductList() {
 
       {data && pages > 1 && (
         <div className="flex items-center justify-between gap-2 pt-2">
-          <Button variant="outlined" disabled={page <= 1} onClick={() => setPage(page - 1)}>
+          <Button variant="outline" size="sm" disabled={page <= 1} onClick={() => setPage(page - 1)}>
             {t("admin.list.prev")}
           </Button>
-          <span className="text-sm text-ink-muted">{t("admin.list.pageOf", { page, pages })}</span>
-          <Button variant="outlined" disabled={page >= pages} onClick={() => setPage(page + 1)}>
+          <Typography variant="bodySm" color="muted" as="span">
+            {t("admin.list.pageOf", { page, pages })}
+          </Typography>
+          <Button variant="outline" size="sm" disabled={page >= pages} onClick={() => setPage(page + 1)}>
             {t("admin.list.next")}
           </Button>
         </div>
@@ -127,14 +127,20 @@ function ProductRow({ product: p }: { product: AdminProductRow }) {
         {p.cover && <Image src={p.cover} alt="" fill sizes="76px" className="object-cover" />}
       </div>
       <div className="flex min-w-0 flex-1 flex-col gap-1 py-1">
-        <span className="truncate font-medium">{name}</span>
-        {category && <span className="text-sm text-ink-muted">{category}</span>}
-        <span className="text-sm">
+        <Typography variant="subtitle" as="span" className="truncate">
+          {name}
+        </Typography>
+        {category && (
+          <Typography variant="bodySm" color="muted" as="span">
+            {category}
+          </Typography>
+        )}
+        <Typography variant="bodySm" as="span">
           {p.minPrice != null ? t("admin.list.from", { price: p.minPrice.toLocaleString(locale) }) : t("admin.list.noVariants")}
-        </span>
-        <span className="text-xs text-ink-muted">
+        </Typography>
+        <Typography variant="caption" color="muted">
           {t("admin.list.variants", { count: p.variantCount })} · {t("admin.list.stock", { count: p.totalStock })}
-        </span>
+        </Typography>
         <span className="flex flex-wrap gap-1">
           {!p.is_active && <Chip size="small" label={t("admin.list.hidden")} />}
           {p.is_featured && <Chip size="small" color="secondary" label={t("admin.list.featured")} />}

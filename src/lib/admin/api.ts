@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/client";
 import type { Json, Tables } from "@/lib/supabase/database.types";
 import { productImageUrl } from "@/lib/catalog/products";
+import type { ImageFit } from "@/lib/catalog/types";
 
 /**
  * Admin reads and writes. They use the logged-in user's session (anon key + login),
@@ -34,7 +35,13 @@ export type ProductForm = {
   description_ar: string;
   description_en: string;
   is_active: boolean;
+  /** Shown in the homepage lookbook. */
   is_featured: boolean;
+  /** The special lookbook image: Storage path or full URL, or null to use the cover photo. */
+  feature_image_url: string | null;
+  feature_image_alt_ar: string;
+  feature_image_alt_en: string;
+  feature_image_fit: ImageFit;
   variants: VariantForm[];
   images: ImageForm[];
 };
@@ -69,6 +76,10 @@ export const emptyProduct = (): ProductForm => ({
   description_en: "",
   is_active: true,
   is_featured: false,
+  feature_image_url: null,
+  feature_image_alt_ar: "",
+  feature_image_alt_en: "",
+  feature_image_fit: "contain",
   variants: [],
   images: [],
 });
@@ -148,6 +159,10 @@ export async function getAdminProduct(id: number): Promise<ProductForm | null> {
     description_en: data.description_en ?? "",
     is_active: data.is_active,
     is_featured: data.is_featured,
+    feature_image_url: data.feature_image_url,
+    feature_image_alt_ar: data.feature_image_alt_ar ?? "",
+    feature_image_alt_en: data.feature_image_alt_en ?? "",
+    feature_image_fit: data.feature_image_fit === "cover" ? "cover" : "contain",
     variants: data.variants.map((v) => ({
       color_id: v.color_id,
       size_id: v.size_id,
@@ -185,6 +200,10 @@ export async function saveProduct(form: ProductForm, removedImages: string[] = [
     description_en: form.description_en.trim(),
     is_active: form.is_active,
     is_featured: form.is_featured,
+    feature_image_url: form.feature_image_url,
+    feature_image_alt_ar: form.feature_image_alt_ar.trim(),
+    feature_image_alt_en: form.feature_image_alt_en.trim(),
+    feature_image_fit: form.feature_image_fit,
   };
   const variants = form.variants.map((v) => ({
     color_id: v.color_id,
@@ -216,10 +235,15 @@ export async function saveProduct(form: ProductForm, removedImages: string[] = [
 /** Deletes a product (its variants and image rows go with it) and its photos in Storage. */
 export async function deleteProduct(id: number) {
   const client = supabase();
-  const { data: images } = await client.from("product_images").select("url").eq("product_id", id);
+  const [{ data: images }, { data: product }] = await Promise.all([
+    client.from("product_images").select("url").eq("product_id", id),
+    client.from("products").select("feature_image_url").eq("id", id).maybeSingle(),
+  ]);
   const { error } = await client.from("products").delete().eq("id", id);
   if (error) throw error;
-  await deleteStorageFiles((images ?? []).map((i) => i.url));
+  const files = (images ?? []).map((i) => i.url);
+  if (product?.feature_image_url) files.push(product.feature_image_url);
+  await deleteStorageFiles(files);
 }
 
 // ---------- photos ----------

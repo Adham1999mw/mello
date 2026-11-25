@@ -1,10 +1,9 @@
 import { useRef, useState } from "react";
 import Image from "next/image";
 import Alert from "@mui/material/Alert";
-import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
 import MenuItem from "@mui/material/MenuItem";
 import TextField from "@mui/material/TextField";
+import { Button, IconButton, Typography } from "@/components/ui";
 import { useTranslation } from "@/i18n/useTranslation";
 import { productImageUrl } from "@/lib/catalog/products";
 import { uploadProductImage, type AdminColor, type ImageForm } from "@/lib/admin/api";
@@ -58,7 +57,9 @@ export default function ImagesEditor({ images, colors, onChange, onRemove }: Pro
 
   return (
     <div className="flex flex-col gap-3">
-      <p className="text-sm text-ink-muted">{t("admin.form.imagesHelp")}</p>
+      <Typography variant="bodySm" color="muted">
+        {t("admin.form.imagesHelp")}
+      </Typography>
       {error && <Alert severity="error">{error}</Alert>}
 
       <ul className="flex flex-col gap-3 md:grid md:grid-cols-2">
@@ -94,18 +95,21 @@ export default function ImagesEditor({ images, colors, onChange, onRemove }: Pro
                 onChange={(e) => update(index, locale === "en" ? { alt_en: e.target.value } : { alt_ar: e.target.value })}
               />
               <div className="flex items-center gap-1">
-                <IconButton aria-label={t("admin.form.moveUp")} disabled={index === 0} onClick={() => move(index, -1)}>
+                <IconButton label={t("admin.form.moveUp")} tone="ink" disabled={index === 0} onClick={() => move(index, -1)}>
                   <Arrow up />
                 </IconButton>
                 <IconButton
-                  aria-label={t("admin.form.moveDown")}
+                  label={t("admin.form.moveDown")}
+                  tone="ink"
                   disabled={index === images.length - 1}
                   onClick={() => move(index, 1)}
                 >
                   <Arrow />
                 </IconButton>
                 <Button
-                  color="error"
+                  variant="text"
+                  tone="danger"
+                  size="sm"
                   className="ms-auto"
                   onClick={() => {
                     onRemove(img);
@@ -128,7 +132,7 @@ export default function ImagesEditor({ images, colors, onChange, onRemove }: Pro
         hidden
         onChange={(e) => handleFiles(e.target.files)}
       />
-      <Button variant="outlined" size="large" fullWidth disabled={uploading} onClick={() => input.current?.click()}>
+      <Button variant="outline" fullWidth disabled={uploading} onClick={() => input.current?.click()}>
         {uploading ? t("admin.form.uploading") : t("admin.form.upload")}
       </Button>
     </div>

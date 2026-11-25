@@ -9,6 +9,8 @@ import type {
   CatalogSize,
   ColorView,
   FilterOptions,
+  ImageFit,
+  LookbookItem,
   ProductCard,
   ProductDetail,
   ProductFilters,
@@ -94,6 +96,36 @@ function toCard(row: Views<"product_listing">): ProductCard {
     sizes: (row.sizes as CatalogSize[] | null) ?? [],
     default_color_slug: row.default_color_slug,
     default_variant_id: row.default_variant_id,
+    feature_image_url: productImageUrl(row.feature_image_url ?? null),
+    feature_image_alt_ar: row.feature_image_alt_ar ?? null,
+    feature_image_alt_en: row.feature_image_alt_en ?? null,
+    feature_image_fit: (row.feature_image_fit as ImageFit | null) ?? "contain",
+  };
+}
+
+/**
+ * A featured product as a lookbook item: its special image, or its cover photo
+ * (filling the frame) when it has none. Products with no photo at all return null.
+ *   const looks = page.items.map(toLookbookItem).filter((item) => item !== null);
+ */
+export function toLookbookItem(card: ProductCard): LookbookItem | null {
+  const special = card.feature_image_url;
+  const image_url = special ?? card.cover_url;
+  if (!image_url) return null;
+  return {
+    id: card.id,
+    slug: card.slug,
+    name_ar: card.name_ar,
+    name_en: card.name_en,
+    subtitle_ar: null,
+    subtitle_en: null,
+    price: card.min_price,
+    compare_at_price: card.compare_at_price,
+    in_stock: card.in_stock,
+    image_url,
+    image_alt_ar: special ? card.feature_image_alt_ar : card.cover_alt_ar,
+    image_alt_en: special ? card.feature_image_alt_en : card.cover_alt_en,
+    image_fit: special ? card.feature_image_fit : "cover",
   };
 }
 

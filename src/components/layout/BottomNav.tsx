@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import { Typography } from "@/components/ui";
 import { isHomePage, localePath, stripLocale } from "@/i18n/static";
 import { useTranslation, type MessageKey } from "@/i18n/useTranslation";
 import { useHideOnScroll } from "./useHideOnScroll";
@@ -88,9 +89,9 @@ export default function BottomNav() {
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.3" aria-hidden="true">
               {tab.icon}
             </svg>
-            <span className="text-[10px] leading-none tracking-[0.18em] uppercase rtl:text-xs rtl:tracking-normal">
+            <Typography variant="note">
               {t(tab.label)}
-            </span>
+            </Typography>
           </Link>
         );
       })}
