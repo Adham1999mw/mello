@@ -13,6 +13,12 @@ export type Database = {
   };
   public: {
     Tables: {
+      admins: {
+        Row: { user_id: string; created_at: string };
+        Insert: { user_id: string; created_at?: string };
+        Update: { user_id?: string; created_at?: string };
+        Relationships: [];
+      };
       categories: {
         Row: {
           id: number;
@@ -245,6 +251,14 @@ export type Database = {
       };
     };
     Functions: {
+      is_admin: {
+        Args: never;
+        Returns: boolean;
+      };
+      admin_save_product: {
+        Args: { product: Json; variants?: Json; images?: Json };
+        Returns: number;
+      };
       search_products: {
         Args: {
           category_slug?: string;

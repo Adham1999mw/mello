@@ -101,6 +101,49 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=المفتاح_العام_هنا
   (مثلا `dresses/amira-black-1.webp`) أو لينك كامل. `sort_order = 0` يبقى صورة الكارت.
 - عايز تخفي منتج من غير ما تمسحه؟ خلي `is_active = false`.
 
+
+## لوحة التحكم (Admin)
+
+صفحة ليك إنت بس تضيف وتعدل وتمسح منها المنتجات بكل بياناتها: الأسماء، القسم، الألوان والمقاسات،
+السعر والمخزون لكل لون × مقاس، والصور. ومنها كمان الأقسام والألوان والمقاسات نفسها.
+
+- اللينك: `/ar/admin/` (أو `/en/admin/`)
+- **المنتجات**: لستة بكل المنتجات (حتى المخفية) وبحث. دوس على منتج تعدله، أو «إضافة منتج».
+- **صفحة المنتج**: البيانات الأساسية، بعدين اختار الألوان والمقاسات فتطلعلك كل التركيبات تكتب سعر
+  ومخزون كل واحدة (وفيه «املا كل الاختيارات» تحط سعر واحد للكل)، وبعدين ارفع الصور ورتبها.
+  «حفظ المنتج» بيحفظ كل ده مرة واحدة؛ لو فيه غلطة (زي SKU متكرر) مفيش حاجة بتتحفظ نص نص.
+- **الإعدادات**: الأقسام والألوان (بكود اللون) والمقاسات (والترتيب S → XL).
+
+### ليه هي آمنة
+
+- الدخول بإيميل وكلمة سر (Supabase Auth).
+- قاعدة البيانات نفسها بتسمح بالإضافة والتعديل والمسح **بس** للحسابات اللي في جدول `admins`.
+  حتى لو حد فتح الصفحة أو عمل حساب، مش هيقدر يغير حاجة.
+- مفتاح الـ `service_role` مش مستخدم في الموقع خالص.
+
+### الخطوات اللي إنت محتاج تعملها (مرة واحدة)
+
+1. **شغل SQL الأدمن**: SQL Editor → New query → الصق
+   [`supabase/migrations/20261125020000_admin.sql`](../supabase/migrations/20261125020000_admin.sql) → **Run**
+   (بعد ملف الـ catalog).
+2. **اعمل حسابك**: **Authentication** → **Users** → **Add user** → **Create new user** → اكتب إيميلك
+   وكلمة سر قوية، وعلّم على **Auto Confirm User**.
+3. **خلّي حسابك أدمن**: SQL Editor → New query → الصق ده بإيميلك ودوس **Run**:
+
+   ```sql
+   insert into public.admins (user_id)
+   select id from auth.users where email = 'your@email.com';
+   ```
+
+4. **اقفل التسجيل لأي حد تاني** (أمان زيادة): **Authentication** → **Sign In / Providers** →
+   اقفل **Allow new users to sign up**.
+5. افتح `/ar/admin/` وادخل بالإيميل وكلمة السر.
+
+> نسيت كلمة السر؟ من **Authentication → Users** دوس على حسابك وغيرها، أو امسحه واعمله تاني وكرر خطوة 3.
+
+ملاحظة: لو شلت صورة وحفظت، الملف بيتمسح من Storage. لو رفعت صورة وقفلت الصفحة من غير حفظ، الملف بيفضل في
+Storage (مش بيظهر في أي حتة، ممكن تمسحه من **Storage → product-images** لو حبيت).
+
 ## الكود بيستخدمها إزاي
 
 كل ده في `src/lib/catalog/`:
@@ -167,7 +210,10 @@ npx supabase gen types typescript --project-id <project-ref> > src/lib/supabase/
    product card), then optionally `supabase/seed.sql`.
 3. Copy the Project URL and the anon / publishable key (never the service_role / secret key).
 4. Put them in `.env.local` and in GitHub → Settings → Secrets and variables → Actions → **Variables**.
-5. Use `@/lib/catalog` (`listProducts`, `getProductBySlug`, `getFilterOptions`) or the RTK Query hooks in
+5. Admin dashboard at `/ar/admin/`: run `20261125020000_admin.sql`, create your user in Authentication →
+   Users (auto confirm), add it to `public.admins`, and turn off public sign-ups. Writes are allowed by RLS
+   only for users in `public.admins`; products are saved atomically by `admin_save_product()`.
+6. Use `@/lib/catalog` (`listProducts`, `getProductBySlug`, `getFilterOptions`) or the RTK Query hooks in
    `@/store/services/products`. Filtering runs in the `search_products` Postgres function; sorting,
    pagination (`range`) and the total count (`count: "exact"`) are added by the client.
    RLS allows public read of active rows only; there are no write policies for the anon key.
