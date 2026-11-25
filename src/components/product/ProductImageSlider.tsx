@@ -14,13 +14,15 @@ type Props = {
   href: string;
   /** Shown over the photos, e.g. a "Sold out" badge. */
   children?: React.ReactNode;
+  /** Fades the photos, e.g. when the product is sold out. */
+  dimmed?: boolean;
 };
 
 // Swipeable product photos with bullets, built on the browser's own scrolling:
 // - the photos sit in a row that scrolls sideways and snaps to one photo at a time,
 //   so swiping on a phone (or a trackpad) feels native and works in Arabic (RTL) too;
 // - the bullets show which photo is in view, and tapping one scrolls to that photo.
-export default function ProductImageSlider({ images, name, href, children }: Props) {
+export default function ProductImageSlider({ images, name, href, children, dimmed = false }: Props) {
   const { t, locale } = useTranslation();
   const trackRef = useRef<HTMLDivElement>(null);
   const [current, setCurrent] = useState(0);
@@ -65,7 +67,7 @@ export default function ProductImageSlider({ images, name, href, children }: Pro
                 alt={altText(image, name, locale)}
                 fill
                 sizes="(min-width: 768px) 25vw, 50vw"
-                className="object-cover"
+                className={`object-cover ${dimmed ? "opacity-80 grayscale-[40%]" : ""}`}
                 // Only the first photo is needed right away.
                 loading={index === 0 ? "eager" : "lazy"}
               />
