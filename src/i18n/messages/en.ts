@@ -4,6 +4,14 @@ const en = {
     brand: "Mello",
     language: "العربية",
   },
+  seo: {
+    siteName: "Needle",
+    homeTitle: "Needle | Women's wear made in Egypt",
+    titleTemplate: "{title} | Needle",
+    description:
+      "Needle is an Egyptian women's wear brand: dresses and everyday pieces made to fit you, stitch by stitch. Free delivery in Cairo, easy returns and cash on delivery.",
+    imageAlt: "Needle, women's wear logo on burgundy",
+  },
   nav: {
     home: "Home",
     account: "Account",

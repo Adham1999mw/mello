@@ -50,6 +50,9 @@ jobs:
           STATIC_EXPORT: "true"
           # e.g. "/mello", so links and assets work at https://<user>.github.io/mello/
           PAGES_BASE_PATH: ${{ steps.pages.outputs.base_path }}
+          # Absolute site address for the Open Graph share image. Set the
+          # NEXT_PUBLIC_SITE_URL variable to use a custom domain instead of github.io.
+          NEXT_PUBLIC_SITE_URL: ${{ vars.NEXT_PUBLIC_SITE_URL || steps.pages.outputs.base_url }}
           # Either tab works: Variables (vars) or Secrets.
           NEXT_PUBLIC_SUPABASE_URL: ${{ vars.NEXT_PUBLIC_SUPABASE_URL || secrets.NEXT_PUBLIC_SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ vars.NEXT_PUBLIC_SUPABASE_ANON_KEY || secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}

@@ -13,6 +13,8 @@ import createAppTheme from "@/theme/theme";
 import createEmotionCache from "@/lib/emotion/createEmotionCache";
 import { getDirection } from "@/i18n/config";
 import { useLocale } from "@/i18n/useLocale";
+import { assetPath } from "@/lib/assetPath";
+import { BRAND, COLORS } from "@/theme/brand";
 import "@/styles/globals.css";
 
 // Brand fonts (see src/theme/brand.ts): display + body for Latin and Arabic.
@@ -51,6 +53,18 @@ export default function MyApp({ Component, pageProps, emotionCache }: MyAppProps
       <GlobalStyles styles="@layer theme, base, mui, components, utilities;" />
       <Head>
         <meta name="viewport" content="initial-scale=1, width=device-width" />
+        {/* Site-wide: icons and app info (made by scripts/generate-brand-assets.mjs).
+            Per-page title, description and share tags come from <Seo /> in each page. */}
+        <link rel="icon" href={assetPath("/favicon.ico")} sizes="48x48" />
+        <link rel="icon" type="image/png" sizes="32x32" href={assetPath("/icons/favicon-32.png")} />
+        <link rel="icon" type="image/png" sizes="16x16" href={assetPath("/icons/favicon-16.png")} />
+        <link rel="apple-touch-icon" sizes="180x180" href={assetPath("/icons/apple-touch-icon.png")} />
+        <link rel="manifest" href={assetPath("/site.webmanifest")} />
+        <meta name="theme-color" content={COLORS.burgundy} />
+        <meta name="application-name" content={BRAND.name} />
+        <meta name="apple-mobile-web-app-title" content={BRAND.name} />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="format-detection" content="telephone=no" />
       </Head>
       {/* Expose fonts as CSS variables on :root so portals (dialogs, menus) get them too */}
       <style jsx global>{`

@@ -1,17 +1,16 @@
-import Head from "next/head";
+import Seo from "@/components/seo/Seo";
 import { useTranslation } from "@/i18n/useTranslation";
+import { homeJsonLd } from "@/lib/seo/jsonLd";
 import HeroSection from "./HeroSection";
 import NewArrivalsSection from "./NewArrivalsSection";
 
 // The home page. Rendered by `/` (Arabic) and `/[locale]/` (`/ar/`, `/en/`).
 export default function HomePage() {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
 
   return (
     <>
-      <Head>
-        <title>{t("common.brand")}</title>
-      </Head>
+      <Seo jsonLd={homeJsonLd(locale, t("seo.description"))} />
       <HeroSection />
       <NewArrivalsSection />
     </>

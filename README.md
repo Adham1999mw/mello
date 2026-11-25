@@ -62,6 +62,19 @@ On Pages the site lives under `/mello`, so wrap image and CSS asset paths in
 To try the Pages build locally: `STATIC_EXPORT=true npm run build` (output in `out/`). It fails if a
 `*.server.tsx` page exists, because CI removes those first.
 
+## SEO, icons and share images
+
+- **Every page renders `<Seo />`** (`src/components/seo/Seo.tsx`): title, description,
+  Open Graph, Twitter card and optional JSON-LD.
+  E.g. `<Seo title={product.name} description={...} image={{ url: photoUrl }} type="product" />`,
+  or `<Seo noindex />` for private pages. Default texts are under `seo` in the messages files.
+- **Site-wide tags** (favicons, manifest, theme color) are in `src/pages/_app.tsx`.
+- **Icons + share image** come from `public/brand/` logos: run `npm run brand-assets` after changing
+  the logo or brand colors, and commit the files it writes (`public/icons/`, `public/og/`,
+  `favicon.ico`, `site.webmanifest`).
+- **`NEXT_PUBLIC_SITE_URL`** (optional) is put in front of the share image URL, which should be a
+  full address. GitHub Pages sets it automatically.
+
 ## Translations (ar / en)
 
 - New localized pages go in `src/pages/[locale]/` and add
