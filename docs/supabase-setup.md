@@ -89,8 +89,16 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=المفتاح_العام_هنا
 | `NEXT_PUBLIC_SUPABASE_URL` | الـ Project URL |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | المفتاح العام |
 
-بنحطهم **Variables** مش Secrets، لأن الـ workflow بيقرا `vars.` والمفتاح العام أصلا بيبان في المتصفح
+الأفضل **Variables**، بس لو حطيتهم في **Secrets** هيشتغلوا برضه. المفتاح العام أصلا بيبان في المتصفح
 (وده عادي، الـ RLS هي اللي بتحمي البيانات).
+
+بعد ما تضيفهم: **Actions** → **Deploy to GitHub Pages** → **Run workflow** (أو اعمل أي push على `main`).
+لازم build جديد، لأن القيم دي بتتكتب جوه ملفات الـ JS وقت الـ build.
+لو نسيتهم، الـ workflow هيقف برسالة واضحة "Supabase is not set up" بدل ما ينشر موقع مش بيجيب منتجات.
+
+> على GitHub Pages مفيش سيرفر: الطلبات بتروح من **متصفح الزائر** لـ Supabase على طول
+> (هتلاقيها في Network باسم `xxxx.supabase.co/rest/v1/rpc/search_products`). على Vercel بتعدي من
+> `/supabase/...` على نفس الدومين.
 
 ### 6. إضافة منتجات حقيقية
 
