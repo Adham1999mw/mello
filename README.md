@@ -12,6 +12,7 @@ E-commerce storefront for the Mello clothing brand.
 - **i18n: Arabic (default, RTL) and English**: pages live under `src/pages/[locale]/` and are pre-rendered for both (`/` and `/ar/` = Arabic, `/en/` = English)
 - **Supabase** for database, auth and storage (`src/lib/supabase`): from the browser, or on the server in `getServerSideProps` / API routes
   - Catalog (products, color × size variants, filters, pagination): schema in `supabase/migrations`, data layer in `src/lib/catalog`, RTK Query hooks in `src/store/services/products.ts`. Setup guide: [docs/supabase-setup.md](docs/supabase-setup.md)
+  - Admin dashboard at `/ar/admin/` (`src/pages/[locale]/admin`, `src/components/admin`, `src/lib/admin`): log in with Supabase Auth; RLS allows writes only for users in `public.admins`
 - **Hosting**: a real Node server (full features) and a GitHub Pages preview (static files); see [Deploying](#deploying)
 
 ## Design rules

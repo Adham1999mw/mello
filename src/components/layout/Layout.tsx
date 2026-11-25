@@ -10,6 +10,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const { pathname } = useRouter();
   const isHome = isHomePage(pathname);
 
+  // The admin dashboard has its own top bar (see components/admin/AdminShell).
+  if (pathname.startsWith("/[locale]/admin")) return <>{children}</>;
+
   return (
     <div className="relative flex min-h-screen flex-col bg-ivory text-ink">
       <Header overlay={isHome} />

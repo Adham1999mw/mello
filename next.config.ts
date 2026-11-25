@@ -13,6 +13,10 @@ import type { NextConfig } from "next";
 //
 // Both modes use the same URLs: `/` and `/ar/` (Arabic), `/en/` (English), from `src/pages/[locale]/`.
 const isStaticExport = process.env.STATIC_EXPORT === "true";
+// Product photos come from Supabase Storage (and placeholders in the seed data).
+const supabaseHost = process.env.NEXT_PUBLIC_SUPABASE_URL
+  ? new URL(process.env.NEXT_PUBLIC_SUPABASE_URL).hostname
+  : "*.supabase.co";
 const basePath = isStaticExport ? process.env.PAGES_BASE_PATH || undefined : undefined;
 
 const nextConfig: NextConfig = {
@@ -23,7 +27,13 @@ const nextConfig: NextConfig = {
   // `/en/` -> `en/index.html` on GitHub Pages; kept on the server too so URLs match.
   trailingSlash: true,
   // GitHub Pages has no image optimization server; the real server does.
-  images: { unoptimized: isStaticExport },
+  images: {
+    unoptimized: isStaticExport,
+    remotePatterns: [
+      { protocol: "https", hostname: supabaseHost, pathname: "/storage/v1/object/public/**" },
+      { protocol: "https", hostname: "placehold.co" },
+    ],
+  },
   // `orders.server.tsx` is the page `/orders` (server builds only, see above).
   pageExtensions: ["tsx", "ts", "server.tsx", "server.ts"],
   // Bundle Emotion + MUI's Next.js adapter together with MUI so they share one
