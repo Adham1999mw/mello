@@ -24,7 +24,7 @@ export default function NewArrivalsSection() {
           <p className="text-[11px] tracking-[0.32em] text-ink-muted uppercase md:text-xs rtl:text-[13px] rtl:tracking-normal">
             {t("home.products.eyebrow")}
           </p>
-          <h2 id="new-arrivals-title" className="mt-2 font-display text-[30px] leading-[1.12] md:text-[44px] rtl:leading-[1.3]">
+          <h2 id="new-arrivals-title" className="mt-2 font-display text-[30px] leading-[1.12] ltr:italic md:text-[44px] rtl:leading-[1.3] rtl:font-medium">
             {t("home.products.title")}
           </h2>
         </div>
