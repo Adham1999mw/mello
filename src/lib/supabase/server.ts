@@ -2,6 +2,7 @@ import "server-only";
 import { createServerClient, serializeCookieHeader } from "@supabase/ssr";
 import type { NextApiRequest, NextApiResponse } from "next";
 import type { GetServerSidePropsContext } from "next";
+import type { Database } from "./database.types";
 
 type ReqRes =
   | { req: NextApiRequest; res: NextApiResponse }
@@ -12,7 +13,7 @@ type ReqRes =
 // (On GitHub Pages there is no server; there, pages call ./client.ts from the browser.)
 // Usage: `const supabase = createClient({ req, res })`
 export function createClient({ req, res }: ReqRes) {
-  return createServerClient(
+  return createServerClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {

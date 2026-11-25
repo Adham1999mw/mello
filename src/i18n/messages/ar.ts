@@ -32,6 +32,19 @@ const ar: Messages = {
       logoAlt: "نيدل، أزياء نسائية",
       labelAlt: "بطاقة نيدل الجلدية، صُنع في مصر",
     },
+    products: {
+      eyebrow: "وصل حديثاً",
+      title: "أحدث القطع",
+      viewAll: "عرض الكل",
+      fromPrice: "من {price}",
+      soldOut: "نفدت الكمية",
+      colors: "الألوان",
+      sizes: "المقاسات",
+      photoOf: "صورة {n} من {total}",
+      error: "تعذّر تحميل المنتجات.",
+      retry: "حاولي مرة أخرى",
+      empty: "قطع جديدة قريباً.",
+    },
   },
 };
 
