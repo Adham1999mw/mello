@@ -11,6 +11,7 @@ E-commerce storefront for the Mello clothing brand.
 - **Redux Toolkit + RTK Query** (`src/store`) for client state and API caching
 - **i18n: Arabic (default, RTL) and English**: pages live under `src/pages/[locale]/` and are pre-rendered for both (`/` and `/ar/` = Arabic, `/en/` = English)
 - **Supabase** for database, auth and storage (`src/lib/supabase`): from the browser, or on the server in `getServerSideProps` / API routes
+  - Catalog (products, color × size variants, filters, pagination): schema in `supabase/migrations`, data layer in `src/lib/catalog`, RTK Query hooks in `src/store/services/products.ts`. Setup guide: [docs/supabase-setup.md](docs/supabase-setup.md)
 - **Hosting**: a real Node server (full features) and a GitHub Pages preview (static files); see [Deploying](#deploying)
 
 ## Design rules
@@ -22,7 +23,7 @@ See [CLAUDE.md](CLAUDE.md) and [docs/design-guidelines.md](docs/design-guideline
 
 ```bash
 npm install
-cp .env.example .env.local   # then fill in your Supabase keys
+cp .env.example .env.local   # then fill in your Supabase keys (docs/supabase-setup.md)
 npm run dev
 ```
 
@@ -80,7 +81,11 @@ src/
   i18n/           locale config, messages, useTranslation hook
   lib/emotion/    MUI Emotion cache (CSS layer + RTL)
   lib/supabase/   Supabase clients (browser + server)
-  store/          Redux store, typed hooks, RTK Query base API
+  lib/catalog/    products API: listProducts (filters + pages), getProductBySlug, getFilterOptions
+  store/          Redux store, typed hooks, RTK Query base API + catalog hooks
   styles/         global CSS (Tailwind)
   theme/          brand constants (brand.ts) + MUI theme
+supabase/
+  migrations/     SQL for the database (tables, RLS, search_products)
+  seed.sql        sample products for testing
 ```
