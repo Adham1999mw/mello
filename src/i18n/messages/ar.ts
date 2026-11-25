@@ -74,6 +74,7 @@ const ar: Messages = {
     sizes: "المقاسات",
     states: "الحالات والأيقونات",
     iconButtons: "زراير الأيقونات",
+    badges: "الشارات",
     typography: "النصوص",
     sample: "أضيفي إلى الحقيبة",
     disabled: "غير متاح",

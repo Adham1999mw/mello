@@ -13,7 +13,7 @@ import type { LookbookItem } from "@/lib/catalog/types";
 import { useListProductsQuery } from "@/store/services/products";
 import { BREAKPOINTS } from "@/theme/brand";
 import { formatPrice } from "@/components/product/formatPrice";
-import { Button, IconButton, Typography } from "@/components/ui";
+import { Button, DiscountBadge, IconButton, Typography } from "@/components/ui";
 
 // Homepage lookbook: a centered carousel where the look in the middle is large and the
 // looks beside it are smaller and faded. Built on Swiper (coverflow effect, no rotation).
@@ -61,8 +61,11 @@ function Lookbook({ items }: { items: LookbookItem[] }) {
   const slides = Array.from({ length: Math.ceil(8 / items.length) }, () => items).flat();
   const item = items[active] ?? items[0];
   const name = locale === "ar" ? item.name_ar : item.name_en;
-  const subtitle = locale === "ar" ? item.subtitle_ar : item.subtitle_en;
   const hasSale = item.compare_at_price != null && item.compare_at_price > item.price;
+  // Sale badge: how much lower the price is than the old one, as a whole percent.
+  // Hidden when there is no sale or the look is sold out (same rule as the product cards).
+  const discount = hasSale ? Math.round(((item.compare_at_price! - item.price) / item.compare_at_price!) * 100) : 0;
+  const showDiscount = item.in_stock && discount >= 1;
   const href = localePath(locale, `/products/${item.slug}`);
 
   return (
@@ -148,7 +151,7 @@ function Lookbook({ items }: { items: LookbookItem[] }) {
       </Swiper>
 
       <div className="mx-auto mt-5 max-w-xl px-5 md:mt-8">
-        {/* The center item: name and look number, then a short line and its price. */}
+        {/* The center item: name and look number, then whether it's in stock and its price. */}
         <div aria-live="polite">
           <div className="flex items-baseline justify-between gap-4">
             <Typography variant="h3" as="p" italic>
@@ -158,11 +161,9 @@ function Lookbook({ items }: { items: LookbookItem[] }) {
               {t("home.lookbook.lookLabel", { n: pad(active + 1) })}
             </Typography>
           </div>
-          <div className="mt-1 flex items-baseline justify-between gap-4">
-            <Typography variant="bodySm" color="muted" className="line-clamp-1">
-              {subtitle}
-            </Typography>
-            <Typography variant="price" className="shrink-0">
+          <div className="mt-1 flex items-center justify-between gap-4">
+            {showDiscount && <DiscountBadge percent={discount} />}
+            <Typography variant="price" className="ms-auto shrink-0">
               {item.in_stock ? (
                 <>
                   {hasSale && <s className="me-2 text-ink-muted opacity-70">{formatPrice(item.compare_at_price!, locale)}</s>}

@@ -1,6 +1,7 @@
 import Head from "next/head";
 import {
   Button,
+  DiscountBadge,
   IconButton,
   Typography,
   type ButtonSize,
@@ -130,6 +131,14 @@ export default function DesignSystemPage() {
               <IconButton label={t("designSystem.disabled")} tone="ink" disabled>
                 <BagIcon />
               </IconButton>
+            </Row>
+          </Group>
+
+          <Group title={t("designSystem.badges")}>
+            <Row name="DiscountBadge percent={...}">
+              {[10, 20, 35].map((percent) => (
+                <DiscountBadge key={percent} percent={percent} />
+              ))}
             </Row>
           </Group>
         </section>

@@ -191,9 +191,6 @@ export type LookbookItem = {
   slug: string;
   name_ar: string;
   name_en: string;
-  /** One short line under the name. */
-  subtitle_ar: string | null;
-  subtitle_en: string | null;
   /** EGP */
   price: number;
   /** Old price (before sale), if any. */

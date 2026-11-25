@@ -117,8 +117,6 @@ export function toLookbookItem(card: ProductCard): LookbookItem | null {
     slug: card.slug,
     name_ar: card.name_ar,
     name_en: card.name_en,
-    subtitle_ar: null,
-    subtitle_en: null,
     price: card.min_price,
     compare_at_price: card.compare_at_price,
     in_stock: card.in_stock,

@@ -73,6 +73,7 @@ const en = {
     sizes: "Sizes",
     states: "States and icons",
     iconButtons: "Icon buttons",
+    badges: "Badges",
     typography: "Typography",
     sample: "Add to bag",
     disabled: "Not available",

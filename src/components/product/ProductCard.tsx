@@ -2,10 +2,10 @@ import { useState } from "react";
 import Link from "next/link";
 import { colorView, localized } from "@/lib/catalog/products";
 import type { ProductCard as ProductCardData } from "@/lib/catalog/types";
-import { Typography } from "@/components/ui";
+import { DiscountBadge, Typography } from "@/components/ui";
 import { localePath } from "@/i18n/static";
 import { useTranslation } from "@/i18n/useTranslation";
-import { formatPercent, formatPrice } from "./formatPrice";
+import { formatPrice } from "./formatPrice";
 import ProductImageSlider from "./ProductImageSlider";
 
 // One product in a grid, in the "gallery" style: swipeable photos, then the name,
@@ -52,11 +52,7 @@ export default function ProductCard({ product }: { product: ProductCardData }) {
       {/* `key`: picking another color starts its photos from the first one.
           Sold out: the photos dim and a band runs across them. */}
       <ProductImageSlider key={view?.color.slug ?? "all"} images={images} name={name} href={href} dimmed={!inStock}>
-        {showDiscount && (
-          <span className="pointer-events-none absolute start-2 top-2 rounded-brand bg-burgundy px-2 py-1 text-[11px] leading-none font-medium text-ivory tabular-nums md:text-xs">
-            {t("home.products.discount", { percent: formatPercent(discount, locale) })}
-          </span>
-        )}
+        {showDiscount && <DiscountBadge percent={discount} className="absolute start-2 top-2" />}
         {!inStock && (
           <span className="pointer-events-none absolute inset-x-0 top-1/2 -translate-y-1/2 bg-ivory/85 py-1.5 text-center font-display text-lg text-ink tracking-[0.04em] rtl:tracking-normal">
             {t("home.products.soldOut")}
