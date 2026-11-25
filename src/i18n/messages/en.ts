@@ -31,6 +31,19 @@ const en = {
       logoAlt: "Needle, women's wear",
       labelAlt: "Needle leather label, Made in Egypt",
     },
+    products: {
+      eyebrow: "Just in",
+      title: "New arrivals",
+      viewAll: "View all",
+      fromPrice: "From {price}",
+      soldOut: "Sold out",
+      colors: "Colors",
+      sizes: "Sizes",
+      photoOf: "Photo {n} of {total}",
+      error: "We couldn't load the products.",
+      retry: "Try again",
+      empty: "New pieces are coming soon.",
+    },
   },
 };
 

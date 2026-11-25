@@ -44,6 +44,14 @@
   --breakpoint-2xl: 96rem; /* 1536px */
 }
 
+/* Hides the scrollbar of a sideways-scrolling row (e.g. the product photo slider) but keeps it scrollable. */
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 body {
   display: flex;
   min-height: 100vh;
