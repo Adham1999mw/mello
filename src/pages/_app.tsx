@@ -53,7 +53,7 @@ export default function MyApp({ Component, pageProps, emotionCache }: MyAppProps
       <GlobalStyles styles="@layer theme, base, mui, components, utilities;" />
       <Head>
         <meta name="viewport" content="initial-scale=1, width=device-width" />
-        {/* Site-wide: icons and app info (made by scripts/generate-brand-assets.mjs).
+        {/* Site-wide: icons and app info (files in public/icons, public/site.webmanifest).
             Per-page title, description and share tags come from <Seo /> in each page. */}
         <link rel="icon" href={assetPath("/favicon.ico")} sizes="48x48" />
         <link rel="icon" type="image/png" sizes="32x32" href={assetPath("/icons/favicon-32.png")} />

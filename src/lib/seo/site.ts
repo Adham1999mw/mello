@@ -12,5 +12,5 @@ export function absoluteUrl(path: string): string {
 /** Open Graph locale per site locale. */
 export const OG_LOCALES = { ar: "ar_EG", en: "en_US" } as const;
 
-/** Default share image (made by scripts/generate-brand-assets.mjs). */
+/** Default share image (public/og/needle-og.jpg). */
 export const DEFAULT_OG_IMAGE = { path: "/og/needle-og.jpg", width: 1200, height: 630 };

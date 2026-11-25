@@ -69,9 +69,8 @@ To try the Pages build locally: `STATIC_EXPORT=true npm run build` (output in `o
   E.g. `<Seo title={product.name} description={...} image={{ url: photoUrl }} type="product" />`,
   or `<Seo noindex />` for private pages. Default texts are under `seo` in the messages files.
 - **Site-wide tags** (favicons, manifest, theme color) are in `src/pages/_app.tsx`.
-- **Icons + share image** come from `public/brand/` logos: run `npm run brand-assets` after changing
-  the logo or brand colors, and commit the files it writes (`public/icons/`, `public/og/`,
-  `favicon.ico`, `site.webmanifest`).
+- **Icons + share image** are plain files: `public/favicon.ico`, `public/icons/`,
+  `public/og/needle-og.jpg` (1200×630) and `public/site.webmanifest`.
 - **`NEXT_PUBLIC_SITE_URL`** (optional) is put in front of the share image URL, which should be a
   full address. GitHub Pages sets it automatically.
 
