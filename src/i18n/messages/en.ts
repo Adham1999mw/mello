@@ -31,6 +31,22 @@ const en = {
       logoAlt: "Needle, women's wear",
       labelAlt: "Needle leather label, Made in Egypt",
     },
+    lookbook: {
+      eyebrow: "Needle · Lookbook",
+      title: "The white track set",
+      prev: "Previous look",
+      next: "Next look",
+      lookLabel: "Look {n}",
+      goTo: "Go to look {n}",
+      slideLabel: "Look {n} of {total}: {name}",
+      shop: "Shop the look",
+      looks: {
+        front: "Ivory track set",
+        back: "Burgundy piping",
+        chest: "The signature N",
+        waist: "Drawstring waist",
+      },
+    },
     products: {
       eyebrow: "Just in",
       title: "New arrivals",

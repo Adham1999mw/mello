@@ -1,6 +1,7 @@
 import Head from "next/head";
 import { useTranslation } from "@/i18n/useTranslation";
 import HeroSection from "./HeroSection";
+import LookbookSection from "./LookbookSection";
 import NewArrivalsSection from "./NewArrivalsSection";
 
 // The home page. Rendered by `/` (Arabic) and `/[locale]/` (`/ar/`, `/en/`).
@@ -13,6 +14,7 @@ export default function HomePage() {
         <title>{t("common.brand")}</title>
       </Head>
       <HeroSection />
+      <LookbookSection />
       <NewArrivalsSection />
     </>
   );

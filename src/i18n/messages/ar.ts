@@ -32,6 +32,22 @@ const ar: Messages = {
       logoAlt: "نيدل، أزياء نسائية",
       labelAlt: "بطاقة نيدل الجلدية، صُنع في مصر",
     },
+    lookbook: {
+      eyebrow: "نيدل · لوك بوك",
+      title: "طقم التراك الأبيض",
+      prev: "الإطلالة السابقة",
+      next: "الإطلالة التالية",
+      lookLabel: "إطلالة {n}",
+      goTo: "اعرضي الإطلالة {n}",
+      slideLabel: "إطلالة {n} من {total}: {name}",
+      shop: "تسوّقي الإطلالة",
+      looks: {
+        front: "طقم تراك عاجي",
+        back: "خطوط بلون العنابي",
+        chest: "حرف N المميز",
+        waist: "خصر برباط",
+      },
+    },
     products: {
       eyebrow: "وصل حديثاً",
       title: "أحدث القطع",
