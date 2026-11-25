@@ -2,9 +2,9 @@ import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import Alert from "@mui/material/Alert";
-import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { Button, Typography, typography } from "@/components/ui";
 import { localePath } from "@/i18n/static";
 import { useTranslation } from "@/i18n/useTranslation";
 import { useAdminSession } from "@/lib/admin/session";
@@ -54,12 +54,16 @@ function Gate({ children }: { children: React.ReactNode }) {
   if (status !== "admin") {
     return (
       <div className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-4 py-10">
-        <h1 className="mb-6 font-display text-3xl text-burgundy">{t("admin.login.title")}</h1>
+        <Typography variant="h1" color="burgundy" className="mb-6">
+          {t("admin.login.title")}
+        </Typography>
         {status === "notAdmin" && (
           <div className="mb-6 flex flex-col gap-3">
             <Alert severity="error">{t("admin.login.notAdmin")}</Alert>
-            <p className="text-sm text-ink-muted" dir="ltr">{user?.email}</p>
-            <Button variant="outlined" fullWidth onClick={signOut}>
+            <Typography variant="bodySm" color="muted" dir="ltr">
+              {user?.email}
+            </Typography>
+            <Button variant="outline" fullWidth onClick={signOut}>
               {t("admin.signOut")}
             </Button>
           </div>
@@ -91,12 +95,12 @@ function TopBar({ onSignOut }: { onSignOut: () => void }) {
   return (
     <header className="sticky top-0 z-40 bg-burgundy text-champagne shadow-md">
       <div className="mx-auto flex max-w-5xl items-center justify-between gap-2 px-4 py-2 md:px-8">
-        <Link href={localePath(locale, "/admin")} className="flex min-h-11 items-center font-display text-xl">
+        <Link href={localePath(locale, "/admin")} className={`flex min-h-11 items-center ${typography("h3")}`}>
           {t("admin.title")}
         </Link>
         <div className="flex items-center">
-          <LanguageSwitcher className="text-champagne" />
-          <Button size="small" onClick={onSignOut} sx={{ color: "secondary.main" }}>
+          <LanguageSwitcher tone="champagne" />
+          <Button variant="text" tone="champagne" size="sm" onClick={onSignOut}>
             {t("admin.signOut")}
           </Button>
         </div>

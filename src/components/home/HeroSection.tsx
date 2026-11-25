@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Link from "next/link";
+import { Button, Typography } from "@/components/ui";
 import { localePath } from "@/i18n/static";
 import { useTranslation, type MessageKey } from "@/i18n/useTranslation";
 import { assetPath } from "@/lib/assetPath";
@@ -8,12 +8,6 @@ import LeatherLabel from "./LeatherLabel";
 // Homepage hero (spec: src/docs/hero-section.md, design: version A).
 // Phone: one centered column. Desktop (md+): logo and copy on the start side, label on the end side.
 // Unprefixed classes are the phone layout; `md:` classes add the desktop layout.
-
-// Shared button styles. English: small uppercase with wide spacing. Arabic: 14px, no spacing.
-const button =
-  "inline-flex min-h-12 items-center justify-center rounded-brand border px-[26px] text-xs leading-none font-medium tracking-[0.24em] uppercase " +
-  "focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-champagne " +
-  "md:min-h-[52px] md:px-8 rtl:text-sm rtl:tracking-normal rtl:normal-case";
 
 const notes: MessageKey[] = ["home.hero.noteDelivery", "home.hero.noteReturns", "home.hero.noteCod"];
 
@@ -43,24 +37,24 @@ export default function HeroSection() {
           />
 
           <div className="grid justify-items-center gap-3.5 md:justify-items-start">
-            <p className="text-[11px] leading-none tracking-[0.32em] text-champagne/62 uppercase md:text-xs rtl:text-[13px] rtl:tracking-normal">
+            <Typography variant="eyebrow" className="text-champagne/62">
               {t("home.hero.eyebrow")}
-            </p>
+            </Typography>
 
-            <h1 className="max-w-[15ch] font-display text-[30px] leading-[1.12] text-balance md:text-[52px] rtl:text-[36px] rtl:leading-[1.3] rtl:font-medium md:rtl:text-[56px] rtl:[&_em]:not-italic rtl:[&_em]:text-leather">
+            <Typography variant="display" className="max-w-[15ch] rtl:[&_em]:text-leather">
               {t("home.hero.headlineStart")}
               {/* Markazi Text has no italic, so in Arabic the phrase is set off by color instead. */}
               <em>{t("home.hero.headlineEm")}</em>
               {t("home.hero.headlineEnd")}
-            </h1>
+            </Typography>
 
             <div className="grid w-full max-w-80 gap-2.5 md:w-auto md:max-w-none md:grid-flow-col">
-              <Link href={localePath(locale, "/shop")} className={`${button} border-champagne bg-champagne text-burgundy-deep`}>
+              <Button href={localePath(locale, "/shop")} tone="champagne" size="lg">
                 {t("home.hero.shop")}
-              </Link>
-              <Link href={localePath(locale, "/shop?sort=new")} className={`${button} border-champagne/45 text-champagne`}>
+              </Button>
+              <Button href={localePath(locale, "/shop?sort=new")} variant="outline" tone="champagne" size="lg">
                 {t("home.hero.newArrivals")}
-              </Link>
+              </Button>
             </div>
           </div>
         </div>
@@ -72,13 +66,13 @@ export default function HeroSection() {
       {/* Stitched seam and the service notes */}
       <div className="mx-5 mb-[22px] border-t-[1.5px] border-dashed border-champagne/40 md:mx-14" />
       <ul
-        className="flex flex-wrap justify-center gap-x-[18px] gap-y-2 px-5 pb-[26px] text-[10px] leading-[1.4] tracking-[0.2em] text-champagne/62 uppercase
-                   md:justify-start md:gap-[34px] md:px-14 md:pb-7 rtl:text-sm rtl:tracking-normal"
+        className="flex flex-wrap justify-center gap-x-[18px] gap-y-2 px-5 pb-[26px] text-champagne/62
+                   md:justify-start md:gap-[34px] md:px-14 md:pb-7"
       >
         {notes.map((note) => (
-          <li key={note} className="whitespace-nowrap">
+          <Typography key={note} as="li" variant="note" className="whitespace-nowrap">
             {t(note)}
-          </li>
+          </Typography>
         ))}
       </ul>
     </section>

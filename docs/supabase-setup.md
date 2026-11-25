@@ -134,6 +134,9 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=المفتاح_العام_هنا
 1. **شغل SQL الأدمن**: SQL Editor → New query → الصق
    [`supabase/migrations/20261125020000_admin.sql`](../supabase/migrations/20261125020000_admin.sql) → **Run**
    (بعد ملف الـ catalog).
+   وبعده **New query** تاني والصق
+   [`supabase/migrations/20261126000000_lookbook_feature_image.sql`](../supabase/migrations/20261126000000_lookbook_feature_image.sql)
+   → **Run** (صورة اللوك بوك الخاصة بكل منتج).
 2. **اعمل حسابك**: **Authentication** → **Users** → **Add user** → **Create new user** → اكتب إيميلك
    وكلمة سر قوية، وعلّم على **Auto Confirm User**.
 3. **خلّي حسابك أدمن**: SQL Editor → New query → الصق ده بإيميلك ودوس **Run**:
@@ -221,6 +224,9 @@ npx supabase gen types typescript --project-id <project-ref> > src/lib/supabase/
 5. Admin dashboard at `/ar/admin/`: run `20261125020000_admin.sql`, create your user in Authentication →
    Users (auto confirm), add it to `public.admins`, and turn off public sign-ups. Writes are allowed by RLS
    only for users in `public.admins`; products are saved atomically by `admin_save_product()`.
+   Then run `20261126000000_lookbook_feature_image.sql`: a special lookbook image per product
+   (`feature_image_*` on `products`, returned by `product_listing` / `search_products`). The homepage
+   lookbook shows the products with `is_featured` on: `listProducts({ featured: true })`.
 6. Use `@/lib/catalog` (`listProducts`, `getProductBySlug`, `getFilterOptions`) or the RTK Query hooks in
    `@/store/services/products`. Filtering runs in the `search_products` Postgres function; sorting,
    pagination (`range`) and the total count (`count: "exact"`) are added by the client.

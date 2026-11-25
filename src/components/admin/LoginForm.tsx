@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Alert from "@mui/material/Alert";
-import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
+import { Button } from "@/components/ui";
 import { useTranslation } from "@/i18n/useTranslation";
 
 export default function LoginForm({ onSubmit }: { onSubmit: (email: string, password: string) => Promise<void> }) {
@@ -47,7 +47,7 @@ export default function LoginForm({ onSubmit }: { onSubmit: (email: string, pass
         fullWidth
         slotProps={{ htmlInput: { dir: "ltr" } }}
       />
-      <Button type="submit" variant="contained" size="large" fullWidth disabled={busy || !email || !password}>
+      <Button type="submit" fullWidth disabled={busy || !email || !password}>
         {t("admin.login.submit")}
       </Button>
     </form>
