@@ -8,3 +8,11 @@ export function formatPrice(amount: number, locale: Locale): string {
     maximumFractionDigits: 0,
   }).format(amount);
 }
+
+// A whole percent: 20 → Arabic "٢٠٪", English "20%".
+export function formatPercent(percent: number, locale: Locale): string {
+  return new Intl.NumberFormat(locale === "ar" ? "ar-EG" : "en-EG", {
+    style: "percent",
+    maximumFractionDigits: 0,
+  }).format(percent / 100);
+}

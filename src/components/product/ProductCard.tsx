@@ -4,11 +4,11 @@ import { colorView, localized } from "@/lib/catalog/products";
 import type { ProductCard as ProductCardData } from "@/lib/catalog/types";
 import { localePath } from "@/i18n/static";
 import { useTranslation } from "@/i18n/useTranslation";
-import { formatPrice } from "./formatPrice";
+import { formatPercent, formatPrice } from "./formatPrice";
 import ProductImageSlider from "./ProductImageSlider";
 
 // One product in a grid, in the "gallery" style: swipeable photos, then the name,
-// price, colors and sizes centered under them.
+// price, colors and sizes under them, lined up at the start (right in Arabic, left in English).
 // It opens on the product's default color; tapping another color shows that color's
 // photos, price, sale price, stock and sizes (all data comes with the card, no new request).
 // Phone first: the grid around it decides the width (2 per row on phones).
@@ -31,6 +31,12 @@ export default function ProductCard({ product }: { product: ProductCardData }) {
   const oldPrice = view ? view.compare_at_price : product.compare_at_price;
   const inStock = view ? view.in_stock : product.in_stock;
 
+  // Discount badge: how much lower the price is than the old one, as a whole percent
+  // (for the picked color). Hidden when there is no sale or the color is sold out.
+  const discount =
+    oldPrice != null && oldPrice > minPrice ? Math.round(((oldPrice - minPrice) / oldPrice) * 100) : 0;
+  const showDiscount = inStock && discount >= 1;
+
   // One price, or "From 900 EGP" when this color's sizes have different prices.
   const price =
     minPrice === maxPrice
@@ -41,12 +47,17 @@ export default function ProductCard({ product }: { product: ProductCardData }) {
   const href = localePath(locale, `/products/${product.slug}${view ? `?color=${view.color.slug}` : ""}`);
 
   return (
-    <article className="text-center">
+    <article className="text-start">
       {/* `key`: picking another color starts its photos from the first one.
           Sold out: the photos dim and a band runs across them. */}
       <ProductImageSlider key={view?.color.slug ?? "all"} images={images} name={name} href={href} dimmed={!inStock}>
+        {showDiscount && (
+          <span className="pointer-events-none absolute start-2 top-2 rounded-brand bg-burgundy px-2 py-1 text-[11px] leading-none font-medium text-ivory tabular-nums md:text-xs">
+            {t("home.products.discount", { percent: formatPercent(discount, locale) })}
+          </span>
+        )}
         {!inStock && (
-          <span className="pointer-events-none absolute inset-x-0 top-1/2 -translate-y-1/2 bg-ivory/85 py-1.5 font-display text-lg text-ink tracking-[0.04em] rtl:tracking-normal">
+          <span className="pointer-events-none absolute inset-x-0 top-1/2 -translate-y-1/2 bg-ivory/85 py-1.5 text-center font-display text-lg text-ink tracking-[0.04em] rtl:tracking-normal">
             {t("home.products.soldOut")}
           </span>
         )}
@@ -66,7 +77,7 @@ export default function ProductCard({ product }: { product: ProductCardData }) {
       {/* Colors: tap to switch the card to that color. Each dot is 14px, but its tap area
           is 44px (the `after:` layer), so it is easy to hit with a thumb. */}
       {product.colors.length > 1 && (
-        <div role="group" aria-label={t("home.products.colors")} className="mt-2 flex justify-center gap-3">
+        <div role="group" aria-label={t("home.products.colors")} className="mt-2 flex justify-start gap-3">
           {product.colors.map((color) => {
             const picked = color.slug === view?.color.slug;
             return (
@@ -90,7 +101,7 @@ export default function ProductCard({ product }: { product: ProductCardData }) {
 
       {/* Sizes of the picked color, written as one line ("S · M · L"). Sold-out sizes are struck through. */}
       {view && view.sizes.length > 0 && (
-        <ul aria-label={t("home.products.sizes")} className="mt-2 flex flex-wrap justify-center text-[11px] tracking-[0.08em] text-ink-muted rtl:tracking-normal">
+        <ul aria-label={t("home.products.sizes")} className="mt-2 flex flex-wrap justify-start text-[11px] tracking-[0.08em] text-ink-muted rtl:tracking-normal">
           {view.sizes.map(({ size, in_stock }, index) => (
             <li key={size.code} className="flex">
               {index > 0 && <span aria-hidden="true" className="px-1.5">·</span>}

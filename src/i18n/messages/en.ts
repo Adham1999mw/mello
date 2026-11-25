@@ -37,6 +37,7 @@ const en = {
       viewAll: "View all",
       fromPrice: "From {price}",
       soldOut: "Sold out",
+      discount: "{percent} off",
       colors: "Colors",
       sizes: "Sizes",
       photoOf: "Photo {n} of {total}",

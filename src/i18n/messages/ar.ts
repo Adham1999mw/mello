@@ -38,6 +38,7 @@ const ar: Messages = {
       viewAll: "عرض الكل",
       fromPrice: "من {price}",
       soldOut: "نفدت الكمية",
+      discount: "خصم {percent}",
       colors: "الألوان",
       sizes: "المقاسات",
       photoOf: "صورة {n} من {total}",
