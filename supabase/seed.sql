@@ -89,3 +89,29 @@ from public.products p
 join (select distinct product_id, color_id from public.product_variants) pv on pv.product_id = p.id
 join public.colors co on co.id = pv.color_id
 where not exists (select 1 from public.product_images i where i.product_id = p.id);
+
+-- More placeholder photos: a "Back" and a "Detail" photo for every product color,
+-- so the product card's photo slider has something to swipe through.
+-- They come after the main photos (sort_order 100+), grouped by color.
+-- Safe to run again: a photo is only added if that URL isn't there yet.
+insert into public.product_images (product_id, color_id, url, alt_ar, alt_en, sort_order)
+select
+  p.id, co.id,
+  'https://placehold.co/800x1000/' || ltrim(co.hex, '#') || '/' || shot.text_hex || '/png?text='
+    || replace(p.name_en, ' ', '+') || '+-+' || shot.label_en,
+  p.name_ar || ' - ' || co.name_ar || ' - ' || shot.label_ar,
+  p.name_en || ' - ' || co.name_en || ' - ' || shot.label_en,
+  100 + co.sort_order * 10 + shot.n
+from public.products p
+join (select distinct product_id, color_id from public.product_variants) pv on pv.product_id = p.id
+join public.colors co on co.id = pv.color_id
+cross join (values
+  (1, 'Back',   'من الخلف', 'FFFFFF'),
+  (2, 'Detail', 'تفاصيل',   'EED3B8')
+) as shot (n, label_en, label_ar, text_hex)
+where not exists (
+  select 1 from public.product_images i
+  where i.product_id = p.id
+    and i.url = 'https://placehold.co/800x1000/' || ltrim(co.hex, '#') || '/' || shot.text_hex || '/png?text='
+                || replace(p.name_en, ' ', '+') || '+-+' || shot.label_en
+);

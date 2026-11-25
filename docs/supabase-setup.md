@@ -45,9 +45,13 @@ products  (المنتج نفسه: الاسم عربي/إنجليزي، الوص�
 2. افتح الملف [`supabase/migrations/20261125000000_catalog.sql`](../supabase/migrations/20261125000000_catalog.sql)،
    انسخ كل اللي فيه، والصقه، ودوس **Run**.
    ده بيعمل الجداول، والـ RLS، والـ view بتاع كروت المنتجات، والفانكشن بتاعة الفلاتر، و bucket للصور.
-3. (اختياري بس مفيد للتجربة) **New query** تاني، والصق [`supabase/seed.sql`](../supabase/seed.sql) ودوس **Run**.
+3. **New query** تاني، والصق [`supabase/migrations/20261125010000_listing_variants.sql`](../supabase/migrations/20261125010000_listing_variants.sql)
+   ودوس **Run**. ده بيخلي كل منتج في اللستة يرجع معاه كل الـ variants (لون × مقاس بالسعر والمخزون)، وكل الصور
+   بلونها، والمقاسات، واللون/الـ variant الافتراضي. فكارت المنتج يقدر يغير اللون ويعرض صورته وسعره ومخزونه.
+   (لو كنت شغلت الملف الأول قبل كده، شغل ده بس. ينفع يتشغل أكتر من مرة عادي.)
+4. (اختياري بس مفيد للتجربة) **New query** تاني، والصق [`supabase/seed.sql`](../supabase/seed.sql) ودوس **Run**.
    ده بيضيف 6 منتجات تجريبية بألوان ومقاسات ومخزون وصور مؤقتة.
-4. اتأكد: **Table Editor** → هتلاقي `products` و `product_variants` وباقي الجداول وفيها بيانات.
+5. اتأكد: **Table Editor** → هتلاقي `products` و `product_variants` وباقي الجداول وفيها بيانات.
 
 > لو شغلت الـ migration مرتين هيقولك إن الجداول موجودة. ده طبيعي، متشغلوش تاني.
 
@@ -201,7 +205,9 @@ npx supabase gen types typescript --project-id <project-ref> > src/lib/supabase/
 ## English summary
 
 1. Create a Supabase project.
-2. SQL Editor: run `supabase/migrations/20261125000000_catalog.sql`, then optionally `supabase/seed.sql`.
+2. SQL Editor: run `supabase/migrations/20261125000000_catalog.sql`, then
+   `supabase/migrations/20261125010000_listing_variants.sql` (variants, photos and a default variant on every
+   product card), then optionally `supabase/seed.sql`.
 3. Copy the Project URL and the anon / publishable key (never the service_role / secret key).
 4. Put them in `.env.local` and in GitHub → Settings → Secrets and variables → Actions → **Variables**.
 5. Admin dashboard at `/ar/admin/`: run `20261125020000_admin.sql`, create your user in Authentication →

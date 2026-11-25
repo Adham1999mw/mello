@@ -3,7 +3,11 @@ import type { Locale } from "@/i18n/config";
 import { createClient } from "@/lib/supabase/client";
 import type { Database, Views } from "@/lib/supabase/database.types";
 import type {
+  CardImage,
+  CardVariant,
   CatalogColor,
+  CatalogSize,
+  ColorView,
   FilterOptions,
   ProductCard,
   ProductDetail,
@@ -78,6 +82,48 @@ function toCard(row: Views<"product_listing">): ProductCard {
     cover_alt_en: row.cover_alt_en,
     colors: (row.colors as CatalogColor[] | null) ?? [],
     size_codes: row.size_codes ?? [],
+    variants: ((row.variants as CardVariant[] | null) ?? []).map((v) => ({
+      ...v,
+      price: Number(v.price),
+      compare_at_price: v.compare_at_price == null ? null : Number(v.compare_at_price),
+    })),
+    images: ((row.images as CardImage[] | null) ?? []).map((img) => ({
+      ...img,
+      url: productImageUrl(img.url)!,
+    })),
+    sizes: (row.sizes as CatalogSize[] | null) ?? [],
+    default_color_slug: row.default_color_slug,
+    default_variant_id: row.default_variant_id,
+  };
+}
+
+/**
+ * Everything a card shows for one color: its photos, price range, stock and sizes.
+ *   const view = colorView(product, pickedColor ?? product.default_color_slug);
+ */
+export function colorView(product: ProductCard, colorSlug: string | null): ColorView | null {
+  const color = product.colors.find((c) => c.slug === colorSlug) ?? product.colors[0];
+  // No variants sent (database without 20261125010000_listing_variants.sql): the card
+  // falls back to the product-level price, stock and cover photo.
+  if (!color || product.variants.length === 0) return null;
+
+  const variants = product.variants.filter((v) => v.color_slug === color.slug);
+  const prices = variants.map((v) => v.price);
+  const oldPrices = variants.map((v) => v.compare_at_price).filter((p): p is number => p != null);
+  const ownImages = product.images.filter((img) => img.color_slug === color.slug);
+  const sharedImages = product.images.filter((img) => img.color_slug == null);
+
+  return {
+    color,
+    images: ownImages.length > 0 ? ownImages : sharedImages,
+    min_price: prices.length ? Math.min(...prices) : product.min_price,
+    max_price: prices.length ? Math.max(...prices) : product.max_price,
+    compare_at_price: oldPrices.length ? Math.max(...oldPrices) : null,
+    in_stock: variants.some((v) => v.stock > 0),
+    sizes: product.sizes.map((size) => {
+      const variant = variants.find((v) => v.size_code === size.code);
+      return { size, variant, in_stock: (variant?.stock ?? 0) > 0 };
+    }),
   };
 }
 

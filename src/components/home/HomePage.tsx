@@ -1,7 +1,7 @@
 import Head from "next/head";
 import { useTranslation } from "@/i18n/useTranslation";
-import BackgroundSection from "./BackgroundSection";
 import HeroSection from "./HeroSection";
+import NewArrivalsSection from "./NewArrivalsSection";
 
 // The home page. Rendered by `/` (Arabic) and `/[locale]/` (`/ar/`, `/en/`).
 export default function HomePage() {
@@ -13,7 +13,7 @@ export default function HomePage() {
         <title>{t("common.brand")}</title>
       </Head>
       <HeroSection />
-      <BackgroundSection />
+      <NewArrivalsSection />
     </>
   );
 }

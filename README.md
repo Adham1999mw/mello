@@ -41,6 +41,7 @@ The same code builds two ways (see `next.config.ts`):
 | `getServerSideProps`, Supabase on the server | yes | no: `*.server.tsx` pages are left out |
 | API routes (`pages/api`) | yes | skipped |
 | `next/image` optimization | yes | no (plain images) |
+| Browser → Supabase | through our proxy `/supabase/...` (`rewrites` in `next.config.ts`) | directly to `https://<ref>.supabase.co` |
 | URL | `/`, `/ar/`, `/en/` | `https://<user>.github.io/mello/`, `/mello/en/`, … |
 
 **Pages that need the server**: name the file `*.server.tsx`, e.g.

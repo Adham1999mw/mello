@@ -240,6 +240,12 @@ export type Database = {
           color_slugs: string[] | null;
           size_codes: string[] | null;
           colors: Json | null;
+          // Added by 20261125010000_listing_variants.sql
+          variants: Json | null;
+          images: Json | null;
+          sizes: Json | null;
+          default_color_slug: string | null;
+          default_variant_id: number | null;
         };
         Relationships: [];
       };

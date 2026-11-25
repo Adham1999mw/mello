@@ -53,6 +53,25 @@ export type ProductFilters = {
   locale?: Locale;
 };
 
+/** One color x size of a product, as sent with a product card. */
+export type CardVariant = {
+  id: number;
+  sku: string;
+  price: number;
+  compare_at_price: number | null;
+  stock: number;
+  color_slug: string;
+  size_code: string;
+};
+
+/** A product photo. `color_slug` is null when it shows every color. */
+export type CardImage = {
+  url: string;
+  alt_ar: string | null;
+  alt_en: string | null;
+  color_slug: string | null;
+};
+
 /** One product card in a list. */
 export type ProductCard = {
   id: number;
@@ -72,6 +91,29 @@ export type ProductCard = {
   cover_alt_en: string | null;
   colors: CatalogColor[];
   size_codes: string[];
+  /** Every color x size, ordered by color then size. */
+  variants: CardVariant[];
+  /** Every photo, in display order. */
+  images: CardImage[];
+  /** Sizes it comes in, S → XL. */
+  sizes: CatalogSize[];
+  /** The color to show first (cover color if in stock, else the first color in stock). */
+  default_color_slug: string | null;
+  /** The first in-stock size of that color. */
+  default_variant_id: number | null;
+};
+
+/** What a card shows for one picked color (see `colorView`). */
+export type ColorView = {
+  color: CatalogColor;
+  /** That color's photos (or the shared ones if it has none). */
+  images: CardImage[];
+  min_price: number;
+  max_price: number;
+  compare_at_price: number | null;
+  in_stock: boolean;
+  /** Each size of that color, and whether it can be bought. */
+  sizes: { size: CatalogSize; variant: CardVariant | undefined; in_stock: boolean }[];
 };
 
 export type ProductPage = {
