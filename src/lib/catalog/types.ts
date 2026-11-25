@@ -72,6 +72,9 @@ export type CardImage = {
   color_slug: string | null;
 };
 
+/** How an image sits in its frame: "contain" shows all of it, "cover" fills the frame. */
+export type ImageFit = "cover" | "contain";
+
 /** One product card in a list. */
 export type ProductCard = {
   id: number;
@@ -101,6 +104,12 @@ export type ProductCard = {
   default_color_slug: string | null;
   /** The first in-stock size of that color. */
   default_variant_id: number | null;
+  /** The special lookbook image (full URL), or null to use the cover photo. */
+  feature_image_url: string | null;
+  feature_image_alt_ar: string | null;
+  feature_image_alt_en: string | null;
+  /** "contain" for cutouts (whole figure in view), "cover" to fill the frame. */
+  feature_image_fit: ImageFit;
 };
 
 /** What a card shows for one picked color (see `colorView`). */
@@ -170,4 +179,30 @@ export type FilterOptions = {
   categories: CatalogCategory[];
   colors: CatalogColor[];
   sizes: CatalogSize[];
+};
+
+/**
+ * One item in the homepage lookbook: a product with `is_featured` on, made from its
+ * product card by `toLookbookItem` (lib/catalog/products.ts).
+ */
+export type LookbookItem = {
+  id: number;
+  /** Product slug: the details button opens `/products/{slug}`. */
+  slug: string;
+  name_ar: string;
+  name_en: string;
+  /** One short line under the name. */
+  subtitle_ar: string | null;
+  subtitle_en: string | null;
+  /** EGP */
+  price: number;
+  /** Old price (before sale), if any. */
+  compare_at_price: number | null;
+  in_stock: boolean;
+  /** Full URL from storage, or a `/public` path starting with "/". */
+  image_url: string;
+  image_alt_ar: string | null;
+  image_alt_en: string | null;
+  /** "contain" for cutouts on a transparent background (whole figure in view). Default "cover". */
+  image_fit: ImageFit;
 };

@@ -31,6 +31,17 @@ All brand values live in **`src/theme/brand.ts`**: `COLORS`, `FONTS`, `BREAKPOIN
 - Do not write hex colors, font names or pixel breakpoints in components.
 - If you change a value in `brand.ts`, update the matching `@theme` value in `globals.css`.
 
+## 2a. Use the design system for buttons and text
+
+Buttons and text come from **`@/components/ui`**: `Button`, `IconButton`, `Typography`
+(live examples at `/ar/design-system/` and `/en/design-system/`).
+
+- Never style a `<button>`, a button-looking link, a heading or a text style by hand.
+  Use `<Button variant tone size>`, `<IconButton label>` and `<Typography variant>`.
+- For a `next/link` that is navigation text, use `className={typography("label")}`.
+- `className` on these components is for layout only (margin, width, alignment). If no
+  variant fits, add one in `src/components/ui/` instead of overriding sizes in place.
+
 ## 3. Arabic and RTL
 
 Arabic is the default locale and is right-to-left. Use logical properties and utilities

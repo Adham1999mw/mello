@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
 import Alert from "@mui/material/Alert";
-import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import MenuItem from "@mui/material/MenuItem";
@@ -8,6 +7,7 @@ import Switch from "@mui/material/Switch";
 import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 import TextField from "@mui/material/TextField";
+import { Button, Typography } from "@/components/ui";
 import { useTranslation, type MessageKey } from "@/i18n/useTranslation";
 import {
   deleteOption,
@@ -85,7 +85,9 @@ export default function OptionsEditor() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="font-display text-3xl text-burgundy">{t("admin.settings")}</h1>
+      <Typography variant="h1" color="burgundy">
+        {t("admin.settings")}
+      </Typography>
       <Tabs value={tab} onChange={(_, value) => setTab(value)} variant="scrollable" allowScrollButtonsMobile>
         {TABLES.map((table) => (
           <Tab key={table} value={table} label={t(`admin.options.${table}`)} sx={{ minHeight: 48 }} />
@@ -170,10 +172,10 @@ function OptionCard(props: {
       }}
       className={`flex flex-col gap-3 rounded-brand p-3 shadow-sm ${isNew ? "border border-dashed border-burgundy/40 bg-leather/40" : "bg-white"}`}
     >
-      <h2 className="flex items-center gap-2 font-medium">
+      <Typography variant="subtitle" as="h2" className="flex items-center gap-2">
         {props.table === "colors" && typeof row.hex === "string" && <Swatch hex={row.hex} />}
         {isNew ? `+ ${t("admin.options.add")}` : title}
-      </h2>
+      </Typography>
       <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
         {FIELDS[props.table].map((field) => {
           const value = row[field.key];
@@ -251,12 +253,13 @@ function OptionCard(props: {
       </div>
       {error && <Alert severity="error">{error}</Alert>}
       <div className="flex gap-2">
-        <Button type="submit" variant="contained" disabled={busy || !dirty} className="flex-1 md:flex-none">
+        <Button type="submit" disabled={busy || !dirty} className="flex-1 md:flex-none">
           {isNew ? t("admin.options.add") : t("admin.options.save")}
         </Button>
         {!isNew && (
           <Button
-            color="error"
+            variant="text"
+            tone="danger"
             disabled={busy}
             onClick={() => {
               if (window.confirm(t("admin.options.deleteConfirm", { name: title }))) {

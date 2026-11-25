@@ -2,6 +2,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { colorView, localized } from "@/lib/catalog/products";
 import type { ProductCard as ProductCardData } from "@/lib/catalog/types";
+import { Typography } from "@/components/ui";
 import { localePath } from "@/i18n/static";
 import { useTranslation } from "@/i18n/useTranslation";
 import { formatPercent, formatPrice } from "./formatPrice";
@@ -64,15 +65,17 @@ export default function ProductCard({ product }: { product: ProductCardData }) {
       </ProductImageSlider>
 
       <Link href={href} className="mt-3 block rounded-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-burgundy">
-        <h3 className="line-clamp-1 font-display text-[17px] leading-[1.25] font-medium text-ink ltr:italic md:text-xl">{name}</h3>
+        <Typography variant="h4" as="h3" color="ink" italic className="line-clamp-1">
+          {name}
+        </Typography>
       </Link>
 
-      <p className="mt-1 text-xs tracking-[0.08em] text-ink tabular-nums rtl:tracking-normal md:text-[13px]">
+      <Typography variant="priceSm" color="ink" className="mt-1">
         {price}
         {oldPrice != null && oldPrice > minPrice && (
           <s className="ms-2 text-ink-muted opacity-70">{formatPrice(oldPrice, locale)}</s>
         )}
-      </p>
+      </Typography>
 
       {/* Colors: tap to switch the card to that color. Each dot is 14px, but its tap area
           is 44px (the `after:` layer), so it is easy to hit with a thumb. */}
@@ -101,7 +104,13 @@ export default function ProductCard({ product }: { product: ProductCardData }) {
 
       {/* Sizes of the picked color, written as one line ("S · M · L"). Sold-out sizes are struck through. */}
       {view && view.sizes.length > 0 && (
-        <ul aria-label={t("home.products.sizes")} className="mt-2 flex flex-wrap justify-start text-[11px] tracking-[0.08em] text-ink-muted rtl:tracking-normal">
+        <Typography
+          as="ul"
+          variant="caption"
+          color="muted"
+          aria-label={t("home.products.sizes")}
+          className="mt-2 flex flex-wrap justify-start tracking-[0.08em] rtl:tracking-normal"
+        >
           {view.sizes.map(({ size, in_stock }, index) => (
             <li key={size.code} className="flex">
               {index > 0 && <span aria-hidden="true" className="px-1.5">·</span>}
@@ -109,7 +118,7 @@ export default function ProductCard({ product }: { product: ProductCardData }) {
               {!in_stock && <span className="sr-only"> ({t("home.products.soldOut")})</span>}
             </li>
           ))}
-        </ul>
+        </Typography>
       )}
     </article>
   );

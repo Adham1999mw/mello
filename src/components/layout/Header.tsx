@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { IconButton, typography } from "@/components/ui";
 import { localePath } from "@/i18n/static";
 import { useTranslation, type MessageKey } from "@/i18n/useTranslation";
 import { assetPath } from "@/lib/assetPath";
@@ -51,7 +52,7 @@ export default function Header({ overlay = false }: { overlay?: boolean }) {
           <Link
             key={link.href}
             href={localePath(locale, link.href)}
-            className="text-xs leading-none tracking-[0.22em] uppercase hover:opacity-70 rtl:text-sm rtl:tracking-normal rtl:normal-case"
+            className={`${typography("label")} hover:opacity-70`}
           >
             {t(link.label)}
           </Link>
@@ -62,17 +63,17 @@ export default function Header({ overlay = false }: { overlay?: boolean }) {
           area; the negative margins stop those areas from adding extra space or height,
           and keep the last icon lined up with the page edge. */}
       <div className="-me-[9px] flex items-center">
-        <IconButton label={t("nav.search")}>
+        <HeaderIcon label={t("nav.search")}>
           <circle cx="11" cy="11" r="6.5" />
           <path d="M16 16l4.5 4.5" />
-        </IconButton>
-        <IconButton label={t("nav.bag")}>
+        </HeaderIcon>
+        <HeaderIcon label={t("nav.bag")}>
           <path d="M5.5 8.5h13l-1 12h-11z" />
           <path d="M9 8.5V7a3 3 0 0 1 6 0v1.5" />
-        </IconButton>
-        <IconButton label={t("nav.menu")}>
+        </HeaderIcon>
+        <HeaderIcon label={t("nav.menu")}>
           <path d="M4 7h16M4 12h16M4 17h16" />
-        </IconButton>
+        </HeaderIcon>
       </div>
     </header>
   );
@@ -98,15 +99,10 @@ function Monogram() {
   );
 }
 
-// A 44×44px tap area with a 22px line icon inside.
-function IconButton({ label, children }: { label: string; children: React.ReactNode }) {
+// A 44×44px tap area with a 22px line icon inside, in the header's current color.
+function HeaderIcon({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <button
-      type="button"
-      aria-label={label}
-      className="-mx-0.5 -my-[11px] flex size-11 items-center justify-center rounded-brand
-                 focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-current"
-    >
+    <IconButton label={label} className="-mx-0.5 -my-[11px]">
       <svg
         width="22"
         height="22"
@@ -118,6 +114,6 @@ function IconButton({ label, children }: { label: string; children: React.ReactN
       >
         {children}
       </svg>
-    </button>
+    </IconButton>
   );
 }
