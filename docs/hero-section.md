@@ -17,7 +17,7 @@ A full-width burgundy band at the top of the homepage:
 2. **Brand block**: the cream NEEDLE logo (monogram + wordmark + "Women's wear").
 3. **Copy**: small eyebrow, serif headline with one italic phrase, two buttons.
 4. **Leather label**: the cream "Made in Egypt" label with the size tab, hanging from a
-   dashed thread. It keeps swinging slowly and gently from side to side, forever.
+   dashed thread. It swings like a real pendulum: a breeze pushes it, the swings die down, then the next breeze comes.
 5. **Stitched seam** (dashed line) and a row of three service notes at the bottom.
 
 ## 2. Files
@@ -185,13 +185,12 @@ ring: 2px champagne outline, 3px offset. In Arabic: IBM Plex Sans Arabic, 15px, 
   the label wrapper down to the label. Phone 58px tall, desktop 76px.
 - Label: `rotate: -3deg`, `transform-origin` at the top of the thread
   (`50% -54px` phone, `50% -70px` desktop), shadow `drop-shadow(0 18px 22px rgb(0 0 0 / .45))`.
-- **Swing** (slow and gentle forever: 2.4s per swing on phones, 3s on desktop, sine easing, `infinite alternate`):
+- **Swing**: a pendulum with a breeze (full code in `src/styles/globals.css`). A push takes it to
+  8deg, each swing is about 22% smaller (air drag) and takes the same time (0.7s phone,
+  0.87s desktop), then the next push starts it again. One loop: 7s phone / 8.7s desktop.
 
 ```css
-@keyframes label-swing {
-  from { rotate: 2.5deg; }
-  to   { rotate: -2.5deg; }
-}
+.hero-label { transform-origin: 50% 0; animation: label-swing 7s linear infinite; }
 @media (prefers-reduced-motion: reduce) { .hero-label { animation: none; } }
 ```
 

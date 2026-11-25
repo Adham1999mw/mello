@@ -79,28 +79,31 @@ body {
 }
 
 /*
- * Hero leather label: a pendulum hanging from the top of its thread, swinging slowly forever.
+ * Hero leather label: a pendulum hanging from the top of its thread.
  *
- * - A small, gentle swing (2.5deg each way around straight down) at the same calm pace
- *   all the time. It never speeds up again and never restarts: `alternate` plays the
- *   swing forward, then back, in an endless loop.
- * - The sine-shaped timing makes it slow down at each end and speed up through the
- *   middle, like a real pendulum.
- * - A longer pendulum swings slower (T = 2π√(L/g)), so the bigger desktop label takes
- *   a little longer per swing than the phone one.
+ * The motion follows real pendulum physics:
+ * - At rest it hangs straight down (0deg), under the pivot.
+ * - A breeze pushes it, and air drag makes each swing about 22% smaller than the last.
+ * - Every swing takes the same time, whatever its size. That time depends only on the
+ *   pendulum's length (T = 2π√(L/g)), so the bigger desktop label swings a bit slower.
+ * - Between turning points the angle follows a sine curve: fastest at the bottom,
+ *   slowing to a stop at each end. The "sine" timing functions below draw that curve.
+ *
+ * One loop = a breeze push + 10 swings (5% + 9 × 10% + 5%). It ends moving the same way
+ * the next push starts, so the loop joins without a jump.
  * No motion for people who turn on "reduce motion".
  */
 @layer components {
   .hero-label {
-    --swing-time: 2.4s; /* phone: one slow swing, from one side to the other */
+    --swing-time: 7s; /* phone: 10 swings of 0.7s */
     transform-origin: 50% 0;
     filter: drop-shadow(0 18px 22px rgb(0 0 0 / 0.45));
-    animation: label-swing var(--swing-time) cubic-bezier(0.37, 0, 0.63, 1) infinite alternate;
+    animation: label-swing var(--swing-time) linear infinite;
   }
 
   @media (width >= 48rem) {
     .hero-label {
-      --swing-time: 3s; /* desktop: longer pendulum (~1.5×), so √1.5 ≈ 1.24× slower */
+      --swing-time: 8.7s; /* desktop: longer pendulum (~1.5×), so √1.5 ≈ 1.24× slower */
     }
   }
 
@@ -111,7 +114,18 @@ body {
   }
 }
 
+/* Timing functions: start fast and slow down / slow down and speed up / start slow and speed up */
 @keyframes label-swing {
-  from { rotate: 2.5deg; }
-  to { rotate: -2.5deg; }
+  0% { rotate: 0deg; animation-timing-function: cubic-bezier(0.61, 1, 0.88, 1); }
+  5% { rotate: 8deg; animation-timing-function: cubic-bezier(0.37, 0, 0.63, 1); }
+  15% { rotate: -6.2deg; animation-timing-function: cubic-bezier(0.37, 0, 0.63, 1); }
+  25% { rotate: 4.9deg; animation-timing-function: cubic-bezier(0.37, 0, 0.63, 1); }
+  35% { rotate: -3.8deg; animation-timing-function: cubic-bezier(0.37, 0, 0.63, 1); }
+  45% { rotate: 3deg; animation-timing-function: cubic-bezier(0.37, 0, 0.63, 1); }
+  55% { rotate: -2.3deg; animation-timing-function: cubic-bezier(0.37, 0, 0.63, 1); }
+  65% { rotate: 1.8deg; animation-timing-function: cubic-bezier(0.37, 0, 0.63, 1); }
+  75% { rotate: -1.4deg; animation-timing-function: cubic-bezier(0.37, 0, 0.63, 1); }
+  85% { rotate: 1.1deg; animation-timing-function: cubic-bezier(0.37, 0, 0.63, 1); }
+  95% { rotate: -0.9deg; animation-timing-function: cubic-bezier(0.12, 0, 0.39, 0); }
+  100% { rotate: 0deg; }
 }
