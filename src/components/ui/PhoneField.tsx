@@ -34,7 +34,7 @@ export default function PhoneField({ value, onChange, error, ...props }: PhoneFi
       type="tel"
       inputMode="tel"
       autoComplete={props.autoComplete ?? "tel-national"}
-      placeholder={props.placeholder ?? "10 1234 5678"}
+      placeholder={props.placeholder ?? "1559089789"}
       ltr
       valid={isValidPhoneDigits(value)}
       value={formatPhone(value)}
