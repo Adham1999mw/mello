@@ -315,6 +315,12 @@ const en = {
     },
     signOut: "Sign out",
     signedOut: "You're signed out",
+    signOutDialog: {
+      title: "Sign out?",
+      body: "Are you sure you want to sign out? You can sign back in any time with your email or Google.",
+      confirm: "Sign out",
+      cancel: "Stay signed in",
+    },
     version: "Needle · Made in Egypt",
     back: "Back",
     loadError: "We couldn't load your details. Check the connection and refresh the page.",

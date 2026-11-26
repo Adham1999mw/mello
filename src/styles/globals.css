@@ -265,3 +265,30 @@ body {
   0%, 100% { box-shadow: 0 0 0 4px rgb(238 211 184 / 0.15); }
   50% { box-shadow: 0 0 0 9px rgb(238 211 184 / 0.06); }
 }
+
+/* Sign-out dialog (components/account/SignOutDialog): slides up on phones, fades in from md. */
+@layer components {
+  .signout-dialog[open] {
+    animation: signout-up 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .signout-dialog[open]::backdrop {
+    animation: signout-fade 0.2s ease-out;
+  }
+  @media (width >= 48rem) {
+    .signout-dialog[open] {
+      animation-name: signout-fade;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .signout-dialog[open],
+    .signout-dialog[open]::backdrop {
+      animation: none;
+    }
+  }
+}
+@keyframes signout-up {
+  from { translate: 0 40px; opacity: 0.4; }
+}
+@keyframes signout-fade {
+  from { opacity: 0; }
+}

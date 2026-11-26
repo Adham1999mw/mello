@@ -1,10 +1,11 @@
-import { useId, type ReactNode } from "react";
+import { useId, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Button, IconButton, Typography, cn } from "@/components/ui";
 import { localePath } from "@/i18n/static";
 import { useTranslation } from "@/i18n/useTranslation";
 import { signOut } from "@/lib/auth";
+import SignOutDialog from "./SignOutDialog";
 import { displayPhone, initials, memberSince, useAccount } from "./useAccount";
 
 // Frame of the account pages ("The Hub" design). Mobile first:
@@ -106,6 +107,8 @@ function AccountMenu({ page }: { page: AccountPageId }) {
   const { t, locale } = useTranslation();
   const { profile } = useAccount();
 
+  const [confirmOpen, setConfirmOpen] = useState(false);
+
   async function handleSignOut() {
     // Leave the page first, so the account page doesn't send her to sign in when the session ends.
     await router.replace(localePath(locale, "/"));
@@ -144,13 +147,15 @@ function AccountMenu({ page }: { page: AccountPageId }) {
       </MenuGroup>
 
       <div className="md:border-t md:border-ink/[0.08] md:px-1 md:pt-3">
-        <Button variant="outline" shape="field" fullWidth startIcon={<SignOutIcon />} onClick={handleSignOut}>
+        <Button variant="outline" shape="field" fullWidth startIcon={<SignOutIcon />} onClick={() => setConfirmOpen(true)}>
           {t("account.signOut")}
         </Button>
         <Typography variant="caption" color="muted" as="p" className="mt-2 text-center tracking-[0.08em] md:hidden">
           {t("account.version")}
         </Typography>
       </div>
+
+      <SignOutDialog open={confirmOpen} onClose={() => setConfirmOpen(false)} onConfirm={handleSignOut} />
     </div>
   );
 }
