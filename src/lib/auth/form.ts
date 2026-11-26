@@ -73,6 +73,8 @@ export const AUTH_STORAGE = {
   email: "needle:auth-email",
   /** Sign-up step 1 (name and phone), so a reload on step 2 keeps it. Never the password. */
   signup: "needle:signup",
+  /** localStorage: she chose "Add it at checkout" on the add-mobile screen, so don't ask again. */
+  phoneSkip: "needle:phone-skip",
 } as const;
 
 export function readSession(key: string): string | null {
@@ -89,5 +91,21 @@ export function writeSession(key: string, value: string | null) {
     else sessionStorage.setItem(key, value);
   } catch {
     // Storage blocked: the flow still works, it just won't remember across reloads.
+  }
+}
+
+export function readLocal(key: string): string | null {
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+
+export function writeLocal(key: string, value: string) {
+  try {
+    localStorage.setItem(key, value);
+  } catch {
+    // Storage blocked: she may be asked again next time.
   }
 }

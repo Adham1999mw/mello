@@ -1,27 +1,28 @@
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import Seo from "@/components/seo/Seo";
-import { Button, PasswordField, PasswordRules, PhoneField, SegmentedTabs, TextField, Typography } from "@/components/ui";
+import { Button, PasswordField, PasswordRules, PhoneField, TextField, Typography } from "@/components/ui";
 import { localePath } from "@/i18n/static";
 import { useTranslation } from "@/i18n/useTranslation";
-import { authErrorReason, isValidEmail, signInWithGoogle, signUp, useCustomerSession } from "@/lib/auth";
+import { authErrorReason, signInWithGoogle, signUp, useCustomerSession } from "@/lib/auth";
 import {
   AUTH_STORAGE,
   firstName,
   formatPhone,
-  isPasswordOk,
   isValidPhoneDigits,
   readSession,
   safeNext,
   toLocalPhone,
   writeSession,
 } from "@/lib/auth/form";
+import { SIGN_UP_STEP1_FIELDS, signUpSchema, type SignUpValues } from "@/lib/auth/schemas";
 import AuthHeader from "./AuthHeader";
 import { BigCheckIcon, BoxIcon, DeviceIcon, MailIcon, PenIcon } from "./AuthIcons";
 import AuthLayout from "./AuthLayout";
-import { AccountSummary, ErrorBanner, GoogleButton, OrDivider, StatusBadge, StepProgress, SubmitButton } from "./AuthParts";
+import { AccountSummary, AuthTabs, ErrorBanner, GoogleButton, OrDivider, StatusBadge, StepProgress, SubmitButton } from "./AuthParts";
 
 // Sign up (/ar/sign-up/, /en/sign-up/). Static page, so it works on GitHub Pages too.
 // Spec: docs/auth-flow-spec.md (Atelier v2) → 7.2–7.4.
@@ -36,7 +37,7 @@ import { AccountSummary, ErrorBanner, GoogleButton, OrDivider, StatusBadge, Step
 // Step 1 (never the password) is also kept in sessionStorage, so a reload on step 2 keeps it.
 // `?next=/checkout/` is where she goes after signing up (default: home).
 
-type Values = { fullName: string; phone: string; email: string; password: string };
+type Values = SignUpValues;
 type Stage = "form" | "welcome" | "confirm";
 
 const TITLE_ID = "auth-title";
@@ -49,6 +50,7 @@ export default function SignUpPage() {
   const next = safeNext(router.query.next);
   const [stage, setStage] = useState<Stage>("form");
   const [googleLoading, setGoogleLoading] = useState(false);
+  const schema = useMemo(() => signUpSchema(t), [t]);
 
   const {
     register,
@@ -60,6 +62,7 @@ export default function SignUpPage() {
     getValues,
     formState: { errors, isSubmitting },
   } = useForm<Values>({
+    resolver: yupResolver(schema),
     // Check a field when she leaves it, then on every change once it has an error.
     mode: "onTouched",
     defaultValues: { fullName: "", phone: "", email: "", password: "" },
@@ -117,7 +120,7 @@ export default function SignUpPage() {
 
   async function continueToStep2(e: FormEvent) {
     e.preventDefault();
-    const ok = await trigger(["fullName", "phone"], { shouldFocus: true });
+    const ok = await trigger([...SIGN_UP_STEP1_FIELDS], { shouldFocus: true });
     if (!ok) return;
     const { fullName, phone } = getValues();
     writeSession(AUTH_STORAGE.signup, JSON.stringify({ fullName: fullName.trim(), phone }));
@@ -157,15 +160,7 @@ export default function SignUpPage() {
   }
 
   const { fullName = "", phone = "", email = "", password = "" } = useWatch({ control });
-  const tabs = (
-    <SegmentedTabs
-      label={t("auth.tabsLabel")}
-      items={[
-        { href: withNext("/sign-in"), label: t("auth.tabs.signIn"), current: false },
-        { href: withNext("/sign-up"), label: t("auth.tabs.signUp"), current: true },
-      ]}
-    />
-  );
+  const tabs = <AuthTabs current="signUp" />;
 
   let content;
   if (stage === "welcome") {
@@ -232,16 +227,11 @@ export default function SignUpPage() {
           enterKeyHint="next"
           valid={fullName.trim().length >= 2}
           error={errors.fullName?.message}
-          {...register("fullName", {
-            validate: (v) => v.trim().length >= 2 || t("auth.errors.name"),
-          })}
+          {...register("fullName")}
         />
         <Controller
           name="phone"
           control={control}
-          rules={{
-            validate: (v) => (v ? isValidPhoneDigits(v) || t("auth.errors.phone") : t("auth.errors.required")),
-          }}
           render={({ field, fieldState }) => (
             <PhoneField
               ref={field.ref}
@@ -298,7 +288,6 @@ export default function SignUpPage() {
             )
           }
           {...register("email", {
-            validate: (v) => (v.trim() ? isValidEmail(v.trim()) || t("auth.errors.invalidEmail") : t("auth.errors.required")),
             onChange: (e) => writeSession(AUTH_STORAGE.email, e.target.value),
           })}
         />
@@ -308,9 +297,7 @@ export default function SignUpPage() {
             autoComplete="new-password"
             enterKeyHint="done"
             error={errors.password?.message}
-            {...register("password", {
-              validate: (v) => isPasswordOk(v) || t("auth.errors.weakPassword"),
-            })}
+            {...register("password")}
           />
           <PasswordRules value={password} />
         </div>

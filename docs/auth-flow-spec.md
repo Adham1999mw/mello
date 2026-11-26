@@ -503,7 +503,15 @@ password.") → **Continue shopping** → **Go to my account** (secondary).
 
 ---
 
-## 8. Logic helpers — `src/lib/auth/form.ts`
+## 8. Logic helpers — `src/lib/auth/form.ts` and `src/lib/auth/schemas.ts`
+
+### 8.0 Validation: react-hook-form + yup
+
+Every form uses react-hook-form with `yupResolver` and `mode: "onTouched"` (check on blur, then on
+every change once a field has an error). One schema per form in `src/lib/auth/schemas.ts`, each built
+with `t` so messages are translated: `signInSchema`, `signUpSchema` (+ `SIGN_UP_STEP1_FIELDS` for
+`trigger()` on step 1), `forgotPasswordSchema`, `resetPasswordSchema` (confirm uses
+`oneOf([ref("password")])`), `addPhoneSchema`. Server errors from Supabase go in with `setError`.
 
 ### 8.1 Phone
 

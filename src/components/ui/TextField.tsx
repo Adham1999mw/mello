@@ -19,6 +19,8 @@ export type TextFieldProps = Omit<InputHTMLAttributes<HTMLInputElement>, "size" 
   hint?: ReactNode;
   /** Error text. Also sets the error look and aria-invalid. */
   error?: ReactNode;
+  /** Error look and aria-invalid without a message (when one banner explains several fields). */
+  invalid?: boolean;
   /** Success text under the field (e.g. "Passwords match"). */
   success?: ReactNode;
   /** Shows a green check in the end slot. */
@@ -39,6 +41,7 @@ export default function TextField({
   optional,
   hint,
   error,
+  invalid: invalidProp,
   success,
   valid,
   prefix,
@@ -56,7 +59,7 @@ export default function TextField({
   const inputId = id ?? autoId;
   const message = error ?? success ?? hint;
   const messageId = message ? `${inputId}-msg` : undefined;
-  const invalid = Boolean(error);
+  const invalid = Boolean(error) || Boolean(invalidProp);
 
   return (
     <div className={cn("grid min-w-0 grid-cols-[minmax(0,1fr)] gap-2", className)}>

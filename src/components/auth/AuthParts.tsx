@@ -1,7 +1,9 @@
 import type { ReactNode } from "react";
-import { AlertIcon, Button, Typography, cn, typography } from "@/components/ui";
+import Link from "next/link";
+import { AlertIcon, Button, SegmentedTabs, Typography, cn, typography } from "@/components/ui";
 import { useTranslation } from "@/i18n/useTranslation";
 import { GoogleIcon, Spinner } from "./AuthIcons";
+import { useAuthNext } from "./useAuthPage";
 
 // Small shared pieces of the sign-in pages.
 
@@ -100,5 +102,36 @@ export function SubmitButton({ loading, children }: { loading?: boolean; childre
     <Button type="submit" shape="field" fullWidth disabled={loading} aria-busy={loading || undefined} startIcon={loading ? <Spinner /> : undefined}>
       {children}
     </Button>
+  );
+}
+
+/** The rounded "Sign in | Create account" switch at the top of both pages. Keeps `?next=`. */
+export function AuthTabs({ current }: { current: "signIn" | "signUp" }) {
+  const { t } = useTranslation();
+  const { withNext } = useAuthNext();
+  return (
+    <SegmentedTabs
+      label={t("auth.tabsLabel")}
+      items={[
+        { href: withNext("/sign-in"), label: t("auth.tabs.signIn"), current: current === "signIn" },
+        { href: withNext("/sign-up"), label: t("auth.tabs.signUp"), current: current === "signUp" },
+      ]}
+    />
+  );
+}
+
+/** A text link 44px tall, for "Back to sign in" and similar. */
+export function AuthLink({ href, children }: { href: string; children: ReactNode }) {
+  return (
+    <Link
+      href={href}
+      className={cn(
+        typography("bodySm"),
+        "inline-flex min-h-11 items-center font-medium text-burgundy underline decoration-burgundy/40 underline-offset-4 hover:decoration-burgundy",
+        "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-burgundy",
+      )}
+    >
+      {children}
+    </Link>
   );
 }
