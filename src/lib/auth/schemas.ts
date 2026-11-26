@@ -64,3 +64,14 @@ export const resetPasswordSchema = (t: T) =>
       .oneOf([yup.ref("password")], t("auth.errors.noMatch")),
   });
 export type ResetPasswordValues = yup.InferType<ReturnType<typeof resetPasswordSchema>>;
+
+/** Account → Personal details: name, and the mobile number (optional: Google sign-ups may have none yet). */
+export const profileSchema = (t: T) =>
+  yup.object({
+    fullName: fullName(t),
+    phone: yup
+      .string()
+      .default("")
+      .test("phone", t("auth.errors.phone"), (v) => !v || isValidPhoneDigits(v)),
+  });
+export type ProfileValues = yup.InferType<ReturnType<typeof profileSchema>>;
