@@ -286,6 +286,13 @@ const en = {
     menu: {
       label: "Account menu",
       settings: "Account settings",
+      shopping: "Shopping",
+      orders: "Orders",
+      ordersSub: "Your orders will show here",
+      soon: "Soon",
+      help: "Help",
+      contact: "Contact us",
+      privacy: "Privacy policy",
       overview: "Overview",
       details: "Personal details",
       noPhone: "Mobile number missing",

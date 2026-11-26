@@ -286,6 +286,13 @@ const ar: Messages = {
     menu: {
       label: "قائمة الحساب",
       settings: "إعدادات الحساب",
+      shopping: "التسوّق",
+      orders: "الطلبات",
+      ordersSub: "ستظهر طلباتكِ هنا",
+      soon: "قريباً",
+      help: "المساعدة",
+      contact: "تواصلي معنا",
+      privacy: "سياسة الخصوصية",
       overview: "نظرة عامة",
       details: "البيانات الشخصية",
       noPhone: "رقم الموبايل غير مضاف",

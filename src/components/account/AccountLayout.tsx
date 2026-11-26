@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useId, type ReactNode } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Button, IconButton, Typography, cn } from "@/components/ui";
@@ -128,15 +128,20 @@ function AccountMenu({ page }: { page: AccountPageId }) {
         </div>
       )}
 
-      <div className="grid gap-2">
-        <Typography variant="eyebrow" color="muted" className="px-1 md:px-1.5 md:pt-2.5">
-          {t("account.menu.settings")}
-        </Typography>
-        <nav aria-label={t("account.menu.label")} className="overflow-hidden rounded-field border border-ink/[0.08] bg-white md:border-0">
-          <MenuRow href="/account" icon={<GridIcon />} label={t("account.menu.overview")} active={page === "overview"} desktopOnly />
-          <MenuRow href="/account/details" icon={<UserIcon />} label={t("account.menu.details")} sub={detailsSub} active={page === "details"} />
-        </nav>
-      </div>
+      <MenuGroup title={t("account.menu.settings")}>
+        <MenuRow href="/account" icon={<GridIcon />} label={t("account.menu.overview")} active={page === "overview"} desktopOnly />
+        <MenuRow href="/account/details" icon={<UserIcon />} label={t("account.menu.details")} sub={detailsSub} active={page === "details"} />
+      </MenuGroup>
+
+      <MenuGroup title={t("account.menu.shopping")}>
+        {/* Orders come with checkout: shown now so the menu doesn't change shape later. */}
+        <MenuRow icon={<BagIcon />} label={t("account.menu.orders")} sub={t("account.menu.ordersSub")} soon={t("account.menu.soon")} />
+      </MenuGroup>
+
+      <MenuGroup title={t("account.menu.help")}>
+        <MenuRow href="/privacy#privacy-contact" icon={<ChatIcon />} label={t("account.menu.contact")} />
+        <MenuRow href="/privacy" icon={<ShieldIcon />} label={t("account.menu.privacy")} />
+      </MenuGroup>
 
       <div className="md:border-t md:border-ink/[0.08] md:px-1 md:pt-3">
         <Button variant="outline" shape="field" fullWidth startIcon={<SignOutIcon />} onClick={handleSignOut}>
@@ -150,38 +155,47 @@ function AccountMenu({ page }: { page: AccountPageId }) {
   );
 }
 
+/** A titled list of menu rows ("Account settings", "Shopping", "Help"). */
+function MenuGroup({ title, children }: { title: string; children: ReactNode }) {
+  const id = useId();
+  return (
+    <section aria-labelledby={id} className="grid gap-2">
+      <Typography variant="eyebrow" color="muted" as="h2" id={id} className="px-1 md:px-1.5 md:pt-2.5">
+        {title}
+      </Typography>
+      <nav aria-labelledby={id} className="overflow-hidden rounded-field border border-ink/[0.08] bg-white md:border-0">
+        {children}
+      </nav>
+    </section>
+  );
+}
+
+/** A menu row: a link, or (without `href`) a coming-soon row with a "Soon" pill. */
 function MenuRow({
   href,
   icon,
   label,
   sub,
-  active,
+  active = false,
   desktopOnly,
+  soon,
 }: {
-  href: string;
+  href?: string;
   icon: ReactNode;
   label: string;
   sub?: ReactNode;
-  active: boolean;
+  active?: boolean;
   desktopOnly?: boolean;
+  /** Text of the pill on a row that isn't ready yet. */
+  soon?: string;
 }) {
   const { locale } = useTranslation();
-  return (
-    <Link
-      href={localePath(locale, href)}
-      aria-current={active ? "page" : undefined}
-      className={cn(
-        "min-h-[68px] items-center gap-3.5 border-ink/[0.07] px-4 py-3 not-first:border-t hover:bg-burgundy/[0.03]",
-        "focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-burgundy",
-        "md:min-h-[54px] md:rounded-[10px] md:border-0 md:px-2.5 md:py-2",
-        active && "md:bg-leather",
-        desktopOnly ? "hidden md:flex" : "flex",
-      )}
-    >
-      <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-ivory text-wine md:size-[34px] md:rounded-[9px] md:bg-white">
+  const content = (
+    <>
+      <span className={cn("grid size-10 shrink-0 place-items-center rounded-xl bg-ivory text-wine md:size-[34px] md:rounded-[9px] md:bg-white", soon && "opacity-60")}>
         {icon}
       </span>
-      <span className="grid min-w-0 flex-1">
+      <span className={cn("grid min-w-0 flex-1", soon && "opacity-60")}>
         <Typography variant="subtitle" as="span" className="text-[15px]">
           {label}
         </Typography>
@@ -191,9 +205,37 @@ function MenuRow({
           </Typography>
         )}
       </span>
-      <span className="text-ink/35 md:hidden">
-        <ChevronIcon />
-      </span>
+      {soon ? (
+        <Typography variant="caption" as="span" color="muted" className="shrink-0 rounded-full bg-ink/[0.06] px-2.5 py-0.5">
+          {soon}
+        </Typography>
+      ) : (
+        <span className="text-ink/35 md:hidden">
+          <ChevronIcon />
+        </span>
+      )}
+    </>
+  );
+  const rowClass = cn(
+    "min-h-[68px] items-center gap-3.5 border-ink/[0.07] px-4 py-3 not-first:border-t",
+    "md:min-h-[54px] md:rounded-[10px] md:border-0 md:px-2.5 md:py-2 md:not-first:border-t-0",
+    desktopOnly ? "hidden md:flex" : "flex",
+  );
+
+  if (!href) {
+    return <div className={rowClass}>{content}</div>;
+  }
+  return (
+    <Link
+      href={localePath(locale, href)}
+      aria-current={active ? "page" : undefined}
+      className={cn(
+        rowClass,
+        "hover:bg-burgundy/[0.03] focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-burgundy",
+        active && "md:bg-leather",
+      )}
+    >
+      {content}
     </Link>
   );
 }
@@ -268,6 +310,22 @@ const SignOutIcon = () => (
 const ChevronIcon = () => (
   <Icon flip>
     <path d="m9.5 6 6 6-6 6" />
+  </Icon>
+);
+const BagIcon = () => (
+  <Icon>
+    <path d="M5.5 8.5h13l-1 12h-11z" />
+    <path d="M9 8.5V7a3 3 0 0 1 6 0v1.5" />
+  </Icon>
+);
+const ChatIcon = () => (
+  <Icon>
+    <path d="M4.5 6.5h15v10h-9l-4 3v-3h-2z" />
+  </Icon>
+);
+const ShieldIcon = () => (
+  <Icon>
+    <path d="M12 3.5 5.5 6v5.5c0 4.2 2.8 7.5 6.5 9 3.7-1.5 6.5-4.8 6.5-9V6z" />
   </Icon>
 );
 const BackIcon = () => (
