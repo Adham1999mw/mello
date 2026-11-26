@@ -9,7 +9,7 @@ import { locales, type Locale } from "./config";
 //
 // Server-only pages (`*.server.tsx`) use `getServerSideProps` instead and read `params.locale`.
 //
-// `/` also serves the Arabic home page (see src/pages/index.tsx).
+// `/` also serves the English home page (see src/pages/index.tsx).
 export const getStaticPaths: GetStaticPaths = async () => ({
   paths: locales.map((locale) => ({ params: { locale } })),
   fallback: false,
@@ -29,7 +29,7 @@ export function localePath(locale: Locale, path = "/"): string {
   return query ? `${localized}?${query}` : localized;
 }
 
-/** True on the home page: `/` (Arabic) or `/ar/`, `/en/` (the `[locale]` index page). */
+/** True on the home page: `/` (English) or `/ar/`, `/en/` (the `[locale]` index page). */
 export function isHomePage(pathname: string): boolean {
   return pathname === "/" || pathname === "/[locale]";
 }

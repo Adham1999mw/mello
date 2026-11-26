@@ -9,7 +9,7 @@ E-commerce storefront for the Mello clothing brand.
   - MUI styles are emitted in the `mui` CSS layer (Emotion cache with `enableCssLayer`, see `src/lib/emotion`), and `src/styles/globals.css` + `_app.tsx` orders layers as `theme, base, mui, components, utilities`, so Tailwind utilities override MUI without `!important`.
   - The MUI theme (`src/theme/theme.ts`) exposes its palette as CSS variables, which Tailwind maps to `bg-primary`, `text-foreground`, etc.
 - **Redux Toolkit + RTK Query** (`src/store`) for client state and API caching
-- **i18n: Arabic (default, RTL) and English**: pages live under `src/pages/[locale]/` and are pre-rendered for both (`/` and `/ar/` = Arabic, `/en/` = English)
+- **i18n: English (default) and Arabic (RTL)**: pages live under `src/pages/[locale]/` and are pre-rendered for both (`/` and `/en/` = English, `/ar/` = Arabic)
 - **Supabase** for database, auth and storage (`src/lib/supabase`): from the browser, or on the server in `getServerSideProps` / API routes
   - Catalog (products, color × size variants, filters, pagination): schema in `supabase/migrations`, data layer in `src/lib/catalog`, RTK Query hooks in `src/store/services/products.ts`. Setup guide: [docs/supabase-setup.md](docs/supabase-setup.md)
   - Admin dashboard at `/ar/admin/` (`src/pages/[locale]/admin`, `src/components/admin`, `src/lib/admin`): log in with Supabase Auth; RLS allows writes only for users in `public.admins`

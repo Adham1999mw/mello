@@ -11,7 +11,7 @@ import type { NextConfig } from "next";
 //      and the workflow removes them before building, so they are not on GitHub Pages.
 //    - The site lives under /<repo-name>, passed in as PAGES_BASE_PATH.
 //
-// Both modes use the same URLs: `/` and `/ar/` (Arabic), `/en/` (English), from `src/pages/[locale]/`.
+// Both modes use the same URLs: `/` and `/en/` (English), `/ar/` (Arabic), from `src/pages/[locale]/`.
 const isStaticExport = process.env.STATIC_EXPORT === "true";
 const basePath = isStaticExport ? process.env.PAGES_BASE_PATH || undefined : undefined;
 

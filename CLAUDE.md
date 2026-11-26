@@ -3,7 +3,7 @@
 # Needle storefront: rules for all work
 
 Needle is an Egyptian women's wear brand. This repo is its Next.js storefront
-(Pages Router, MUI + Tailwind, Arabic default + English). Read the README for the stack.
+(Pages Router, MUI + Tailwind, English default + Arabic). Read the README for the stack.
 
 ## 1. Mobile first, always
 
@@ -44,7 +44,7 @@ Buttons and text come from **`@/components/ui`**: `Button`, `IconButton`, `Typog
 
 ## 3. Arabic and RTL
 
-Arabic is the default locale and is right-to-left. Use logical properties and utilities
+Arabic is right-to-left (English is the default locale). Use logical properties and utilities
 (`ms-*`, `pe-*`, `start-*`, `text-start`, `margin-inline-start`) instead of left/right.
 Every user-facing string goes in both `src/i18n/messages/en.ts` and `ar.ts`.
 
