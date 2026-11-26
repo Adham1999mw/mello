@@ -285,6 +285,7 @@ const ar: Messages = {
     intro: "بياناتكِ في مكان واحد.",
     menu: {
       label: "قائمة الحساب",
+      settings: "إعدادات الحساب",
       overview: "نظرة عامة",
       details: "البيانات الشخصية",
       noPhone: "رقم الموبايل غير مضاف",
@@ -307,6 +308,7 @@ const ar: Messages = {
     },
     signOut: "تسجيل الخروج",
     signedOut: "تم تسجيل خروجكِ",
+    version: "نيدل · صُنع في مصر",
     back: "رجوع",
     loadError: "لم نتمكن من تحميل بياناتكِ. تأكدي من الاتصال وحدّثي الصفحة.",
     seo: { overview: "حسابي", details: "البيانات الشخصية" },

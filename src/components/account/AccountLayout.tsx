@@ -1,11 +1,9 @@
 import type { ReactNode } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Button, IconButton, Typography, cn } from "@/components/ui";
 import { localePath } from "@/i18n/static";
 import { useTranslation } from "@/i18n/useTranslation";
-import { assetPath } from "@/lib/assetPath";
 import { signOut } from "@/lib/auth";
 import { displayPhone, initials, memberSince, useAccount } from "./useAccount";
 
@@ -65,23 +63,14 @@ function AccountHero() {
 
   return (
     <section className="auth-panel-bg relative overflow-hidden px-5 pt-7 pb-14 text-champagne md:px-14 md:pt-11 md:pb-24">
-      {/* Stitched thread (same as the sign-in panel): sews itself in, then keeps moving. */}
-      <svg viewBox="0 0 1200 300" preserveAspectRatio="none" aria-hidden="true" className="auth-thread pointer-events-none absolute inset-0 size-full">
+      {/* Stitched thread, as in the Hub design: one dashed line across the band, under her name.
+          It sews itself in on load, then keeps moving (globals.css → Account header). */}
+      <svg viewBox="0 0 400 220" preserveAspectRatio="none" aria-hidden="true" className="auth-thread pointer-events-none absolute inset-0 size-full">
         <g className="account-sew-in">
-          <path d="M-20 230 C 200 150, 380 290, 620 210 S 1000 90, 1220 170" />
-          <path d="M-20 70 C 240 20, 420 120, 700 60 S 1060 10, 1220 50" opacity="0.3" />
+          <path d="M-10 170 C 80 120, 140 200, 230 150 S 360 80, 420 120" />
         </g>
       </svg>
       <div className="relative mx-auto grid max-w-[1088px] gap-4">
-        {/* The leather label from the sign-in panel, at the inline end of the band. */}
-        <Image
-          src={assetPath("/brand/needle-label.webp")}
-          alt=""
-          width={900}
-          height={635}
-          sizes="(min-width: 768px) 190px, 64px"
-          className="account-rise pointer-events-none absolute -top-1 end-0 h-auto w-16 -rotate-[5deg] drop-shadow-[0_12px_16px_rgb(0_0_0/0.45)] [--rise-step:2] md:top-1/2 md:w-[190px] md:-translate-y-1/2"
-        />
         <Typography variant="eyebrow" className="account-rise opacity-80">
           {t("account.eyebrow")}
         </Typography>
@@ -92,7 +81,7 @@ function AccountHero() {
           >
             {initials(name || user?.email)}
           </span>
-          <div className="grid min-w-0 gap-1 pe-[68px] md:pe-56">
+          <div className="grid min-w-0 gap-1">
             <Typography variant="h1" as="p" className="account-rise break-words [--rise-step:1]">
               {name || user?.email}
             </Typography>
@@ -139,15 +128,23 @@ function AccountMenu({ page }: { page: AccountPageId }) {
         </div>
       )}
 
-      <nav aria-label={t("account.menu.label")} className="overflow-hidden rounded-field border border-ink/[0.08] bg-white md:border-0">
-        <MenuRow href="/account" icon={<GridIcon />} label={t("account.menu.overview")} active={page === "overview"} desktopOnly />
-        <MenuRow href="/account/details" icon={<UserIcon />} label={t("account.menu.details")} sub={detailsSub} active={page === "details"} />
-      </nav>
+      <div className="grid gap-2">
+        <Typography variant="eyebrow" color="muted" className="px-1 md:px-1.5 md:pt-2.5">
+          {t("account.menu.settings")}
+        </Typography>
+        <nav aria-label={t("account.menu.label")} className="overflow-hidden rounded-field border border-ink/[0.08] bg-white md:border-0">
+          <MenuRow href="/account" icon={<GridIcon />} label={t("account.menu.overview")} active={page === "overview"} desktopOnly />
+          <MenuRow href="/account/details" icon={<UserIcon />} label={t("account.menu.details")} sub={detailsSub} active={page === "details"} />
+        </nav>
+      </div>
 
       <div className="md:border-t md:border-ink/[0.08] md:px-1 md:pt-3">
         <Button variant="outline" shape="field" fullWidth startIcon={<SignOutIcon />} onClick={handleSignOut}>
           {t("account.signOut")}
         </Button>
+        <Typography variant="caption" color="muted" as="p" className="mt-2 text-center tracking-[0.08em] md:hidden">
+          {t("account.version")}
+        </Typography>
       </div>
     </div>
   );

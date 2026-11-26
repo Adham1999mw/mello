@@ -285,6 +285,7 @@ const en = {
     intro: "Your details in one place.",
     menu: {
       label: "Account menu",
+      settings: "Account settings",
       overview: "Overview",
       details: "Personal details",
       noPhone: "Mobile number missing",
@@ -307,6 +308,7 @@ const en = {
     },
     signOut: "Sign out",
     signedOut: "You're signed out",
+    version: "Needle · Made in Egypt",
     back: "Back",
     loadError: "We couldn't load your details. Check the connection and refresh the page.",
     seo: { overview: "My account", details: "Personal details" },
