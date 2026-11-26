@@ -10,14 +10,14 @@
   `sendPasswordReset`، `verifyRecoveryLink`، `updatePassword`، `signOut`، `fetchProfile`، `saveProfile`،
   و `useCustomerSession()`.
 - **الصفحات لسه** (تسجيل، دخول، نسيت كلمة السر، كلمة سر جديدة، حسابي). هتتعمل بعدين وتستخدم الكود ده.
-  الروابط اللي الكود بيرجّع ليها: `/ar/account/` بعد Google، و `/ar/reset-password/` من إيميل نسيت كلمة السر.
+  الروابط اللي الكود بيرجّع ليها: الصفحة الرئيسية `/ar/` بعد Google، و `/ar/reset-password/` من إيميل نسيت كلمة السر.
 
 ## الإيميلات
 
 - **التسجيل مش بيبعت أي إيميل** طول ما **Confirm email** مقفول: العميل بيدخل على طول.
 - الإيميل الوحيد هو **لينك نسيت كلمة السر**.
 - لو فتحت **Confirm email** بعدين، مفيش تغيير في الكود: `signUp()` بترجّع `signedIn: false`، فصفحة التسجيل تقول «شوفي إيميلك»
-  ولينك التأكيد هيرجّعه على `/account/`.
+  ولينك التأكيد هيرجّعه على الصفحة الرئيسية.
 
 ## الأمان والأدمن
 
@@ -117,7 +117,7 @@ SQL Editor → New query → الصق
   the page shows "check your email"; no code change needed.
 - Forgot password: `resetPasswordForEmail` with `redirectTo` = `/reset-password/`. That page accepts
   `?token_hash=&type=recovery` (custom template above, works across browsers) or the default PKCE `?code=`.
-- Google: `signInWithOAuth({ provider: "google", redirectTo: /account/ })`.
+- Google: `signInWithOAuth({ provider: "google", redirectTo: home page })`.
 - Supabase: run `20261127000000_customers.sql`; turn **on** "Allow new users to sign up", **off** "Confirm
   email"; add the site and localhost to Redirect URLs; enable Google; set up SMTP.
 - Admin access is unchanged: only rows in `public.admins` (SQL Editor only) pass `is_admin()`.

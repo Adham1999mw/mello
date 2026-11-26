@@ -28,9 +28,12 @@ jobs:
         uses: actions/configure-pages@v5
       - run: npm ci
       # Pages that need a server (`*.server.tsx` / `*.server.ts` under src/pages) can't be
-      # static files, so leave them out of this build. This only changes the CI checkout.
+      # static files, so leave them out of this build. Same for the proxy (src/proxy.server.ts):
+      # static files have no server to run it. This only changes the CI checkout.
       - name: Remove server-only pages
-        run: find src/pages -name "*.server.tsx" -o -name "*.server.ts" | xargs rm -f
+        run: |
+          find src/pages -name "*.server.tsx" -o -name "*.server.ts" | xargs rm -f
+          rm -f src/proxy.server.ts
       # The site calls Supabase from the visitor's browser (GitHub Pages has no server), so the
       # Supabase URL and public key are written into the JS files at build time. Without them
       # the site builds but no product request can be made, so stop here with a clear message.

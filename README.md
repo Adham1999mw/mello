@@ -41,6 +41,7 @@ The same code builds two ways (see `next.config.ts`):
 | Mode | default | `STATIC_EXPORT=true` (static files in `out/`) |
 | `getServerSideProps`, Supabase on the server | yes | no: `*.server.tsx` pages are left out |
 | API routes (`pages/api`) | yes | skipped |
+| Proxy (`src/proxy.server.ts`: signed-in visitors are sent away from the sign-in pages) | yes | removed; the browser guard `useGuestOnly()` does the same |
 | `next/image` optimization | yes | no (plain images) |
 | Browser → Supabase | through our proxy `/supabase/...` (`rewrites` in `next.config.ts`) | directly to `https://<ref>.supabase.co` |
 | URL | `/`, `/ar/`, `/en/` | `https://<user>.github.io/mello/`, `/mello/en/`, … |

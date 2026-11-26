@@ -1,5 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
-import type { AuthError, User } from "@supabase/supabase-js";
+import type { AuthError } from "@supabase/supabase-js";
 import type { Locale } from "@/i18n/config";
 import { localePath } from "@/i18n/static";
 import { createClient } from "@/lib/supabase/client";
@@ -117,7 +116,7 @@ export async function signUp(
     options: {
       // Read by the handle_new_user() trigger to fill public.profiles.
       data: { full_name: input.fullName, phone },
-      emailRedirectTo: siteUrl(locale, "/account"),
+      emailRedirectTo: siteUrl(locale, "/"),
     },
   });
   if (error) throw error;
@@ -128,17 +127,23 @@ export async function signUp(
   return { signedIn: Boolean(data.session) };
 }
 
-export async function signIn(email: string, password: string) {
-  const { error } = await createClient().auth.signInWithPassword({ email, password });
-  if (error) throw error;
+/** First word of a full name, for greetings ("Welcome back, Sara"). Empty when unknown. */
+export function firstName(fullName: unknown): string {
+  return typeof fullName === "string" ? (fullName.trim().split(/\s+/)[0] ?? "") : "";
 }
 
-/** Sign in or sign up with Google (same button). Leaves the page; Google sends them back to /account/. */
+export async function signIn(email: string, password: string): Promise<{ firstName: string }> {
+  const { data, error } = await createClient().auth.signInWithPassword({ email, password });
+  if (error) throw error;
+  return { firstName: firstName(data.user?.user_metadata?.full_name) };
+}
+
+/** Sign in or sign up with Google (same button). Leaves the page; Google sends them back to the home page. */
 export async function signInWithGoogle(locale: Locale) {
   const { error } = await createClient().auth.signInWithOAuth({
     provider: "google",
     options: {
-      redirectTo: siteUrl(locale, "/account"),
+      redirectTo: siteUrl(locale, "/"),
       queryParams: { prompt: "select_account" },
     },
   });
@@ -195,37 +200,4 @@ export async function fetchProfile(userId: string): Promise<Profile | null> {
 export async function saveProfile(userId: string, changes: { full_name?: string | null; phone?: string | null }) {
   const { error } = await createClient().from("profiles").update(changes).eq("id", userId);
   if (error) throw error;
-}
-
-// ---------- session hook ----------
-
-export type CustomerStatus = "loading" | "signedOut" | "signedIn";
-
-/** The signed-in customer, kept up to date when they sign in or out (also in other tabs). */
-export function useCustomerSession() {
-  const [status, setStatus] = useState<CustomerStatus>("loading");
-  const [user, setUser] = useState<User | null>(null);
-
-  const apply = useCallback((next: User | null) => {
-    setUser(next);
-    setStatus(next ? "signedIn" : "signedOut");
-  }, []);
-
-  useEffect(() => {
-    const supabase = createClient();
-    let active = true;
-    // getSession() also finishes a Google / email-link sign-in from the `?code=` in the URL.
-    supabase.auth.getSession().then(({ data }) => {
-      if (active) apply(data.session?.user ?? null);
-    });
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (active) apply(session?.user ?? null);
-    });
-    return () => {
-      active = false;
-      sub.subscription.unsubscribe();
-    };
-  }, [apply]);
-
-  return { status, user };
 }

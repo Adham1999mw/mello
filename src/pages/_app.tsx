@@ -9,6 +9,7 @@ import GlobalStyles from "@mui/material/GlobalStyles";
 import { ThemeProvider } from "@mui/material/styles";
 import Layout from "@/components/layout/Layout";
 import StoreProvider from "@/store/StoreProvider";
+import { Toaster } from "@/components/ui";
 import createAppTheme from "@/theme/theme";
 import createEmotionCache from "@/lib/emotion/createEmotionCache";
 import { getDirection } from "@/i18n/config";
@@ -81,6 +82,7 @@ export default function MyApp({ Component, pageProps, emotionCache }: MyAppProps
           <Layout>
             <Component {...pageProps} />
           </Layout>
+          <Toaster />
         </StoreProvider>
       </ThemeProvider>
     </AppCacheProvider>

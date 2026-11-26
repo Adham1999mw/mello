@@ -1,9 +1,16 @@
+import { useState } from "react";
 import Head from "next/head";
 import {
   Button,
   DiscountBadge,
   IconButton,
+  PasswordField,
+  PasswordRules,
+  PhoneField,
+  SegmentedTabs,
+  TextField,
   Typography,
+  toast,
   type ButtonSize,
   type ButtonTone,
   type ButtonVariant,
@@ -143,6 +150,77 @@ export default function DesignSystemPage() {
           </Group>
         </section>
 
+        {/* Form fields */}
+        <section className="grid gap-8">
+          <Typography variant="h2" color="burgundy">
+            {t("designSystem.fields")}
+          </Typography>
+          <Typography color="muted" className="max-w-prose">
+            {t("designSystem.fieldsIntro")}
+          </Typography>
+
+          <div className="grid gap-x-8 gap-y-6 md:grid-cols-2">
+            <Row name="TextField">
+              <TextField className="w-full" label={t("auth.fields.name")} placeholder={t("auth.fields.name")} />
+            </Row>
+            <Row name="TextField valid">
+              <TextField className="w-full" label={t("auth.fields.name")} defaultValue="Sara Ahmed" valid />
+            </Row>
+            <Row name="TextField error">
+              <TextField className="w-full" label={t("auth.fields.email")} type="email" ltr defaultValue="sara@" error={t("auth.errors.invalidEmail")} />
+            </Row>
+            <Row name="TextField optional hint">
+              <TextField className="w-full" label={t("auth.fields.email")} type="email" ltr optional hint={t("auth.fields.phoneHint")} />
+            </Row>
+            <Row name="TextField disabled">
+              <TextField className="w-full" label={t("auth.fields.email")} ltr defaultValue="sara@example.com" disabled />
+            </Row>
+            <Row name="TextField readOnly">
+              <TextField className="w-full" label={t("auth.fields.email")} ltr defaultValue="sara@example.com" readOnly />
+            </Row>
+            <Row name="PhoneField (+20)">
+              <PhoneDemo label={t("auth.fields.phone")} hint={t("auth.fields.phoneHint")} />
+            </Row>
+            <Row name="PasswordField + PasswordRules">
+              <PasswordDemo label={t("auth.fields.password")} />
+            </Row>
+          </div>
+
+          <Group title={t("designSystem.fieldButtons")}>
+            <Row name={`shape="field" fullWidth`}>
+              <div className="grid w-full max-w-[400px] gap-2.5">
+                <Button shape="field" fullWidth>
+                  {t("auth.signUp.submit")}
+                </Button>
+                <Button shape="field" variant="outline" fullWidth>
+                  {t("auth.signIn.submit")}
+                </Button>
+              </div>
+            </Row>
+            <Row name="SegmentedTabs">
+              <TabsDemo label={t("auth.tabsLabel")} labels={[t("auth.tabs.signIn"), t("auth.tabs.signUp")]} />
+            </Row>
+            <Row name="toast.success()">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() =>
+                  toast.success({ title: t("auth.toast.signedIn.title", { name: "Sara" }), message: t("auth.toast.signedIn.message") })
+                }
+              >
+                {t("auth.toast.signedIn.titleNoName")}
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => toast.success({ title: t("auth.toast.resetSent.title"), message: t("auth.toast.resetSent.message") })}
+              >
+                {t("auth.toast.resetSent.title")}
+              </Button>
+            </Row>
+          </Group>
+        </section>
+
         {/* Typography */}
         <section className="grid gap-6">
           <Typography variant="h2" color="burgundy">
@@ -183,6 +261,32 @@ function Row({ name, dark = false, children }: { name: string; dark?: boolean; c
         {name}
       </code>
       <div className="flex flex-wrap items-center gap-3">{children}</div>
+    </div>
+  );
+}
+
+function TabsDemo({ label, labels }: { label: string; labels: [string, string] }) {
+  const [current, setCurrent] = useState(0);
+  return (
+    <SegmentedTabs
+      className="w-full max-w-[400px]"
+      label={label}
+      items={labels.map((text, i) => ({ label: text, current: current === i, onSelect: () => setCurrent(i), id: `ds-tab-${i}` }))}
+    />
+  );
+}
+
+function PhoneDemo({ label, hint }: { label: string; hint: string }) {
+  const [digits, setDigits] = useState("1012345678");
+  return <PhoneField className="w-full" label={label} hint={hint} value={digits} onChange={setDigits} />;
+}
+
+function PasswordDemo({ label }: { label: string }) {
+  const [value, setValue] = useState("Needle20");
+  return (
+    <div className="grid w-full gap-2">
+      <PasswordField label={label} autoComplete="new-password" value={value} onChange={(e) => setValue(e.target.value)} />
+      <PasswordRules value={value} />
     </div>
   );
 }
