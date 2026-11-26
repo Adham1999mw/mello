@@ -23,10 +23,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
       - id: pages
         uses: actions/configure-pages@v5
-      - run: npm ci
+      # No lock file is kept in the repo: install the latest allowed versions fresh on every build.
+      - run: yarn install --no-lockfile
       # Pages that need a server (`*.server.tsx` / `*.server.ts` under src/pages) can't be
       # static files, so leave them out of this build. Same for the proxy (src/proxy.server.ts):
       # static files have no server to run it. This only changes the CI checkout.
@@ -47,7 +47,7 @@ jobs:
             echo "::error title=Supabase is not set up::Add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in Settings > Secrets and variables > Actions (see docs/supabase-setup.md, step 5), then re-run this workflow."
             exit 1
           fi
-      - run: npm run build
+      - run: yarn build
         env:
           # Build plain static files for GitHub Pages (see next.config.ts)
           STATIC_EXPORT: "true"

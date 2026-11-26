@@ -40,3 +40,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# lock files: dependencies are installed fresh on every build (see deploy-pages.yml, vercel.json)
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
