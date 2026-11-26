@@ -1,9 +1,11 @@
 import type { ReactNode } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Button, IconButton, Typography, cn } from "@/components/ui";
 import { localePath } from "@/i18n/static";
 import { useTranslation } from "@/i18n/useTranslation";
+import { assetPath } from "@/lib/assetPath";
 import { signOut } from "@/lib/auth";
 import { displayPhone, initials, memberSince, useAccount } from "./useAccount";
 
@@ -55,34 +57,50 @@ export default function AccountLayout({ page, children }: AccountLayoutProps) {
   );
 }
 
-/** Burgundy band with her initials, name, email and "Member since". */
+/** Burgundy band with her initials, name, email and "Member since". Animated (globals.css → Account header). */
 function AccountHero() {
   const { t, locale } = useTranslation();
   const { user, profile } = useAccount();
   const name = profile?.full_name?.trim() ?? "";
 
   return (
-    <section className="hero-bg px-5 pt-7 pb-14 text-champagne md:px-14 md:pt-11 md:pb-24">
-      <div className="mx-auto grid max-w-[1088px] gap-4">
-        <Typography variant="eyebrow" className="opacity-80">
+    <section className="auth-panel-bg relative overflow-hidden px-5 pt-7 pb-14 text-champagne md:px-14 md:pt-11 md:pb-24">
+      {/* Stitched thread (same as the sign-in panel): sews itself in, then keeps moving. */}
+      <svg viewBox="0 0 1200 300" preserveAspectRatio="none" aria-hidden="true" className="auth-thread pointer-events-none absolute inset-0 size-full">
+        <g className="account-sew-in">
+          <path d="M-20 230 C 200 150, 380 290, 620 210 S 1000 90, 1220 170" />
+          <path d="M-20 70 C 240 20, 420 120, 700 60 S 1060 10, 1220 50" opacity="0.3" />
+        </g>
+      </svg>
+      <div className="relative mx-auto grid max-w-[1088px] gap-4">
+        {/* The leather label from the sign-in panel, at the inline end of the band. */}
+        <Image
+          src={assetPath("/brand/needle-label.webp")}
+          alt=""
+          width={900}
+          height={635}
+          sizes="(min-width: 768px) 190px, 64px"
+          className="account-rise pointer-events-none absolute -top-1 end-0 h-auto w-16 -rotate-[5deg] drop-shadow-[0_12px_16px_rgb(0_0_0/0.45)] [--rise-step:2] md:top-1/2 md:w-[190px] md:-translate-y-1/2"
+        />
+        <Typography variant="eyebrow" className="account-rise opacity-80">
           {t("account.eyebrow")}
         </Typography>
         <div className="flex items-center gap-4">
           <span
             aria-hidden="true"
-            className="grid size-14 shrink-0 place-items-center rounded-full bg-champagne font-display text-[26px] leading-none text-burgundy ring-4 ring-champagne/15 md:size-[72px] md:text-[34px] rtl:font-medium"
+            className="account-avatar grid size-14 shrink-0 place-items-center rounded-full bg-champagne font-display text-[26px] leading-none text-burgundy shadow-[0_0_0_4px_rgb(238_211_184/0.15)] md:size-[72px] md:text-[34px] rtl:font-medium"
           >
             {initials(name || user?.email)}
           </span>
-          <div className="grid min-w-0 gap-1">
-            <Typography variant="h1" as="p" className="break-words">
+          <div className="grid min-w-0 gap-1 pe-[68px] md:pe-56">
+            <Typography variant="h1" as="p" className="account-rise break-words [--rise-step:1]">
               {name || user?.email}
             </Typography>
-            <Typography variant="bodySm" className="break-all opacity-80">
+            <Typography variant="bodySm" className="account-rise break-all opacity-80 [--rise-step:2]">
               {user?.email}
             </Typography>
             {profile?.created_at && (
-              <Typography variant="bodySm" className="opacity-80">
+              <Typography variant="bodySm" className="account-rise opacity-80 [--rise-step:3]">
                 {t("account.since", { date: memberSince(profile.created_at, locale) })}
               </Typography>
             )}

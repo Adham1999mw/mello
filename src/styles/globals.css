@@ -217,3 +217,51 @@ body {
 @keyframes toast-timer {
   to { transform: scaleX(0); }
 }
+
+/* Account header (components/account/AccountLayout): the stitched thread from the sign-in panel,
+   a thread that sews itself in once, and her initials and name rising in one after another.
+   No motion for people who turn on "reduce motion". */
+@layer components {
+  .account-sew-in {
+    animation: account-sew-in 1.6s cubic-bezier(0.4, 0, 0.2, 1) both;
+  }
+  [dir="rtl"] .account-sew-in {
+    animation-name: account-sew-in-rtl;
+  }
+
+  .account-rise {
+    animation: account-rise 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    animation-delay: calc(var(--rise-step, 0) * 120ms + 150ms);
+  }
+
+  .account-avatar {
+    animation:
+      account-rise 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) 150ms both,
+      account-glow 4s ease-in-out 1s infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .account-sew-in,
+    .account-rise,
+    .account-avatar {
+      animation: none;
+    }
+  }
+}
+
+/* The thread appears from the inline start, as if it were being sewn across. */
+@keyframes account-sew-in {
+  from { opacity: 0; clip-path: inset(0 100% 0 0); }
+  to { opacity: 1; clip-path: inset(0); }
+}
+@keyframes account-sew-in-rtl {
+  from { opacity: 0; clip-path: inset(0 0 0 100%); }
+  to { opacity: 1; clip-path: inset(0); }
+}
+@keyframes account-rise {
+  from { opacity: 0; translate: 0 12px; }
+}
+@keyframes account-glow {
+  0%, 100% { box-shadow: 0 0 0 4px rgb(238 211 184 / 0.15); }
+  50% { box-shadow: 0 0 0 9px rgb(238 211 184 / 0.06); }
+}
