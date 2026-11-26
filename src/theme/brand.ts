@@ -13,6 +13,11 @@ export const BRAND = {
   name: "Needle",
   tagline: "Women's wear",
   origin: "Made in Egypt",
+  /**
+   * Customer contact email, shown on the privacy policy page.
+   * TODO: replace the placeholder with the real address (it becomes a mailto link once it has an "@").
+   */
+  contactEmail: "[contact email]",
 } as const;
 
 /** Brand palette, sampled from the logo and the leather label. */

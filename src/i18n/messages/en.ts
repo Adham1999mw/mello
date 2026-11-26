@@ -79,6 +79,87 @@ const en = {
     disabled: "Not available",
     sampleText: "Pieces made to fit you, stitch by stitch",
   },
+  footer: {
+    tagline: "Women's wear, made in Egypt.",
+    privacy: "Privacy policy",
+    rights: "© {year} Needle. All rights reserved.",
+  },
+  privacy: {
+    title: "Privacy policy",
+    description:
+      "How Needle collects, uses and protects your personal information: your account, Google sign-in, delivery addresses and orders.",
+    updated: "Last updated: {date}",
+    updatedDate: "26 November 2026",
+    intro:
+      "This policy explains what personal information Needle collects when you use our website, why we collect it, and the choices you have. We only collect what we need to run your account and deliver your orders.",
+    who: {
+      title: "Who we are",
+      body: "Needle is a women's wear brand based in Egypt. We run this website and are responsible for the personal information you share with us on it.",
+    },
+    collect: {
+      title: "What we collect",
+      body: "We collect the following when you create an account, sign in or place an order:",
+      account:
+        "Account details: your full name, email address and password. Your password is stored encrypted, and we can never see it.",
+      phone: "Mobile number (optional): if you add it, we use it only to arrange your deliveries.",
+      addresses:
+        "Delivery addresses: the recipient's name, mobile number, governorate, city and the address details you save.",
+      orders:
+        "Order details: the pieces you order, sizes, colors, prices, delivery address and order status. Payment is cash on delivery, so we never collect card or bank details.",
+      technical: "Technical data needed to keep you signed in, such as a sign-in session saved in your browser.",
+    },
+    google: {
+      title: "Signing in with Google",
+      body: "If you choose to continue with Google, we use only your name and email address from your Google account, to create your Needle account and sign you in. We never receive your Google password, and we don't access your contacts, Gmail, Drive or any other Google data.",
+      limitedUse:
+        "Our use of information received from Google follows the Google API Services User Data Policy, including its Limited Use requirements. You can remove Needle's access at any time from your Google account settings (myaccount.google.com/permissions).",
+    },
+    use: {
+      title: "How we use your information",
+      body: "We use your information only to:",
+      account: "Create and manage your account and keep you signed in.",
+      orders: "Prepare and deliver your orders, and contact you about them.",
+      support: "Answer your questions and handle exchanges and returns.",
+      security: "Keep the website and your account safe and prevent fraud.",
+      noSale:
+        "We don't sell or rent your personal information, and we don't send you marketing messages unless you agree to receive them.",
+    },
+    share: {
+      title: "Who we share it with",
+      body: "We share your information only with:",
+      supabase:
+        "Supabase, which hosts our database and sign-in system and stores your information on our behalf. Supabase processes it only on our instructions (supabase.com/privacy).",
+      delivery:
+        "Our delivery partners, who receive only the recipient's name, mobile number and address needed to deliver your order.",
+      hosting:
+        "Our website host (GitHub Pages), which may keep basic technical logs, such as IP addresses, to serve and protect the site.",
+      legal: "Government authorities, when the law requires it.",
+    },
+    storage: {
+      title: "How long we keep it and how we protect it",
+      body: "We keep your account information while your account is open. We keep order records for as long as we need them for delivery, returns and our legal and accounting duties. Your information travels over encrypted (HTTPS) connections, and our database only lets each customer see their own account and addresses.",
+    },
+    cookies: {
+      title: "Cookies and browser storage",
+      body: "We use your browser's storage only to keep you signed in and to remember your choices, such as your language. We don't use advertising or tracking cookies.",
+    },
+    rights: {
+      title: "Your choices and rights",
+      body: "You can view and change your name, mobile number and addresses from your account at any time. You can also ask us for a copy of your information, or ask us to delete your account and its data, by contacting us. We reply within 30 days. We may keep some order records where the law requires it.",
+    },
+    children: {
+      title: "Children",
+      body: "Our website is not meant for children under 16, and we don't knowingly collect their information.",
+    },
+    changes: {
+      title: "Changes to this policy",
+      body: "If we change this policy, we'll update this page and the date at the top. For important changes, we'll also tell you by email or on the website.",
+    },
+    contact: {
+      title: "Contact us",
+      body: "Questions about your privacy, or a request about your data? Email us:",
+    },
+  },
   admin: {
     title: "Needle admin",
     products: "Products",
