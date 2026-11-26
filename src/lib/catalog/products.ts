@@ -14,6 +14,7 @@ import type {
   ProductCard,
   ProductDetail,
   ProductFilters,
+  ProductImage,
   ProductPage,
 } from "./types";
 
@@ -316,6 +317,34 @@ export async function getProductBySlug(
     max_price: prices.length ? Math.max(...prices) : 0,
     in_stock: variants.some((v) => v.stock > 0),
   };
+}
+
+/**
+ * Link to a product page, without the locale (wrap it in `localePath`):
+ *   localePath(locale, productPath("layla-maxi-dress"))          -> "/ar/product/layla-maxi-dress/"
+ *   localePath(locale, productPath("layla-maxi-dress", "black")) -> "/ar/product/layla-maxi-dress/?color=black"
+ */
+export function productPath(slug: string, colorSlug?: string | null): string {
+  const path = `/product/${encodeURIComponent(slug)}`;
+  return colorSlug ? `${path}?color=${encodeURIComponent(colorSlug)}` : path;
+}
+
+/**
+ * Photos for the picked color: that color's photos plus the ones shared by every color,
+ * in display order. A color without photos of its own shows all of them.
+ */
+export function galleryImages(product: ProductDetail, colorSlug: string | null): ProductImage[] {
+  if (!colorSlug) return product.images;
+  const own = product.images.filter((img) => img.color_slug === colorSlug);
+  if (own.length === 0) return product.images;
+  return product.images.filter((img) => img.color_slug === colorSlug || img.color_slug === null);
+}
+
+/** The color to open on: the one asked for if sold, else the first color in stock, else the first. */
+export function defaultColor(product: ProductDetail, wanted?: string | null): string | null {
+  if (wanted && product.colors.some((c) => c.slug === wanted)) return wanted;
+  const inStock = product.variants.find((v) => v.stock > 0);
+  return inStock?.color.slug ?? product.colors[0]?.slug ?? null;
 }
 
 /** The variant for a picked color + size, or undefined if that combination isn't sold. */

@@ -8,7 +8,7 @@ import { localePath } from "@/i18n/static";
 import { useTranslation } from "@/i18n/useTranslation";
 import type { Locale } from "@/i18n/config";
 import { assetPath } from "@/lib/assetPath";
-import { toLookbookItem } from "@/lib/catalog/products";
+import { productPath, toLookbookItem } from "@/lib/catalog/products";
 import type { LookbookItem } from "@/lib/catalog/types";
 import { useListProductsQuery } from "@/store/services/products";
 import { BREAKPOINTS } from "@/theme/brand";
@@ -66,7 +66,7 @@ function Lookbook({ items }: { items: LookbookItem[] }) {
   // Hidden when there is no sale or the look is sold out (same rule as the product cards).
   const discount = hasSale ? Math.round(((item.compare_at_price! - item.price) / item.compare_at_price!) * 100) : 0;
   const showDiscount = item.in_stock && discount >= 1;
-  const href = localePath(locale, `/products/${item.slug}`);
+  const href = localePath(locale, productPath(item.slug));
 
   return (
     <section aria-labelledby="lookbook-title" className="overflow-hidden bg-leather/45 py-12 text-ink md:py-20">

@@ -328,6 +328,23 @@ const ar: Messages = {
     seo: { overview: "حسابي", details: "البيانات الشخصية" },
   },
   product: {
+    gallery: {
+      label: "صور المنتج",
+      photoOf: "صورة {n} من {total}",
+      prev: "الصورة السابقة",
+      next: "الصورة التالية",
+      zoom: "تكبير الصورة",
+      close: "إغلاق",
+      zoomHint: "دوسي على الصورة للتكبير",
+    },
+    page: {
+      notFoundTitle: "مش لاقيين القطعة دي",
+      notFoundBody: "ممكن تكون خلصت أو اتنقلت. شوفي الجديد عندنا.",
+      backToShop: "ارجعي للمتجر",
+      error: "المنتج ماتحمّلش. اتأكدي من النت وجرّبي تاني.",
+      retry: "جرّبي تاني",
+      fromPrice: "من {price}",
+    },
     careIcons: {
       wash_30: "غسيل في الغسالة على ٣٠ درجة",
       wash_40: "غسيل في الغسالة على ٤٠ درجة",

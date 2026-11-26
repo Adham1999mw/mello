@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Link from "next/link";
-import { colorView, localized } from "@/lib/catalog/products";
+import { colorView, localized, productPath } from "@/lib/catalog/products";
 import type { ProductCard as ProductCardData } from "@/lib/catalog/types";
 import { DiscountBadge, Typography } from "@/components/ui";
 import { localePath } from "@/i18n/static";
@@ -45,7 +45,7 @@ export default function ProductCard({ product }: { product: ProductCardData }) {
       : t("home.products.fromPrice", { price: formatPrice(minPrice, locale) });
 
   // The product page opens on the color picked here.
-  const href = localePath(locale, `/products/${product.slug}${view ? `?color=${view.color.slug}` : ""}`);
+  const href = localePath(locale, productPath(product.slug, view?.color.slug));
 
   return (
     <article className="text-start">

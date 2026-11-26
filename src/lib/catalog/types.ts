@@ -273,7 +273,7 @@ export type FilterOptions = {
  */
 export type LookbookItem = {
   id: number;
-  /** Product slug: the details button opens `/products/{slug}`. */
+  /** Product slug: the details button opens `productPath(slug)`. */
   slug: string;
   name_ar: string;
   name_en: string;

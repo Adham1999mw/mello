@@ -16,3 +16,8 @@ export function formatPercent(percent: number, locale: Locale): string {
     maximumFractionDigits: 0,
   }).format(percent / 100);
 }
+
+// A plain whole number: 3 → Arabic "٣", English "3" (photo counters, review counts).
+export function formatNumber(value: number, locale: Locale): string {
+  return new Intl.NumberFormat(locale === "ar" ? "ar-EG" : "en-EG", { maximumFractionDigits: 0 }).format(value);
+}

@@ -328,6 +328,23 @@ const en = {
     seo: { overview: "My account", details: "Personal details" },
   },
   product: {
+    gallery: {
+      label: "Product photos",
+      photoOf: "Photo {n} of {total}",
+      prev: "Previous photo",
+      next: "Next photo",
+      zoom: "Zoom photo",
+      close: "Close",
+      zoomHint: "Tap the photo to zoom",
+    },
+    page: {
+      notFoundTitle: "We couldn't find this piece",
+      notFoundBody: "It may have sold out or moved. Have a look at what's new.",
+      backToShop: "Back to the shop",
+      error: "The product didn't load. Check your connection and try again.",
+      retry: "Try again",
+      fromPrice: "From {price}",
+    },
     careIcons: {
       wash_30: "Machine wash at 30°",
       wash_40: "Machine wash at 40°",
