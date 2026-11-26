@@ -64,10 +64,10 @@ export default function Header({ overlay = false }: { overlay?: boolean }) {
           area; the negative margins stop those areas from adding extra space or height,
           and keep the last icon lined up with the page edge. */}
       <div className="-me-[9px] flex items-center">
-        <HeaderIcon label={t("nav.search")}>
+        {/* <HeaderIcon label={t("nav.search")}>
           <circle cx="11" cy="11" r="6.5" />
           <path d="M16 16l4.5 4.5" />
-        </HeaderIcon>
+        </HeaderIcon> */}
         <HeaderAccount />
         <HeaderIcon label={t("nav.bag")}>
           <path d="M5.5 8.5h13l-1 12h-11z" />
