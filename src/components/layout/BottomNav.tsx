@@ -42,7 +42,7 @@ const tabs: Tab[] = [
     ),
   },
   {
-    href: "/account",
+    href: "/sign-in",
     label: "nav.account",
     icon: (
       <>

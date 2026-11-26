@@ -27,6 +27,7 @@
   --color-ink: #2a040d;
   --color-ink-muted: #6e4a50;
   --color-danger: #9b1c1c;
+  --color-success: #2e6b3c;
 
   --font-sans: var(--nd-font-sans), var(--nd-font-ar-sans), "Helvetica Neue", Arial, sans-serif;
   /* Latin faces have no Arabic glyphs, so Arabic text falls through to Markazi Text / IBM Plex Sans Arabic. */
@@ -37,6 +38,10 @@
 
   /* LAYOUT.radius: buttons, inputs and small cards */
   --radius-brand: 2px;
+  /* LAYOUT.radiusField: form fields and their buttons */
+  --radius-field: 14px;
+  /* LAYOUT.radiusSheet: the phone form sheet on the sign-in pages */
+  --radius-sheet: 24px;
 
   --breakpoint-sm: 40rem; /* 640px */
   --breakpoint-md: 48rem; /* 768px */
@@ -137,4 +142,78 @@ body {
   85% { rotate: 1.1deg; animation-timing-function: cubic-bezier(0.37, 0, 0.63, 1); }
   95% { rotate: -0.9deg; animation-timing-function: cubic-bezier(0.12, 0, 0.39, 0); }
   100% { rotate: 0deg; }
+}
+
+/* Sign-in pages (components/auth/BrandPanel): burgundy panel with a fine weave and a stitched thread */
+@layer components {
+  .auth-panel-bg {
+    background:
+      repeating-linear-gradient(45deg, rgb(238 211 184 / 0.035) 0 1px, transparent 1px 7px),
+      repeating-linear-gradient(-45deg, rgb(238 211 184 / 0.035) 0 1px, transparent 1px 7px),
+      radial-gradient(90% 120% at 50% 0%, --theme(--color-wine) 0%, --theme(--color-burgundy) 55%, --theme(--color-burgundy-deep) 100%);
+  }
+
+  .auth-thread path {
+    fill: none;
+    stroke: var(--color-champagne);
+    stroke-width: 1.4;
+    stroke-dasharray: 7 6;
+    stroke-linecap: round;
+    opacity: 0.55;
+    animation: auth-sew 14s linear infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .auth-thread path {
+      animation: none;
+    }
+  }
+}
+
+@keyframes auth-sew {
+  to { stroke-dashoffset: -260; }
+}
+
+/* Toasts (components/ui/Toaster): one soft curve for every move, a check that draws itself in */
+@layer components {
+  .toast-ease {
+    transition-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
+  }
+
+  .toast-seal {
+    animation: toast-seal 600ms 140ms cubic-bezier(0.34, 1.4, 0.64, 1) backwards;
+  }
+  .toast-check {
+    stroke-dasharray: 1;
+    animation: toast-check 420ms 360ms cubic-bezier(0.65, 0, 0.35, 1) backwards;
+  }
+
+  /* The timer empties toward the reading start */
+  .toast-timer {
+    transform-origin: left;
+    animation: toast-timer linear forwards;
+  }
+  [dir="rtl"] .toast-timer {
+    transform-origin: right;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .toast-ease {
+      transition-property: opacity !important;
+    }
+    .toast-seal,
+    .toast-check {
+      animation: none;
+    }
+  }
+}
+
+@keyframes toast-seal {
+  from { opacity: 0; transform: scale(0.5); }
+}
+@keyframes toast-check {
+  from { stroke-dashoffset: 1; }
+}
+@keyframes toast-timer {
+  to { transform: scaleX(0); }
 }

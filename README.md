@@ -13,6 +13,7 @@ E-commerce storefront for the Mello clothing brand.
 - **Supabase** for database, auth and storage (`src/lib/supabase`): from the browser, or on the server in `getServerSideProps` / API routes
   - Catalog (products, color × size variants, filters, pagination): schema in `supabase/migrations`, data layer in `src/lib/catalog`, RTK Query hooks in `src/store/services/products.ts`. Setup guide: [docs/supabase-setup.md](docs/supabase-setup.md)
   - Admin dashboard at `/ar/admin/` (`src/pages/[locale]/admin`, `src/components/admin`, `src/lib/admin`): log in with Supabase Auth; RLS allows writes only for users in `public.admins`
+  - Customer accounts (email + password, Google, forgot / reset password): tables `profiles` + `addresses` in `supabase/migrations`, browser helpers in `src/lib/auth`. Setup: [docs/customer-accounts.md](docs/customer-accounts.md)
 - **Hosting**: a real Node server (full features) and a GitHub Pages preview (static files); see [Deploying](#deploying)
 
 ## Design rules
@@ -40,6 +41,7 @@ The same code builds two ways (see `next.config.ts`):
 | Mode | default | `STATIC_EXPORT=true` (static files in `out/`) |
 | `getServerSideProps`, Supabase on the server | yes | no: `*.server.tsx` pages are left out |
 | API routes (`pages/api`) | yes | skipped |
+| Proxy (`src/proxy.server.ts`: signed-in visitors are sent away from the sign-in pages) | yes | removed; the browser guard `useGuestOnly()` does the same |
 | `next/image` optimization | yes | no (plain images) |
 | Browser → Supabase | through our proxy `/supabase/...` (`rewrites` in `next.config.ts`) | directly to `https://<ref>.supabase.co` |
 | URL | `/`, `/ar/`, `/en/` | `https://<user>.github.io/mello/`, `/mello/en/`, … |

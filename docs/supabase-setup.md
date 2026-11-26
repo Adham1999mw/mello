@@ -146,8 +146,9 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=المفتاح_العام_هنا
    select id from auth.users where email = 'your@email.com';
    ```
 
-4. **اقفل التسجيل لأي حد تاني** (أمان زيادة): **Authentication** → **Sign In / Providers** →
-   اقفل **Allow new users to sign up**.
+4. **التسجيل لأي حد تاني**: كان هنا إنك تقفل **Allow new users to sign up**. دلوقتي الموقع فيه حسابات
+   للعملاء، فلازم يفضل **مفتوح** (شوف [docs/customer-accounts.md](customer-accounts.md)). ده آمن: أي حد يعمل
+   حساب بيبقى عميل عادي، والأدمن بس اللي في جدول `admins`، ومحدش يقدر يضيف نفسه فيه من الموقع.
 5. افتح `/ar/admin/` وادخل بالإيميل وكلمة السر.
 
 > نسيت كلمة السر؟ من **Authentication → Users** دوس على حسابك وغيرها، أو امسحه واعمله تاني وكرر خطوة 3.
@@ -222,7 +223,8 @@ npx supabase gen types typescript --project-id <project-ref> > src/lib/supabase/
 3. Copy the Project URL and the anon / publishable key (never the service_role / secret key).
 4. Put them in `.env.local` and in GitHub → Settings → Secrets and variables → Actions → **Variables**.
 5. Admin dashboard at `/ar/admin/`: run `20261125020000_admin.sql`, create your user in Authentication →
-   Users (auto confirm), add it to `public.admins`, and turn off public sign-ups. Writes are allowed by RLS
+   Users (auto confirm) and add it to `public.admins`. Keep public sign-ups on for customer
+   accounts (docs/customer-accounts.md); only `public.admins` rows get admin access. Writes are allowed by RLS
    only for users in `public.admins`; products are saved atomically by `admin_save_product()`.
    Then run `20261126000000_lookbook_feature_image.sql`: a special lookbook image per product
    (`feature_image_*` on `products`, returned by `product_listing` / `search_products`). The homepage

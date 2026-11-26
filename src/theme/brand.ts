@@ -41,6 +41,8 @@ export const COLORS = {
   white: "#FFFFFF",
   /** Errors and destructive actions (delete, remove). Readable on ivory, white and leather. */
   danger: "#9B1C1C",
+  /** Valid fields and met rules (password chips, "Passwords match"). Readable on ivory and white. */
+  success: "#2E6B3C",
 } as const;
 
 /**
@@ -91,6 +93,12 @@ export const LAYOUT = {
   baseFontSize: 16,
   /** Radius for buttons and inputs. The brand look is sharp, so keep it small. */
   radius: 2,
+  /** Radius for form fields (TextField) and the buttons next to them (`Button shape="field"`). */
+  radiusField: 14,
+  /** Height of a form field and of a form's buttons. */
+  fieldHeight: 54,
+  /** Top corners of the phone form sheet that slides over the auth brand panel. */
+  radiusSheet: 24,
 } as const;
 
 export type BrandColor = keyof typeof COLORS;

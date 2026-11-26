@@ -1,5 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query";
+import authReducer from "./authSlice";
 import { api } from "./services/api";
 
 // A new store is created per request (server) / per app mount (client),
@@ -7,6 +8,7 @@ import { api } from "./services/api";
 export const makeStore = () => {
   const store = configureStore({
     reducer: {
+      auth: authReducer,
       [api.reducerPath]: api.reducer,
     },
     middleware: (getDefaultMiddleware) =>
