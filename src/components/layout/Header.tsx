@@ -4,6 +4,7 @@ import { localePath } from "@/i18n/static";
 import { useTranslation, type MessageKey } from "@/i18n/useTranslation";
 import { assetPath } from "@/lib/assetPath";
 import { useHideOnScroll } from "./useHideOnScroll";
+import HeaderAccount from "./HeaderAccount";
 
 // Text links, shown on desktop only (md and up).
 const navLinks: { href: string; label: MessageKey }[] = [
@@ -67,6 +68,7 @@ export default function Header({ overlay = false }: { overlay?: boolean }) {
           <circle cx="11" cy="11" r="6.5" />
           <path d="M16 16l4.5 4.5" />
         </HeaderIcon>
+        <HeaderAccount />
         <HeaderIcon label={t("nav.bag")}>
           <path d="M5.5 8.5h13l-1 12h-11z" />
           <path d="M9 8.5V7a3 3 0 0 1 6 0v1.5" />

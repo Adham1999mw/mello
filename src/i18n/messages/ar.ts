@@ -16,6 +16,7 @@ const ar: Messages = {
   nav: {
     home: "الرئيسية",
     account: "حسابي",
+    signIn: "تسجيل الدخول",
     newIn: "الجديد",
     shop: "تسوّقي",
     ourStory: "قصتنا",

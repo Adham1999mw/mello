@@ -15,6 +15,7 @@ const en = {
   nav: {
     home: "Home",
     account: "Account",
+    signIn: "Sign in",
     newIn: "New in",
     shop: "Shop",
     ourStory: "Our story",
