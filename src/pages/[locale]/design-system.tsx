@@ -1,8 +1,14 @@
+import { useState } from "react";
 import Head from "next/head";
 import {
   Button,
   DiscountBadge,
   IconButton,
+  PasswordField,
+  PasswordRules,
+  PhoneField,
+  SegmentedTabs,
+  TextField,
   Typography,
   type ButtonSize,
   type ButtonTone,
@@ -143,6 +149,66 @@ export default function DesignSystemPage() {
           </Group>
         </section>
 
+        {/* Form fields */}
+        <section className="grid gap-8">
+          <Typography variant="h2" color="burgundy">
+            {t("designSystem.fields")}
+          </Typography>
+          <Typography color="muted" className="max-w-prose">
+            {t("designSystem.fieldsIntro")}
+          </Typography>
+
+          <div className="grid gap-x-8 gap-y-6 md:grid-cols-2">
+            <Row name="TextField">
+              <TextField className="w-full" label={t("auth.fields.name")} placeholder={t("auth.fields.name")} />
+            </Row>
+            <Row name="TextField valid">
+              <TextField className="w-full" label={t("auth.fields.name")} defaultValue="Sara Ahmed" valid />
+            </Row>
+            <Row name="TextField error">
+              <TextField className="w-full" label={t("auth.fields.email")} type="email" ltr defaultValue="sara@" error={t("auth.errors.invalidEmail")} />
+            </Row>
+            <Row name="TextField optional hint">
+              <TextField className="w-full" label={t("auth.fields.email")} type="email" ltr optional hint={t("auth.fields.phoneHint")} />
+            </Row>
+            <Row name="TextField disabled">
+              <TextField className="w-full" label={t("auth.fields.email")} ltr defaultValue="sara@example.com" disabled />
+            </Row>
+            <Row name="TextField readOnly">
+              <TextField className="w-full" label={t("auth.fields.email")} ltr defaultValue="sara@example.com" readOnly />
+            </Row>
+            <Row name="PhoneField (+20)">
+              <PhoneDemo label={t("auth.fields.phone")} hint={t("auth.fields.phoneHint")} />
+            </Row>
+            <Row name="PasswordField + PasswordRules">
+              <PasswordDemo label={t("auth.fields.password")} />
+            </Row>
+          </div>
+
+          <Group title={t("designSystem.fieldButtons")}>
+            <Row name={`shape="field" fullWidth`}>
+              <div className="grid w-full max-w-[400px] gap-2.5">
+                <Button shape="field" fullWidth>
+                  {t("auth.signUp.continue")}
+                </Button>
+                <Button shape="field" variant="outline" fullWidth>
+                  {t("auth.welcome.account")}
+                </Button>
+              </div>
+            </Row>
+            <Row name="SegmentedTabs">
+              <SegmentedTabs
+                className="w-full max-w-[400px]"
+                label={t("auth.tabsLabel")}
+                items={[
+                  { href: `/${locale}/sign-in/`, label: t("auth.tabs.signIn"), current: false },
+                  { href: `/${locale}/sign-up/`, label: t("auth.tabs.signUp"), current: true },
+                ]}
+              />
+            </Row>
+          </Group>
+        </section>
+
         {/* Typography */}
         <section className="grid gap-6">
           <Typography variant="h2" color="burgundy">
@@ -183,6 +249,21 @@ function Row({ name, dark = false, children }: { name: string; dark?: boolean; c
         {name}
       </code>
       <div className="flex flex-wrap items-center gap-3">{children}</div>
+    </div>
+  );
+}
+
+function PhoneDemo({ label, hint }: { label: string; hint: string }) {
+  const [digits, setDigits] = useState("1012345678");
+  return <PhoneField className="w-full" label={label} hint={hint} value={digits} onChange={setDigits} />;
+}
+
+function PasswordDemo({ label }: { label: string }) {
+  const [value, setValue] = useState("Needle20");
+  return (
+    <div className="grid w-full gap-2">
+      <PasswordField label={label} autoComplete="new-password" value={value} onChange={(e) => setValue(e.target.value)} />
+      <PasswordRules value={value} />
     </div>
   );
 }

@@ -23,6 +23,8 @@ import { typography } from "./Typography";
 export type ButtonVariant = "solid" | "outline" | "text" | "link";
 export type ButtonTone = "burgundy" | "champagne" | "ink" | "danger";
 export type ButtonSize = "sm" | "md" | "lg";
+/** `sharp`: the brand's 2px corners. `field`: 14px corners and 54px tall, to sit next to TextFields in a form. */
+export type ButtonShape = "sharp" | "field";
 
 // Full class names (not built from pieces) so Tailwind can find them.
 const TONES: Record<ButtonTone, Record<ButtonVariant, string> & { focus: string }> = {
@@ -74,6 +76,8 @@ type CommonProps = {
   tone?: ButtonTone;
   /** Ignored by `variant="link"`, which is always a 44px tall text link. */
   size?: ButtonSize;
+  /** `"field"` for buttons inside forms (sign in, checkout): rounded like the inputs. Default `"sharp"`. */
+  shape?: ButtonShape;
   /** `true`: always full width. `"mobile"`: full width on phones, natural width from `md` up. */
   fullWidth?: boolean | "mobile";
   /** An icon before the text (on the right in Arabic). */
@@ -97,15 +101,20 @@ export function buttonClasses({
   variant = "solid",
   tone = "burgundy",
   size = "md",
+  shape = "sharp",
   fullWidth = false,
-}: Pick<CommonProps, "variant" | "tone" | "size" | "fullWidth"> = {}): string {
+}: Pick<CommonProps, "variant" | "tone" | "size" | "shape" | "fullWidth"> = {}): string {
   const width = fullWidth === "mobile" ? WIDTHS.mobile : fullWidth ? WIDTHS.full : WIDTHS.auto;
   return cn(
     "inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 text-center transition-colors duration-200",
     "focus-visible:outline-2 focus-visible:outline-offset-[3px]",
     "disabled:pointer-events-none disabled:opacity-40",
     typography("button"),
-    variant === "link" ? "min-h-11 rounded-none border-b" : cn("rounded-brand border", SIZES[size]),
+    variant === "link"
+      ? "min-h-11 rounded-none border-b"
+      : shape === "field"
+        ? "min-h-[54px] rounded-field border px-5"
+        : cn("rounded-brand border", SIZES[size]),
     TONES[tone][variant],
     TONES[tone].focus,
     width,
@@ -118,8 +127,8 @@ export function buttonClasses({
  *   <Button variant="text" tone="danger" onClick={remove}>{t("admin.form.remove")}</Button>
  */
 export default function Button(props: ButtonProps) {
-  const { variant, tone, size, fullWidth, startIcon, endIcon, className, children, ...rest } = props;
-  const classes = cn(buttonClasses({ variant, tone, size, fullWidth }), className);
+  const { variant, tone, size, shape, fullWidth, startIcon, endIcon, className, children, ...rest } = props;
+  const classes = cn(buttonClasses({ variant, tone, size, shape, fullWidth }), className);
   const content = (
     <>
       {startIcon && <span aria-hidden="true" className="-ms-1 flex shrink-0">{startIcon}</span>}

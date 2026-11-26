@@ -69,6 +69,7 @@ const COLORS = {
   ink: "text-ink",
   muted: "text-ink-muted",
   burgundy: "text-burgundy",
+  wine: "text-wine",
   champagne: "text-champagne",
   danger: "text-danger",
 } as const;
