@@ -21,7 +21,7 @@ import { useTranslation } from "@/i18n/useTranslation";
 
 // Live reference of the design system (src/components/ui): every button and text style,
 // in the current language. Open /ar/design-system/ and /en/design-system/ to compare.
-// Kept out of search results. Static page, so it works on GitHub Pages too.
+// Kept out of search results. Static page.
 
 const VARIANTS: ButtonVariant[] = ["solid", "outline", "text", "link"];
 const LIGHT_TONES: ButtonTone[] = ["burgundy", "ink", "danger"];

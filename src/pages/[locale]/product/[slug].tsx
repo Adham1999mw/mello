@@ -1,45 +1,36 @@
-import type { GetStaticPaths, GetStaticProps } from "next";
+import type { GetServerSideProps } from "next";
 import ProductPage from "@/components/product/ProductPage";
 import { locales, type Locale } from "@/i18n/config";
-import { createBuildClient } from "@/lib/supabase/build";
+import { getProductBySlug } from "@/lib/catalog/products";
+import type { ProductDetail } from "@/lib/catalog/types";
+import { createAnonClient } from "@/lib/supabase/anon";
 
 // /ar/product/layla-maxi-dress/ and /en/product/layla-maxi-dress/ (optional ?color=black).
 //
-// Everything about the product is loaded in the browser (ProductPage → RTK Query → Supabase).
-// The two functions below never fetch product data; they only tell Next which pages exist:
-// - getStaticProps passes the locale and slug from the URL (the locale sets lang/dir and the
-//   texts in the HTML, so Arabic doesn't flash as English first).
-// - getStaticPaths:
-//   - Real server: lists nothing at build. A product's page is made on its first visit
-//     (fallback "blocking") and kept. A slug that doesn't exist shows "not found" in the page.
-//   - GitHub Pages (STATIC_EXPORT): static files can't be made on a visit, so the build asks
-//     Supabase once for the active slugs and makes one page per product. A product added
-//     later needs a new deploy (Actions → Deploy to GitHub Pages → Run workflow).
-const isStaticExport = process.env.STATIC_EXPORT === "true";
-
+// The product is loaded on the server for every request, so the HTML already has the name,
+// photos and price (good for Google and link previews), and a new product works right away.
+// A slug that doesn't exist (or a hidden product) gets a real 404.
+//
+// Cost: Vercel's CDN keeps the page for 60 seconds (s-maxage), then serves the old copy while
+// it refreshes in the background (stale-while-revalidate). So a busy product page calls
+// Supabase about once a minute, not on every visit. Price and stock can be up to a minute old;
+// the bag checks stock again before checkout.
 type Params = { locale: Locale; slug: string };
-type Props = { locale: Locale; slug: string };
+type Props = { locale: Locale; product: ProductDetail; color: string | null };
 
-export const getStaticPaths: GetStaticPaths<Params> = async () => {
-  if (!isStaticExport) return { paths: [], fallback: "blocking" };
-
-  const supabase = createBuildClient();
-  const { data, error } = supabase
-    ? await supabase.from("products").select("slug").eq("is_active", true)
-    : { data: [], error: null };
-  if (error) throw error;
-  return {
-    paths: locales.flatMap((locale) => (data ?? []).map((p) => ({ params: { locale, slug: p.slug } }))),
-    fallback: false,
-  };
-};
-
-export const getStaticProps: GetStaticProps<Props, Params> = async ({ params }) => {
+export const getServerSideProps: GetServerSideProps<Props, Params> = async ({ params, query, res }) => {
   const { locale, slug } = params!;
   if (!locales.includes(locale)) return { notFound: true };
-  return { props: { locale, slug } };
+
+  const product = await getProductBySlug(slug, createAnonClient());
+  if (!product) return { notFound: true };
+
+  res.setHeader("Cache-Control", "public, s-maxage=60, stale-while-revalidate=600");
+  const color = typeof query.color === "string" ? query.color : null;
+  return { props: { locale, product, color } };
 };
 
-export default function ProductRoute({ slug }: Props) {
-  return <ProductPage slug={slug} />;
+export default function ProductRoute({ product, color }: Props) {
+  // `key`: opening another product (or color link) starts the page fresh.
+  return <ProductPage key={`${product.slug}-${color ?? ""}`} product={product} wantedColor={color} />;
 }

@@ -1,36 +1,20 @@
 import { useState } from "react";
-import { useRouter } from "next/router";
 import Seo from "@/components/seo/Seo";
-import { Button, DiscountBadge, Typography } from "@/components/ui";
-import { localePath } from "@/i18n/static";
+import { DiscountBadge, Typography } from "@/components/ui";
 import { useTranslation } from "@/i18n/useTranslation";
 import { defaultColor, galleryImages, localized } from "@/lib/catalog/products";
 import type { ProductDetail } from "@/lib/catalog/types";
-import { useGetProductQuery } from "@/store/services/products";
 import { formatPrice } from "./formatPrice";
 import ProductGallery from "./ProductGallery";
 
 /**
- * Product page (/ar/product/layla-maxi-dress/, optional ?color=black). The route
- * (pages/[locale]/product/[slug].tsx) gives the slug; the product is fetched in the
- * browser (RTK Query → Supabase), so price and stock are always fresh.
+ * Product page (/ar/product/layla-maxi-dress/, optional ?color=black). The product comes
+ * from the server (getServerSideProps in pages/[locale]/product/[slug].tsx).
  *
  * Built step by step. Now: photos (ProductGallery), name and price.
  * Next: color and size, add to bag, details tabs, reviews.
  */
-export default function ProductPage({ slug }: { slug: string }) {
-  const { query, isReady } = useRouter();
-  const color = typeof query.color === "string" ? query.color : null;
-  const { data: product, isLoading, isError, refetch } = useGetProductQuery(slug, { skip: !slug });
-
-  if (!isReady || isLoading) return <ProductSkeleton />;
-  if (isError) return <LoadError onRetry={refetch} />;
-  if (!slug || !product) return <NotFound />;
-  // `key`: another product (or color link) starts fresh.
-  return <ProductView key={`${product.slug}-${color ?? ""}`} product={product} wantedColor={color} />;
-}
-
-function ProductView({ product, wantedColor }: { product: ProductDetail; wantedColor: string | null }) {
+export default function ProductPage({ product, wantedColor }: { product: ProductDetail; wantedColor: string | null }) {
   const { t, locale } = useTranslation();
   // The color picker (next step) will change this.
   const [color] = useState(() => defaultColor(product, wantedColor));
@@ -85,49 +69,5 @@ function ProductView({ product, wantedColor }: { product: ProductDetail; wantedC
         </div>
       </div>
     </>
-  );
-}
-
-function ProductSkeleton() {
-  return (
-    <div
-      className="animate-pulse md:mx-auto md:grid md:max-w-[1184px] md:grid-cols-[minmax(0,1fr)_400px] md:gap-[72px] md:px-8 md:pt-6 xl:px-0"
-      aria-busy="true"
-    >
-      <div className="aspect-[2/3] w-full bg-leather md:ms-[102px] md:w-auto md:rounded-brand" />
-      <div className="flex flex-col gap-3 px-4 pt-5 md:px-0">
-        <div className="h-3 w-24 rounded-brand bg-leather" />
-        <div className="h-9 w-3/4 rounded-brand bg-leather" />
-        <div className="h-7 w-28 rounded-brand bg-leather" />
-      </div>
-    </div>
-  );
-}
-
-function NotFound() {
-  const { t, locale } = useTranslation();
-  return (
-    <div className="mx-auto flex max-w-md flex-col items-center gap-4 px-4 py-20 text-center">
-      <Seo title={t("product.page.notFoundTitle")} noindex />
-      <Typography variant="h1" color="burgundy">
-        {t("product.page.notFoundTitle")}
-      </Typography>
-      <Typography color="muted">{t("product.page.notFoundBody")}</Typography>
-      <Button href={localePath(locale)} fullWidth="mobile">
-        {t("product.page.backToShop")}
-      </Button>
-    </div>
-  );
-}
-
-function LoadError({ onRetry }: { onRetry: () => void }) {
-  const { t } = useTranslation();
-  return (
-    <div className="mx-auto flex max-w-md flex-col items-center gap-4 px-4 py-20 text-center">
-      <Typography color="muted">{t("product.page.error")}</Typography>
-      <Button variant="outline" fullWidth="mobile" onClick={onRetry}>
-        {t("product.page.retry")}
-      </Button>
-    </div>
   );
 }

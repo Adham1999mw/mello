@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { assetPath } from "@/lib/assetPath";
 
 // The leather "Made in Egypt" label with its size tab, hanging from a dashed thread.
 // Thread and label swing together as one pendulum around the top of the thread
@@ -19,7 +18,7 @@ export default function LeatherLabel({ alt }: { alt: string }) {
         </svg>
 
         <Image
-          src={assetPath("/brand/needle-label.webp")}
+          src="/brand/needle-label.webp"
           alt={alt}
           width={900}
           height={635}

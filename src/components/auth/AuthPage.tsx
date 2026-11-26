@@ -10,7 +10,7 @@ import SignUpForm, { type SignUpStage } from "./SignUpForm";
 import { authHref, type AuthTab } from "./useAuthPage";
 
 // Sign in and create account, one page (/ar/sign-in/, /en/sign-in/). Static, so it works on
-// GitHub Pages too. Spec: docs/auth-flow-spec.md → 7.0.
+// Spec: docs/auth-flow-spec.md → 7.0.
 //
 //   /sign-in/                     "Sign in" tab
 //   /sign-in/?tab=sign-up         "Create account" tab

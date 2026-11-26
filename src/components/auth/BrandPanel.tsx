@@ -2,7 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { IconButton, Typography } from "@/components/ui";
 import { useTranslation } from "@/i18n/useTranslation";
-import { assetPath } from "@/lib/assetPath";
 import { BackIcon, CloseIcon } from "./AuthIcons";
 import { Emphasis } from "./AuthHeader";
 
@@ -47,7 +46,7 @@ export default function BrandPanel({ onBack, closeHref }: BrandPanelProps) {
 
       <div className="absolute inset-x-0 top-[calc(50%+env(safe-area-inset-top,0px)/2-6px)] flex -translate-y-1/2 justify-center md:top-[44%]">
         <Image
-          src={assetPath("/brand/needle-label.webp")}
+          src="/brand/needle-label.webp"
           alt=""
           width={900}
           height={635}

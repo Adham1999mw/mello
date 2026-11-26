@@ -5,8 +5,8 @@ import { useLocale } from "@/i18n/useLocale";
 import { formatPhone, phoneDigits } from "@/lib/auth/form";
 import { useCustomer } from "@/store/hooks";
 
-// The signed-in customer for the account pages. A guest is sent to sign in (works on GitHub Pages
-// too, because it runs in the browser). `ready` is false until the session and profile are known.
+// The signed-in customer for the account pages. A guest is sent to sign in (in the browser).
+// `ready` is false until the session and profile are known.
 export function useAccount() {
   const router = useRouter();
   const locale = useLocale();

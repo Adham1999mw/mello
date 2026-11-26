@@ -136,7 +136,7 @@ const en = {
       delivery:
         "Our delivery partners, who receive only the recipient's name, mobile number and address needed to deliver your order.",
       hosting:
-        "Our website host (GitHub Pages), which may keep basic technical logs, such as IP addresses, to serve and protect the site.",
+        "Our website host (Vercel), which may keep basic technical logs, such as IP addresses, to serve and protect the site.",
       legal: "Government authorities, when the law requires it.",
     },
     storage: {
@@ -338,11 +338,6 @@ const en = {
       zoomHint: "Tap the photo to zoom",
     },
     page: {
-      notFoundTitle: "We couldn't find this piece",
-      notFoundBody: "It may have sold out or moved. Have a look at what's new.",
-      backToShop: "Back to the shop",
-      error: "The product didn't load. Check your connection and try again.",
-      retry: "Try again",
       fromPrice: "From {price}",
     },
     careIcons: {

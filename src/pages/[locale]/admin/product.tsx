@@ -5,8 +5,7 @@ import ProductEditor from "@/components/admin/ProductEditor";
 export { getStaticPaths, getStaticProps } from "@/i18n/static";
 
 // /ar/admin/product/ = new product, /ar/admin/product/?id=12 = edit product 12.
-// The id is a query parameter (not /product/12/) so the page works as one static file
-// on GitHub Pages.
+// The id is a query parameter (not /product/12/), so the page is one static file.
 export default function AdminProductPage() {
   const { query, isReady } = useRouter();
   const id = Number(query.id);

@@ -8,7 +8,7 @@ const PRODUCT_COUNT = 8;
 
 // Homepage section under the hero: the newest products, from Supabase.
 // The data comes from the products API (useListProductsQuery → lib/catalog → Supabase),
-// in the browser, so it works on the real server and on GitHub Pages.
+// in the browser (RTK Query → Supabase).
 export default function NewArrivalsSection() {
   const { t, locale } = useTranslation();
   const { data, isLoading, isError, refetch } = useListProductsQuery({

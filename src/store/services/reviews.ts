@@ -11,7 +11,7 @@ import { api } from "./api";
 import { toError } from "./products";
 
 /**
- * RTK Query hooks for product reviews (Supabase from the browser, so GitHub Pages works too).
+ * RTK Query hooks for product reviews (Supabase from the browser).
  *
  *   const { data: stats } = useGetReviewStatsQuery(slug);
  *   const { data: page } = useListReviewsQuery({ slug, sort: "newest", page: 1 });

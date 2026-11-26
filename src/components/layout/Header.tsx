@@ -2,7 +2,6 @@ import Link from "next/link";
 import { IconButton, typography } from "@/components/ui";
 import { localePath } from "@/i18n/static";
 import { useTranslation, type MessageKey } from "@/i18n/useTranslation";
-import { assetPath } from "@/lib/assetPath";
 import { useHideOnScroll } from "./useHideOnScroll";
 import HeaderAccount from "./HeaderAccount";
 
@@ -84,7 +83,7 @@ export default function Header({ overlay = false }: { overlay?: boolean }) {
 // The ND monogram in the current text color: the cream logo image is used as a mask
 // over a `currentColor` fill, so it turns burgundy with the rest of the ivory bar.
 // The image's edges are partly see-through, so the mask is stacked 3 times to make it solid.
-const monogramMask = Array(3).fill(`url(${assetPath("/brand/needle-monogram-cream.webp")})`).join(", ");
+const monogramMask = Array(3).fill("url(/brand/needle-monogram-cream.webp)").join(", ");
 
 function Monogram() {
   return (

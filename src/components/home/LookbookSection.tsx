@@ -7,7 +7,6 @@ import "swiper/css";
 import { localePath } from "@/i18n/static";
 import { useTranslation } from "@/i18n/useTranslation";
 import type { Locale } from "@/i18n/config";
-import { assetPath } from "@/lib/assetPath";
 import { productPath, toLookbookItem } from "@/lib/catalog/products";
 import type { LookbookItem } from "@/lib/catalog/types";
 import { useListProductsQuery } from "@/store/services/products";
@@ -137,7 +136,7 @@ function Lookbook({ items }: { items: LookbookItem[] }) {
                   and never takes more than ~60% of the visible height. */}
               <div className="relative h-[80vw] max-h-[60svh] md:h-[60svh] md:max-h-[640px]">
                 <Image
-                  src={imageSrc(slide.image_url)}
+                  src={slide.image_url}
                   alt={altText(slide, locale)}
                   fill
                   priority={i === 0}
@@ -206,11 +205,6 @@ function Lookbook({ items }: { items: LookbookItem[] }) {
       </div>
     </section>
   );
-}
-
-// Storage images are full URLs; `/public` files need the GitHub Pages base path.
-function imageSrc(url: string): string {
-  return url.startsWith("/") ? assetPath(url) : url;
 }
 
 function altText(item: LookbookItem, locale: Locale): string {

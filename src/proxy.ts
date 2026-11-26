@@ -2,10 +2,7 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { SIGNED_IN_HOME, isResetLink } from "@/lib/auth/guestOnly";
 
-// Next.js Proxy (formerly "middleware"), real server only. Next finds it as `proxy` + one of
-// the pageExtensions (next.config.ts), so `proxy.server.ts` works and, like every `*.server.*`
-// file, the GitHub Pages workflow removes it (static files have no server to run it).
-// There, useGuestOnly() in the browser does the same job.
+// Next.js Proxy (formerly "middleware"): runs on the server before a page loads.
 //
 // What it does: a signed-in customer who opens a sign-in page (sign in / create account,
 // forgot password, reset password) is redirected to the home page. Rules: src/lib/auth/guestOnly.ts.

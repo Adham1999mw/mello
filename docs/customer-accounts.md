@@ -62,9 +62,9 @@ SQL Editor → New query → الصق
 
 **Authentication** → **URL Configuration**:
 
-- **Site URL**: `https://adham1999mw.github.io/mello/ar/`
+- **Site URL**: `https://<اسم-مشروعك>.vercel.app/ar/`
 - **Redirect URLs** → **Add URL**، ضيف الاتنين دول:
-  - `https://adham1999mw.github.io/mello/**`
+  - `https://<اسم-مشروعك>.vercel.app/**`
   - `http://localhost:3000/**`
 
 (لو عندك دومين خاص أو سيرفر، ضيفه بنفس الشكل، مثلًا `https://needle.com/**`.)
@@ -77,7 +77,7 @@ SQL Editor → New query → الصق
 2. **APIs & Services** → **OAuth consent screen** (أو **Google Auth Platform**): اختار **External**، اكتب اسم
    المتجر وإيميلك، وبعدين **Publish app** عشان أي حد يقدر يدخل مش بس الـ test users.
 3. **Credentials** → **Create credentials** → **OAuth client ID** → النوع **Web application**:
-   - **Authorized JavaScript origins**: `https://adham1999mw.github.io` و `http://localhost:3000`
+   - **Authorized JavaScript origins**: `https://<اسم-مشروعك>.vercel.app` و `http://localhost:3000`
    - **Authorized redirect URIs**: `https://nodzpetncbzgrcanvpgt.supabase.co/auth/v1/callback`
      (تلاقيه بالظبط في Supabase تحت Google provider، اسمه **Callback URL**)
 4. انسخ **Client ID** و **Client secret**.

@@ -1,9 +1,9 @@
 // Sign-in pages are for guests only: a signed-in customer who opens one is sent to the home page.
 //
-// Two layers, because the same code runs on a real server and as static files on GitHub Pages:
-//   1. src/proxy.server.ts      on the server, redirects before the page loads (no flash).
-//   2. useGuestOnly()           in the browser (components/auth), for GitHub Pages and for
-//                               client-side navigation, where the proxy does not run.
+// Two layers:
+//   1. src/proxy.ts             on the server, redirects before the page loads (no flash).
+//   2. useGuestOnly()           in the browser (components/auth), for client-side navigation,
+//                               where the proxy does not run.
 //
 // The one exception: /reset-password/ opened from the email link (?token_hash= or ?code=).
 // That link is how she proves who she is, so it must work even if she is already signed in.

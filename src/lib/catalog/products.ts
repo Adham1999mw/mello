@@ -19,7 +19,7 @@ import type {
 } from "./types";
 
 /**
- * The products "API". There is no server on GitHub Pages, so the browser talks to
+ * The products "API". The browser talks to
  * Supabase directly with the public anon key. Row Level Security (see
  * supabase/migrations) makes that safe: the anon key can only read active products.
  *
@@ -28,7 +28,7 @@ import type {
  *   page.items   // 12 product cards
  *   page.total   // how many match, on all pages
  *
- * Every function takes an optional client, so server pages (`*.server.tsx`) can pass the
+ * Every function takes an optional client, so server code (getServerSideProps) can pass the
  * client from `@/lib/supabase/server` instead.
  */
 export type Client = SupabaseClient<Database>;

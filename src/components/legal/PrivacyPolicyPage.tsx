@@ -3,7 +3,7 @@ import { Button, Typography } from "@/components/ui";
 import { useTranslation, type MessageKey } from "@/i18n/useTranslation";
 import { BRAND } from "@/theme/brand";
 
-// Privacy policy (/ar/privacy/, /en/privacy/). Static page, so it works on GitHub Pages too.
+// Privacy policy (/ar/privacy/, /en/privacy/). Static page.
 // Google sign-in needs this page's address on the OAuth consent screen (Branding).
 // All text is in messages → `privacy`; each section below names its title, intro and list keys.
 // When you change what the site collects, update the text and `privacy.updatedDate`.

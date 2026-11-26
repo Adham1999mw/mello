@@ -13,14 +13,13 @@ the button changes these screens need.
   Build this on top of PR 10 (merge it first, or branch from it).
 - Repo rules apply (CLAUDE.md): mobile first with min-width breakpoints only, brand tokens only,
   `Button` / `IconButton` / `Typography` from `@/components/ui`, logical properties for RTL,
-  every string in `en.ts` and `ar.ts`, pages must work as static files on GitHub Pages.
+  every string in `en.ts` and `ar.ts`.
 
 ---
 
 ## 1. Routes and files
 
-All pages are static (no `getServerSideProps`). They use the browser Supabase client from PR 10,
-so they work on GitHub Pages. Each page exports `getStaticPaths` / `getStaticProps` from `@/i18n/static`.
+All pages are static (no `getServerSideProps`). They use the browser Supabase client from PR 10. Each page exports `getStaticPaths` / `getStaticProps` from `@/i18n/static`.
 
 | Route | File | Screens |
 | --- | --- | --- |
@@ -388,7 +387,7 @@ check (success), none (hint). 16px icons, `mt-0.5`, `gap-[7px]`.
   `M-20 640 C 160 560, 260 720, 380 660 S 540 560, 640 600` (second at 30% opacity).
   Stroke `champagne`, width 1.4, `stroke-dasharray: 7 6`, round caps, 55% opacity. Slow "sewing"
   animation: `stroke-dashoffset` 0 → −260 over 14s linear infinite; none under `prefers-reduced-motion`.
-- Image: `public/brand/needle-label.webp` through `next/image` with `assetPath()`,
+- Image: `public/brand/needle-label.webp` through `next/image`,
   `sizes="(min-width: 768px) 330px, 168px"`, `alt=""` (decorative), `priority` on sign-in only.
 - Alternative (kept in the preview): monogram pattern (`needle-monogram-cream.webp` tiled at 92px,
   6% opacity) + a large monogram. Build it behind a `variant="label" | "monogram"` prop, default `label`.
@@ -788,7 +787,6 @@ Emails, phone numbers and the `{email}` placeholder are wrapped in `<bdi dir="lt
 - Google sign-up with no phone lands on Add mobile; skip doesn't ask again.
 - Reset link opened in another browser (token_hash link) works; an old link shows Link expired.
 - Forgot password with an unknown email still shows Email sent.
-- GitHub Pages build (`next build` with the Pages config): all five pages are exported as static files.
 - `/[locale]/design-system/` shows TextField (all states), PasswordField, PhoneField, PasswordRules,
   SegmentedTabs and the `shape="field"` buttons.
 

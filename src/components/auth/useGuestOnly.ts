@@ -6,8 +6,8 @@ import { SIGNED_IN_HOME, isResetLink } from "@/lib/auth/guestOnly";
 import { useCustomer } from "@/store/hooks";
 
 // The browser half of "sign-in pages are for guests only" (rules: src/lib/auth/guestOnly.ts).
-// On the real server src/proxy.server.ts already redirected; this covers GitHub Pages and
-// client-side navigation (a <Link> to /sign-in/ never reaches the proxy).
+// src/proxy.ts already redirects on a full page load; this covers client-side
+// navigation (a <Link> to /sign-in/ never reaches the proxy).
 //
 // It decides once, from the session she arrived with. Signing in on this page (or the reset
 // link signing her in) does not trigger it: those flows show their own toast and go on themselves.

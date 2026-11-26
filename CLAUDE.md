@@ -48,12 +48,15 @@ Arabic is right-to-left (English is the default locale). Use logical properties 
 (`ms-*`, `pe-*`, `start-*`, `text-start`, `margin-inline-start`) instead of left/right.
 Every user-facing string goes in both `src/i18n/messages/en.ts` and `ar.ts`.
 
-## 4. Server and GitHub Pages
+## 4. Server (Vercel)
 
-The same code runs on a real server and as static files on GitHub Pages (see README → Deploying).
-Pages that need the server (`getServerSideProps`, Supabase server client) are named
-`*.server.tsx`; they are left out of the GitHub Pages build. All other pages must work as
-static files. Wrap `/public` asset paths in `assetPath()` for `next/image` and CSS `url()`.
+The site runs on Vercel (a real Node server; see README → Deploying).
+- Pages that need data per request use `getServerSideProps` and return `locale` in their props.
+  For public data, use `createAnonClient()` (`src/lib/supabase/anon.ts`, no cookies) so the page
+  can be cached with a `Cache-Control: s-maxage` header. For the signed-in user, use
+  `src/lib/supabase/server.ts`.
+- Pages with no per-request data stay static: `export { getStaticPaths, getStaticProps } from "@/i18n/static"`.
+- `/public` files are referenced by their plain path (`/brand/x.webp`).
 
 Full details: [docs/design-guidelines.md](docs/design-guidelines.md).
 Homepage hero build spec: [docs/hero-section.md](docs/hero-section.md).

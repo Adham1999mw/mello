@@ -1,6 +1,6 @@
 /**
  * Optional public site address (with the base path, no trailing slash). Share images must be
- * full URLs, so it is put in front of them when set. The GitHub Pages workflow sets it.
+ * full URLs, so it is put in front of them when set. Set it on Vercel to the site address, e.g. https://needle.vercel.app.
  */
 export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "").replace(/\/+$/, "");
 

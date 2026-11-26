@@ -14,7 +14,7 @@ E-commerce storefront for the Mello clothing brand.
   - Catalog (products, color × size variants, filters, pagination): schema in `supabase/migrations`, data layer in `src/lib/catalog`, RTK Query hooks in `src/store/services/products.ts`. Setup guide: [docs/supabase-setup.md](docs/supabase-setup.md)
   - Admin dashboard at `/ar/admin/` (`src/pages/[locale]/admin`, `src/components/admin`, `src/lib/admin`): log in with Supabase Auth; RLS allows writes only for users in `public.admins`
   - Customer accounts (email + password, Google, forgot / reset password): tables `profiles` + `addresses` in `supabase/migrations`, browser helpers in `src/lib/auth`. Setup: [docs/customer-accounts.md](docs/customer-accounts.md)
-- **Hosting**: a real Node server (full features) and a GitHub Pages preview (static files); see [Deploying](#deploying)
+- **Hosting**: Vercel; see [Deploying](#deploying)
 
 ## Design rules
 
@@ -33,36 +33,32 @@ Open http://localhost:3000.
 
 ## Deploying
 
-The same code builds two ways (see `next.config.ts`):
+The site is hosted on **Vercel**. Every push to `main` deploys; every pull request gets a preview link.
 
-| | Real server | GitHub Pages |
-| --- | --- | --- |
-| Build | `npm run build` then `npm start` (Vercel, a VPS, …) | `.github/workflows/deploy-pages.yml` on every push to `main` |
-| Mode | default | `STATIC_EXPORT=true` (static files in `out/`) |
-| `getServerSideProps`, Supabase on the server | yes | no: `*.server.tsx` pages are left out |
-| API routes (`pages/api`) | yes | skipped |
-| Proxy (`src/proxy.server.ts`: signed-in visitors are sent away from the sign-in pages) | yes | removed; the browser guard `useGuestOnly()` does the same |
-| `next/image` optimization | yes | no (plain images) |
-| Browser → Supabase | through our proxy `/supabase/...` (`rewrites` in `next.config.ts`) | directly to `https://<ref>.supabase.co` |
-| URL | `/`, `/ar/`, `/en/` | `https://<user>.github.io/mello/`, `/mello/en/`, … |
+**One-time setup**: import the GitHub repo in Vercel (Framework: Next.js; the install command comes
+from `vercel.json`), then add these Environment Variables:
 
-**Pages that need the server**: name the file `*.server.tsx`, e.g.
-`src/pages/[locale]/orders.server.tsx` is the page `/en/orders/` and can use `getServerSideProps`
-with the Supabase server client (`src/lib/supabase/server.ts`). The Pages workflow deletes these
-files from its build, so the GitHub Pages preview simply doesn't have them (and the build never fails).
-Every other page must work as static files: use `getStaticProps` / `getStaticPaths`, or call
-Supabase from the browser.
+| Name | Value |
+| --- | --- |
+| `NEXT_PUBLIC_SUPABASE_URL` | the Supabase Project URL |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | the anon / publishable key (never the service_role / secret key) |
+| `NEXT_PUBLIC_SITE_URL` | the site address, e.g. `https://<project>.vercel.app` (share images, SEO) |
 
-**GitHub Pages setup** (one time): repo **Settings → Pages → Source: GitHub Actions**. For Supabase, add
-`NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` under
-**Settings → Secrets and variables → Actions → Variables**.
-On Pages the site lives under `/mello`, so wrap image and CSS asset paths in
-`assetPath("/brand/x.webp")` (`src/lib/assetPath.ts`); links from `next/link` get it automatically.
+Also add the Vercel address to Supabase **Authentication → URL Configuration → Redirect URLs**
+(`https://<project>.vercel.app/**`) and to Google's **Authorized JavaScript origins**
+(see docs/customer-accounts.md).
 
-**Server setup**: set the same two Supabase variables on your host, then `npm run build && npm start`.
+**How it runs**
+- Static pages (home, sign-in, account, admin, …) are pre-rendered once per locale with
+  `getStaticPaths` / `getStaticProps` from `@/i18n/static`.
+- Pages that need data per request use `getServerSideProps`, e.g. the product page
+  `src/pages/[locale]/product/[slug].tsx`. Public data uses `createAnonClient()`
+  (`src/lib/supabase/anon.ts`, no cookies) so the CDN can cache the page (`s-maxage`).
+  The signed-in user's data uses `src/lib/supabase/server.ts`.
+- The browser calls Supabase through our proxy `/supabase/...` (`rewrites` in `next.config.ts`).
+- `src/proxy.ts` sends signed-in visitors away from the sign-in pages before they load.
 
-To try the Pages build locally: `STATIC_EXPORT=true npm run build` (output in `out/`). It fails if a
-`*.server.tsx` page exists, because CI removes those first.
+**Locally**: `npm run build && npm start` runs the same production build.
 
 ## SEO, icons and share images
 
@@ -74,7 +70,7 @@ To try the Pages build locally: `STATIC_EXPORT=true npm run build` (output in `o
 - **Icons + share image** are plain files: `public/favicon.ico`, `public/icons/`,
   `public/og/needle-og.jpg` (1200×630) and `public/site.webmanifest`.
 - **`NEXT_PUBLIC_SITE_URL`** (optional) is put in front of the share image URL, which should be a
-  full address. GitHub Pages sets it automatically.
+  full address. Set it in Vercel's Environment Variables.
 
 ## Translations (ar / en)
 

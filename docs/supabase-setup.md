@@ -8,7 +8,7 @@
 ## الفكرة ببساطة
 
 - **Supabase** = قاعدة بيانات Postgres جاهزة على النت، ومعاها API أوتوماتيك لكل جدول.
-- الموقع بتاعنا على GitHub Pages ملفات static من غير سيرفر، فالمتصفح بيكلم Supabase **مباشرة**.
+- الموقع على Vercel. المتصفح بيكلم Supabase عن طريق `/supabase/...` على نفس الدومين، وصفحات زي صفحة المنتج بتجيب بياناتها على السيرفر.
 - عشان ده يبقى آمن بنشغل **Row Level Security (RLS)**: قواعد جوه قاعدة البيانات بتقول
   "أي حد يقدر **يقرا** المنتجات المعروضة بس، ومحدش يقدر يضيف أو يعدل أو يمسح".
 - يعني الـ "API" بتاعنا هو Supabase نفسه + شوية SQL، ومفيش سيرفر نكتبه.
@@ -80,25 +80,20 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=المفتاح_العام_هنا
 
 `.env.local` مش بيترفع على GitHub (موجود في `.gitignore`).
 
-### 5. حطهم في GitHub (عشان GitHub Pages)
+### 5. حطهم في Vercel
 
-الريبو → **Settings** → **Secrets and variables** → **Actions** → تاب **Variables** → **New repository variable**:
+مشروعك على Vercel → **Settings** → **Environment Variables**:
 
 | Name | Value |
 | --- | --- |
 | `NEXT_PUBLIC_SUPABASE_URL` | الـ Project URL |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | المفتاح العام |
 
-الأفضل **Variables**، بس لو حطيتهم في **Secrets** هيشتغلوا برضه. المفتاح العام أصلا بيبان في المتصفح
-(وده عادي، الـ RLS هي اللي بتحمي البيانات).
+المفتاح العام أصلاً بيبان في المتصفح (وده عادي، الـ RLS هي اللي بتحمي البيانات).
+بعد ما تضيفهم أو تغيرهم: **Deployments** → آخر deploy → **Redeploy**، لأن القيم دي بتتكتب جوه ملفات الـ JS وقت الـ build.
 
-بعد ما تضيفهم: **Actions** → **Deploy to GitHub Pages** → **Run workflow** (أو اعمل أي push على `main`).
-لازم build جديد، لأن القيم دي بتتكتب جوه ملفات الـ JS وقت الـ build.
-لو نسيتهم، الـ workflow هيقف برسالة واضحة "Supabase is not set up" بدل ما ينشر موقع مش بيجيب منتجات.
-
-> على GitHub Pages مفيش سيرفر: الطلبات بتروح من **متصفح الزائر** لـ Supabase على طول
-> (هتلاقيها في Network باسم `xxxx.supabase.co/rest/v1/rpc/search_products`). على Vercel بتعدي من
-> `/supabase/...` على نفس الدومين.
+> طلبات المتصفح بتعدي من `/supabase/...` على نفس الدومين (هتلاقيها في Network باسم
+> `/supabase/rest/v1/rpc/search_products`)، و Next بيوصّلها لـ Supabase.
 
 ### 6. إضافة منتجات حقيقية
 

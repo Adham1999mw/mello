@@ -12,7 +12,7 @@ import { api } from "./api";
 
 /**
  * RTK Query hooks for the catalog. They call Supabase directly (see lib/catalog),
- * so they work on GitHub Pages too, and results are cached per filter set.
+ * and results are cached per filter set.
  *
  *   const { data, isLoading } = useListProductsQuery({ category: "dresses", page: 1 });
  *   const { data: product } = useGetProductQuery("layla-maxi-dress");

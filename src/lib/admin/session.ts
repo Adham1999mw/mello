@@ -3,7 +3,7 @@ import type { User } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/client";
 
 /**
- * Login state for the admin dashboard. Runs in the browser only (works on GitHub Pages).
+ * Login state for the admin dashboard. Runs in the browser only.
  *
  * - "loading":  checking the saved session
  * - "signedOut": show the login form

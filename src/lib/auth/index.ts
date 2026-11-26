@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 import type { Database } from "@/lib/supabase/database.types";
 
 // Customer accounts (sign up, sign in, Google, forgot / reset password): the client side of
-// supabase/migrations/20261127000000_customers.sql. Browser only, so it works on GitHub Pages too.
+// supabase/migrations/20261127000000_customers.sql. Browser only.
 // The pages that use it come later. Supabase + Google setup: docs/customer-accounts.md.
 //
 // Admin access is separate: it needs a row in public.admins, which customers can't add.
@@ -13,9 +13,9 @@ import type { Database } from "@/lib/supabase/database.types";
 
 export type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 
-/** Full address of a page on this site, for Supabase redirects (works under /mello on Pages). */
+/** Full address of a page on this site, for Supabase redirects. */
 export function siteUrl(locale: Locale, path: string): string {
-  return `${window.location.origin}${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}${localePath(locale, path)}`;
+  return `${window.location.origin}${localePath(locale, path)}`;
 }
 
 // ---------- form helpers ----------
