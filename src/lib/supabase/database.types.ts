@@ -225,6 +225,74 @@ export type Database = {
           },
         ];
       };
+      profiles: {
+        Row: {
+          id: string;
+          full_name: string | null;
+          phone: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id: string;
+          full_name?: string | null;
+          phone?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          full_name?: string | null;
+          phone?: string | null;
+        };
+        Relationships: [];
+      };
+      addresses: {
+        Row: {
+          id: number;
+          user_id: string;
+          label: string | null;
+          recipient_name: string;
+          phone: string;
+          governorate: string;
+          city: string;
+          street: string;
+          building: string | null;
+          floor: string | null;
+          apartment: string | null;
+          landmark: string | null;
+          is_default: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          user_id?: string;
+          label?: string | null;
+          recipient_name: string;
+          phone: string;
+          governorate: string;
+          city: string;
+          street: string;
+          building?: string | null;
+          floor?: string | null;
+          apartment?: string | null;
+          landmark?: string | null;
+          is_default?: boolean;
+        };
+        Update: {
+          label?: string | null;
+          recipient_name?: string;
+          phone?: string;
+          governorate?: string;
+          city?: string;
+          street?: string;
+          building?: string | null;
+          floor?: string | null;
+          apartment?: string | null;
+          landmark?: string | null;
+          is_default?: boolean;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       product_listing: {
