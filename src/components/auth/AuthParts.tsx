@@ -3,7 +3,7 @@ import Link from "next/link";
 import { AlertIcon, Button, SegmentedTabs, Typography, cn, typography } from "@/components/ui";
 import { useTranslation } from "@/i18n/useTranslation";
 import { GoogleIcon, Spinner } from "./AuthIcons";
-import { useAuthNext } from "./useAuthPage";
+import type { AuthTab } from "./useAuthPage";
 
 // Small shared pieces of the sign-in pages.
 
@@ -105,17 +105,26 @@ export function SubmitButton({ loading, children }: { loading?: boolean; childre
   );
 }
 
-/** The rounded "Sign in | Create account" switch at the top of both pages. Keeps `?next=`. */
-export function AuthTabs({ current }: { current: "signIn" | "signUp" }) {
+/** Ids that tie each tab to its panel (aria-controls / aria-labelledby). */
+export const AUTH_TAB_IDS = {
+  signIn: { tab: "tab-sign-in", panel: "panel-sign-in" },
+  signUp: { tab: "tab-sign-up", panel: "panel-sign-up" },
+} as const;
+
+/** The rounded "Sign in | Create account" tabs at the top of the sign-in page. */
+export function AuthTabs({ current, onSelect }: { current: AuthTab; onSelect: (tab: AuthTab) => void }) {
   const { t } = useTranslation();
-  const { withNext } = useAuthNext();
+  const tabs: AuthTab[] = ["signIn", "signUp"];
   return (
     <SegmentedTabs
       label={t("auth.tabsLabel")}
-      items={[
-        { href: withNext("/sign-in"), label: t("auth.tabs.signIn"), current: current === "signIn" },
-        { href: withNext("/sign-up"), label: t("auth.tabs.signUp"), current: current === "signUp" },
-      ]}
+      items={tabs.map((tab) => ({
+        label: t(`auth.tabs.${tab}`),
+        current: current === tab,
+        onSelect: () => onSelect(tab),
+        id: AUTH_TAB_IDS[tab].tab,
+        controls: AUTH_TAB_IDS[tab].panel,
+      }))}
     />
   );
 }

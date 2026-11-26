@@ -24,8 +24,8 @@ so they work on GitHub Pages. Each page exports `getStaticPaths` / `getStaticPro
 
 | Route | File | Screens |
 | --- | --- | --- |
-| `/[locale]/sign-in/` | `src/pages/[locale]/sign-in.tsx` | Sign in, Sign in from checkout, Wrong password |
-| `/[locale]/sign-up/` | `src/pages/[locale]/sign-up.tsx` | Step 1 About you, Step 2 Login, errors, Welcome |
+| `/[locale]/sign-in/` | `src/pages/[locale]/sign-in.tsx` → `AuthPage` | One page with two tabs. **Sign in** tab: sign in, wrong password. **Create account** tab: step 1 About you, step 2 Login, errors, Welcome |
+| `/[locale]/sign-up/` | `src/pages/[locale]/sign-up.tsx` | Old address: only redirects to `/sign-in/?tab=sign-up` (keeps `next` and `step`) |
 | `/[locale]/forgot-password/` | `src/pages/[locale]/forgot-password.tsx` | Forgot password, Email sent |
 | `/[locale]/reset-password/` | `src/pages/[locale]/reset-password.tsx` | Checking link, New password, Link expired, Password saved |
 | `/[locale]/account/complete/` | `src/pages/[locale]/account/complete.tsx` | Add mobile (after Google) |
@@ -33,9 +33,12 @@ so they work on GitHub Pages. Each page exports `getStaticPaths` / `getStaticPro
 
 Query parameters:
 
-- `?next=/checkout/` on sign-in and sign-up: where to go after success. Default `/account/`.
+- `?tab=sign-up` on sign-in: opens the Create account tab. No `tab` means the Sign in tab.
+  Build these URLs with `authHref(locale, { tab, step, next })` from `components/auth/useAuthPage.ts`.
+- `?next=/checkout/` on both tabs: where to go after success. Default `/account/`.
   Only accept a value that starts with a single `/` (reject `//…`, `http…`). Helper in 8.3.
-- `?step=2` on sign-up: step 2 is a real history entry, so the phone back button returns to step 1.
+- `?step=2` on the Create account tab: step 2 is a real history entry, so the phone back button
+  returns to step 1. Switching tabs uses `router.replace` (no history entry) and drops `step`.
 
 New folders:
 
@@ -170,10 +173,16 @@ The rounded switch at the top of sign in / sign up.
 - Track: `grid grid-cols-2 p-1 rounded-full bg-ink/[0.06]`.
 - Item: `min-h-11 rounded-full grid place-items-center text-[14.5px] text-ink-muted`.
 - Selected: `bg-white text-burgundy font-medium shadow-[0_1px_2px_rgba(42,4,13,.12),0_4px_12px_-6px_rgba(42,4,13,.25)]`.
-- Items are `next/link`s to `/sign-in/` and `/sign-up/` (keep `?next=`), with `aria-current="page"`
-  on the selected one. It is navigation, so use links, not `role="tab"`.
-- Carry typed values across: keep the email in `sessionStorage` (`needle:auth-email`) and prefill it
-  on the other page.
+- Two modes:
+  - **Tabs in one page** (the auth page): give every item `onSelect`, `id` and `controls`. It renders
+    `role="tablist"` with `role="tab"` buttons (`aria-selected`, `aria-controls`, roving `tabIndex`),
+    and Left/Right arrow keys move between tabs (swapped in Arabic). Each panel is
+    `role="tabpanel"` with the `controls` id and `aria-labelledby` the tab id.
+  - **Links to other pages**: give every item `href`. It renders a `<nav>` with `aria-current="page"`.
+- On the auth page both forms stay mounted and the hidden panel gets `hidden`, so what she typed in
+  one tab is still there when she comes back. The email typed in one tab also prefills the other
+  tab's empty email (`sessionStorage` `needle:auth-email`).
+- Switching tabs keeps focus on the tab (it does not jump to the title).
 
 ---
 
@@ -397,7 +406,14 @@ Add `<meta name="robots" content="noindex">` on all auth pages.
 Common to every form: `<form noValidate onSubmit>`; native `type="email"` / `type="tel"` for keyboards;
 submit button is `type="submit"` so Enter works; double submits are blocked while loading.
 
-### 7.1 Sign in — `/sign-in/`
+### 7.0 The auth page — `AuthPage`
+
+`/sign-in/` renders `AuthPage`: `AuthLayout` → `AuthTabs` (`SegmentedTabs` in tab mode) → two tab
+panels, `SignInForm` (7.1) and `SignUpForm` (7.2–7.4). The tab comes from `?tab=`. The page sets the
+`<title>` per tab and redirects once if she is already signed in. When the account is created, the
+Welcome / Check your email screen replaces the tabs (`SignUpForm` reports it with `onStageChange`).
+
+### 7.1 Sign in tab — `/sign-in/`
 
 Order: `SegmentedTabs` (Sign in selected) → `ContextBanner` (only from checkout) → `AuthHeader` →
 `ErrorBanner` (if any) → `GoogleButton` → divider → Email → Password → "Forgot password?" link
@@ -411,7 +427,7 @@ Order: `SegmentedTabs` (Sign in selected) → `ContextBanner` (only from checkou
   error border with no extra text, clear the password, focus it.
 - If already signed in (`useCustomerSession().status === "signedIn"`), redirect to `next`.
 
-### 7.2 Sign up step 1 — `/sign-up/`
+### 7.2 Create account tab, step 1 — `/sign-in/?tab=sign-up`
 
 Order: `SegmentedTabs` (Create account) → `StepProgress` (1 of 2 · About you) → `AuthHeader` →
 `GoogleButton` → divider → Full name → Mobile number (`PhoneField`) → **Continue**.
@@ -421,7 +437,7 @@ Order: `SegmentedTabs` (Create account) → `StepProgress` (1 of 2 · About you)
 - Continue: validate, keep values in component state + `sessionStorage("needle:signup")` (without
   password), `router.push("?step=2", undefined, { shallow: true })`, focus step 2's title.
 
-### 7.3 Sign up step 2 — `/sign-up/?step=2`
+### 7.3 Create account tab, step 2 — `/sign-in/?tab=sign-up&step=2`
 
 Order: `SegmentedTabs` → `StepProgress` (2 of 2 · Your login) → `AccountSummary` (name,
 `+20 10 1234 5678`, "Edit" → step 1) → `AuthHeader` → Email → Password (with `PasswordRules`) →
@@ -434,7 +450,7 @@ Order: `SegmentedTabs` → `StepProgress` (2 of 2 · Your login) → `AccountSum
   - `signedIn: false` (only if "Confirm email" is turned on later) → "Check your email" screen
     reusing 7.8 with confirmation copy.
 - `emailTaken`: error on the email field: "There's already an account with this email.
-  [Sign in instead]" (link keeps the email and `next`).
+  [Sign in instead]" (a button that switches to the Sign in tab, where the email is already filled in).
 - `weakPassword`: error on password: "Use at least 8 characters with a letter and a number."
 - `invalidEmail`: "Enter an email like name@example.com."
 

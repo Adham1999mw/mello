@@ -197,14 +197,7 @@ export default function DesignSystemPage() {
               </div>
             </Row>
             <Row name="SegmentedTabs">
-              <SegmentedTabs
-                className="w-full max-w-[400px]"
-                label={t("auth.tabsLabel")}
-                items={[
-                  { href: `/${locale}/sign-in/`, label: t("auth.tabs.signIn"), current: false },
-                  { href: `/${locale}/sign-up/`, label: t("auth.tabs.signUp"), current: true },
-                ]}
-              />
+              <TabsDemo label={t("auth.tabsLabel")} labels={[t("auth.tabs.signIn"), t("auth.tabs.signUp")]} />
             </Row>
           </Group>
         </section>
@@ -250,6 +243,17 @@ function Row({ name, dark = false, children }: { name: string; dark?: boolean; c
       </code>
       <div className="flex flex-wrap items-center gap-3">{children}</div>
     </div>
+  );
+}
+
+function TabsDemo({ label, labels }: { label: string; labels: [string, string] }) {
+  const [current, setCurrent] = useState(0);
+  return (
+    <SegmentedTabs
+      className="w-full max-w-[400px]"
+      label={label}
+      items={labels.map((text, i) => ({ label: text, current: current === i, onSelect: () => setCurrent(i), id: `ds-tab-${i}` }))}
+    />
   );
 }
 

@@ -3,32 +3,29 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, useForm, useWatch } from "react-hook-form";
-import Seo from "@/components/seo/Seo";
 import { Button, PasswordField, PasswordRules, PhoneField, TextField, Typography } from "@/components/ui";
 import { localePath } from "@/i18n/static";
 import { useTranslation } from "@/i18n/useTranslation";
-import { authErrorReason, signInWithGoogle, signUp, useCustomerSession } from "@/lib/auth";
+import { authErrorReason, signInWithGoogle, signUp } from "@/lib/auth";
 import {
   AUTH_STORAGE,
   firstName,
   formatPhone,
   isValidPhoneDigits,
   readSession,
-  safeNext,
   toLocalPhone,
   writeSession,
 } from "@/lib/auth/form";
 import { SIGN_UP_STEP1_FIELDS, signUpSchema, type SignUpValues } from "@/lib/auth/schemas";
 import AuthHeader from "./AuthHeader";
 import { BigCheckIcon, BoxIcon, DeviceIcon, MailIcon, PenIcon } from "./AuthIcons";
-import AuthLayout from "./AuthLayout";
-import { AccountSummary, AuthTabs, ErrorBanner, GoogleButton, OrDivider, StatusBadge, StepProgress, SubmitButton } from "./AuthParts";
+import { authHref, useAuthNext, useFocusTitle } from "./useAuthPage";
+import { AccountSummary, ErrorBanner, GoogleButton, OrDivider, StatusBadge, StepProgress, SubmitButton } from "./AuthParts";
 
-// Sign up (/ar/sign-up/, /en/sign-up/). Static page, so it works on GitHub Pages too.
-// Spec: docs/auth-flow-spec.md (Atelier v2) → 7.2–7.4.
+// The "Create account" tab of the sign-in page (AuthPage). Spec: docs/auth-flow-spec.md → 7.2–7.4.
 //
-//   Step 1  About you: full name + mobile (+20)          /sign-up/
-//   Step 2  Your login: email + password                 /sign-up/?step=2 (real history entry,
+//   Step 1  About you: full name + mobile (+20)          /sign-in/?tab=sign-up
+//   Step 2  Your login: email + password                 /sign-in/?tab=sign-up&step=2 (real history entry,
 //                                                        so the phone's back button returns to step 1)
 //   Done    Welcome (signed in right away), or "confirm your email" if Supabase's
 //           "Confirm email" is turned on later.
@@ -38,17 +35,29 @@ import { AccountSummary, AuthTabs, ErrorBanner, GoogleButton, OrDivider, StatusB
 // `?next=/checkout/` is where she goes after signing up (default: home).
 
 type Values = SignUpValues;
-type Stage = "form" | "welcome" | "confirm";
+export type SignUpStage = "form" | "welcome" | "confirm";
 
-const TITLE_ID = "auth-title";
+export const SIGN_UP_TITLE_ID = "auth-title-sign-up";
 
-export default function SignUpPage() {
+type SignUpFormProps = {
+  /** This tab is the one showing. */
+  active: boolean;
+  /** "Sign in instead" (the email already has an account): switch to the sign-in tab. */
+  onSwitchToSignIn: () => void;
+  /** Tells the page when the welcome / confirm screen shows, so it can hide the tabs. */
+  onStageChange?: (stage: SignUpStage) => void;
+};
+
+export default function SignUpForm({ active, onSwitchToSignIn, onStageChange }: SignUpFormProps) {
   const router = useRouter();
   const { t, locale } = useTranslation();
-  const { status } = useCustomerSession();
-  const step: 1 | 2 = router.query.step === "2" ? 2 : 1;
-  const next = safeNext(router.query.next);
-  const [stage, setStage] = useState<Stage>("form");
+  const { next } = useAuthNext();
+  const step: 1 | 2 = active && router.query.step === "2" ? 2 : 1;
+  const [stage, setStageState] = useState<SignUpStage>("form");
+  const setStage = (value: SignUpStage) => {
+    setStageState(value);
+    onStageChange?.(value);
+  };
   const [googleLoading, setGoogleLoading] = useState(false);
   const schema = useMemo(() => signUpSchema(t), [t]);
 
@@ -68,13 +77,8 @@ export default function SignUpPage() {
     defaultValues: { fullName: "", phone: "", email: "", password: "" },
   });
 
-  const withNext = (path: string) => localePath(locale, next ? `${path}?next=${encodeURIComponent(next)}` : path);
   const goToStep = (target: 1 | 2, replace = false) => {
-    const params = new URLSearchParams();
-    if (next) params.set("next", next);
-    if (target === 2) params.set("step", "2");
-    const query = params.toString();
-    const href = localePath(locale, query ? `/sign-up?${query}` : "/sign-up");
+    const href = authHref(locale, { tab: "signUp", step: target, next });
     (replace ? router.replace : router.push)(href, undefined, { shallow: true });
   };
 
@@ -99,24 +103,16 @@ export default function SignUpPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.isReady]);
 
-  // Already signed in when the page opens: nothing to do here.
-  const firstStatus = useRef(true);
+  // Email typed in the other tab, when this tab opens and hers is empty.
   useEffect(() => {
-    if (status === "loading" || !firstStatus.current) return;
-    firstStatus.current = false;
-    if (status === "signedIn") router.replace(localePath(locale, next ?? "/"));
-  }, [status, router, locale, next]);
+    if (!active || getValues("email")) return;
+    const email = readSession(AUTH_STORAGE.email);
+    if (email) setValue("email", email);
+  }, [active, getValues, setValue]);
 
-  // Move focus to the new title when the step or screen changes (not on the first load).
-  const firstRender = useRef(true);
-  useEffect(() => {
-    if (firstRender.current) {
-      firstRender.current = false;
-      return;
-    }
-    document.getElementById(TITLE_ID)?.focus();
-    window.scrollTo({ top: 0 });
-  }, [step, stage]);
+  // Move focus to the new title when the step or screen changes (not on the first load, and not
+  // when she switches tabs: focus stays on the tab then).
+  useFocusTitle(`${step}-${stage}`, SIGN_UP_TITLE_ID, active);
 
   async function continueToStep2(e: FormEvent) {
     e.preventDefault();
@@ -160,7 +156,6 @@ export default function SignUpPage() {
   }
 
   const { fullName = "", phone = "", email = "", password = "" } = useWatch({ control });
-  const tabs = <AuthTabs current="signUp" />;
 
   let content;
   if (stage === "welcome") {
@@ -170,7 +165,7 @@ export default function SignUpPage() {
           <BigCheckIcon />
         </StatusBadge>
         <AuthHeader
-          titleId={TITLE_ID}
+          titleId={SIGN_UP_TITLE_ID}
           eyebrow={t("auth.welcome.eyebrow")}
           title={t("auth.welcome.title", { name: firstName(fullName) })}
           subtitle={t("auth.welcome.subtitle")}
@@ -204,7 +199,7 @@ export default function SignUpPage() {
           <MailIcon />
         </StatusBadge>
         <AuthHeader
-          titleId={TITLE_ID}
+          titleId={SIGN_UP_TITLE_ID}
           eyebrow={t("auth.confirm.eyebrow")}
           title={t("auth.confirm.title")}
           subtitle={t("auth.confirm.subtitle", { email: email.trim() })}
@@ -214,9 +209,8 @@ export default function SignUpPage() {
   } else if (step === 1) {
     content = (
       <form noValidate onSubmit={continueToStep2} className="grid gap-[18px]">
-        {tabs}
         <StepProgress step={1} label={t("auth.signUp.step1")} />
-        <AuthHeader titleId={TITLE_ID} eyebrow={t("auth.signUp.eyebrow1")} title={t("auth.signUp.title1")} subtitle={t("auth.signUp.subtitle1")} />
+        <AuthHeader titleId={SIGN_UP_TITLE_ID} eyebrow={t("auth.signUp.eyebrow1")} title={t("auth.signUp.title1")} subtitle={t("auth.signUp.subtitle1")} />
         {errors.root?.message && <ErrorBanner>{errors.root.message}</ErrorBanner>}
         <GoogleButton onClick={continueWithGoogle} loading={googleLoading} />
         <OrDivider />
@@ -252,7 +246,6 @@ export default function SignUpPage() {
   } else {
     content = (
       <form noValidate onSubmit={handleSubmit(createAccount)} className="grid gap-[18px]">
-        {tabs}
         <StepProgress step={2} label={t("auth.signUp.step2")} />
         <AccountSummary
           name={fullName.trim()}
@@ -263,7 +256,7 @@ export default function SignUpPage() {
             </Button>
           }
         />
-        <AuthHeader titleId={TITLE_ID} eyebrow={t("auth.signUp.eyebrow2")} title={t("auth.signUp.title2")} subtitle={t("auth.signUp.subtitle2")} />
+        <AuthHeader titleId={SIGN_UP_TITLE_ID} eyebrow={t("auth.signUp.eyebrow2")} title={t("auth.signUp.title2")} subtitle={t("auth.signUp.subtitle2")} />
         {errors.root?.message && <ErrorBanner>{errors.root.message}</ErrorBanner>}
         <TextField
           label={t("auth.fields.email")}
@@ -279,9 +272,9 @@ export default function SignUpPage() {
             errors.email?.type === "taken" ? (
               <>
                 {errors.email.message}{" "}
-                <Link href={withNext("/sign-in")} className="font-medium underline underline-offset-4">
+                <Button variant="link" onClick={onSwitchToSignIn}>
                   {t("auth.errors.signInInstead")}
-                </Link>
+                </Button>
               </>
             ) : (
               errors.email?.message
@@ -313,10 +306,5 @@ export default function SignUpPage() {
     );
   }
 
-  return (
-    <>
-      <Seo title={t("auth.seo.signUp")} noindex />
-      <AuthLayout closeHref={localePath(locale, next ?? "/")}>{content}</AuthLayout>
-    </>
-  );
+  return content;
 }

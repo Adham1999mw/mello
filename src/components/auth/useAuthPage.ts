@@ -7,6 +7,24 @@ import { safeNext } from "@/lib/auth/form";
 
 export const AUTH_TITLE_ID = "auth-title";
 
+export type AuthTab = "signIn" | "signUp";
+
+/**
+ * Address of the sign-in page (sign in and sign up share one page, switched by tabs):
+ *   /en/sign-in/                         sign in
+ *   /en/sign-in/?tab=sign-up             sign up, step 1
+ *   /en/sign-in/?tab=sign-up&step=2      sign up, step 2
+ * `next` is kept on every one.
+ */
+export function authHref(locale: string, { tab = "signIn", step, next }: { tab?: AuthTab; step?: 1 | 2; next?: string | null }) {
+  const params = new URLSearchParams();
+  if (tab === "signUp") params.set("tab", "sign-up");
+  if (tab === "signUp" && step === 2) params.set("step", "2");
+  if (next) params.set("next", next);
+  const query = params.toString();
+  return localePath(locale as Parameters<typeof localePath>[0], query ? `/sign-in?${query}` : "/sign-in");
+}
+
 /**
  * Shared bits of every sign-in page:
  *   next      the safe `?next=` path (or null)
@@ -35,14 +53,16 @@ export function useRedirectIfSignedIn(target: string) {
 }
 
 /** Moves focus to the screen's title when `key` changes (not on first load), for screen readers. */
-export function useFocusTitle(key: unknown) {
+export function useFocusTitle(key: unknown, titleId = AUTH_TITLE_ID, enabled = true) {
   const first = useRef(true);
   useEffect(() => {
     if (first.current) {
       first.current = false;
       return;
     }
-    document.getElementById(AUTH_TITLE_ID)?.focus();
+    if (!enabled) return;
+    document.getElementById(titleId)?.focus();
     window.scrollTo({ top: 0 });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key]);
 }
