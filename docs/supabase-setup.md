@@ -120,6 +120,12 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=المفتاح_العام_هنا
 - **صفحة المنتج**: البيانات الأساسية، بعدين اختار الألوان والمقاسات فتطلعلك كل التركيبات تكتب سعر
   ومخزون كل واحدة (وفيه «املا كل الاختيارات» تحط سعر واحد للكل)، وبعدين ارفع الصور ورتبها.
   «حفظ المنتج» بيحفظ كل ده مرة واحدة؛ لو فيه غلطة (زي SKU متكرر) مفيش حاجة بتتحفظ نص نص.
+- **صفحة المنتج** فيها كمان قسم «الخامة والعناية والمقاس»: الخامة، وزن القماش، المنشأ، العناية ورموزها،
+  طول العارضة ومقاسها، وملاحظة توصيل خاصة بالمنتج.
+- **التقييمات** (`/ar/admin/reviews/`): التقييمات المستنية والمتوافق عليها والمرفوضة. موافقة، رفض،
+  «مشترية مؤكدة»، أو مسح.
+- **التوصيل** (`/ar/admin/delivery/`): نص التوصيل والاستبدال، أيام التوصيل، أيام الاستبدال المجاني،
+  حد التوصيل المجاني، والدفع عند الاستلام. ده مشترك لكل المنتجات.
 - **الإعدادات**: الأقسام والألوان (بكود اللون) والمقاسات (والترتيب S → XL).
 
 ### ليه هي آمنة
@@ -137,6 +143,16 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=المفتاح_العام_هنا
    وبعده **New query** تاني والصق
    [`supabase/migrations/20261126000000_lookbook_feature_image.sql`](../supabase/migrations/20261126000000_lookbook_feature_image.sql)
    → **Run** (صورة اللوك بوك الخاصة بكل منتج).
+   وبعده **New query** والصق
+   [`supabase/migrations/20261128000000_product_specs.sql`](../supabase/migrations/20261128000000_product_specs.sql)
+   → **Run** (مواصفات المنتج: الخامة والعناية والمنشأ ومقاس العارضة، وجدول `store_settings` لنص
+   التوصيل والاستبدال ومدة التوصيل والاستبدال المجاني). ولو عايز بيانات تجربة، شغّل بعده
+   [`supabase/seed_product_specs.sql`](../supabase/seed_product_specs.sql).
+   وبعده **New query** والصق
+   [`supabase/migrations/20261129000000_reviews.sql`](../supabase/migrations/20261129000000_reviews.sql)
+   → **Run** (تقييمات المنتجات: نجوم + تعليق العميلة). التقييم بيتحفظ `pending` ومش بيظهر غير لما
+   الأدمن يغيّر `status` لـ `approved` من **Table Editor → reviews** (لحد ما نعمل صفحة الأدمن).
+   «مشترية مؤكدة» = `is_verified`، بيعلّمها الأدمن بإيده دلوقتي.
 2. **اعمل حسابك**: **Authentication** → **Users** → **Add user** → **Create new user** → اكتب إيميلك
    وكلمة سر قوية، وعلّم على **Auto Confirm User**.
 3. **خلّي حسابك أدمن**: SQL Editor → New query → الصق ده بإيميلك ودوس **Run**:
@@ -229,6 +245,16 @@ npx supabase gen types typescript --project-id <project-ref> > src/lib/supabase/
    Then run `20261126000000_lookbook_feature_image.sql`: a special lookbook image per product
    (`feature_image_*` on `products`, returned by `product_listing` / `search_products`). The homepage
    lookbook shows the products with `is_featured` on: `listProducts({ featured: true })`.
+   Then run `20261128000000_product_specs.sql`: product specs on `products` (`fabric_*`,
+   `fabric_weight_gsm`, `origin_*`, `care_*`, `care_icons`, `model_height_cm`, `model_size_code`,
+   `delivery_note_*`) and a one-row `store_settings` table (delivery & returns text, delivery days,
+   free exchange days, free delivery threshold, cash on delivery). `admin_save_product()` saves the
+   new fields only when their keys are sent. Optional sample data: `supabase/seed_product_specs.sql`.
+   Then run `20261129000000_reviews.sql`: `reviews` (one per customer per product: `rating` 1–5 +
+   `body`; name copied from `profiles.full_name`; saved `pending`, public only when an admin sets
+   `approved`; editing sends it back to `pending`; `is_verified` set by admins). Read with the
+   `product_review_stats` view (count, average, stars breakdown), `list_reviews(product_slug, sort,
+   page, page_size)` and `my_review(product_slug)`. `user_id` is not readable by visitors.
 6. Use `@/lib/catalog` (`listProducts`, `getProductBySlug`, `getFilterOptions`) or the RTK Query hooks in
    `@/store/services/products`. Filtering runs in the `search_products` Postgres function; sorting,
    pagination (`range`) and the total count (`count: "exact"`) are added by the client.

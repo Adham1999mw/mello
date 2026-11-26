@@ -30,7 +30,7 @@ import type {
  * Every function takes an optional client, so server pages (`*.server.tsx`) can pass the
  * client from `@/lib/supabase/server` instead.
  */
-type Client = SupabaseClient<Database>;
+export type Client = SupabaseClient<Database>;
 
 export const DEFAULT_PAGE_SIZE = 12;
 export const MAX_PAGE_SIZE = 48;
@@ -39,7 +39,8 @@ export const MAX_PAGE_SIZE = 48;
 const IMAGE_BUCKET = "product-images";
 
 let browserClient: Client | undefined;
-function getClient(client?: Client): Client {
+/** The shared browser client, or the one passed in (server pages). */
+export function getClient(client?: Client): Client {
   if (client) return client;
   browserClient ??= createClient();
   return browserClient;
@@ -238,6 +239,8 @@ export async function getProductBySlug(
     .from("products")
     .select(
       `id, slug, name_ar, name_en, description_ar, description_en, is_featured,
+       fabric_ar, fabric_en, fabric_weight_gsm, origin_ar, origin_en, care_ar, care_en,
+       care_icons, model_height_cm, model_size_code, delivery_note_ar, delivery_note_en,
        category:categories ( id, slug, name_ar, name_en, parent_id ),
        images:product_images ( id, url, alt_ar, alt_en, sort_order, color:colors ( slug ) ),
        variants:product_variants (
@@ -284,6 +287,20 @@ export async function getProductBySlug(
     description_ar: data.description_ar,
     description_en: data.description_en,
     is_featured: data.is_featured,
+    specs: {
+      fabric_ar: data.fabric_ar,
+      fabric_en: data.fabric_en,
+      fabric_weight_gsm: data.fabric_weight_gsm,
+      origin_ar: data.origin_ar,
+      origin_en: data.origin_en,
+      care_ar: data.care_ar,
+      care_en: data.care_en,
+      care_icons: data.care_icons ?? [],
+      model_height_cm: data.model_height_cm,
+      model_size_code: data.model_size_code,
+      delivery_note_ar: data.delivery_note_ar,
+      delivery_note_en: data.delivery_note_en,
+    },
     category: data.category,
     images: data.images.map((img) => ({
       id: img.id,

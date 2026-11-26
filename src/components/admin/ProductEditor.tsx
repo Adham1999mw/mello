@@ -31,6 +31,7 @@ import {
 } from "@/lib/admin/api";
 import FeatureImageEditor from "./FeatureImageEditor";
 import ImagesEditor from "./ImagesEditor";
+import SpecsEditor, { validateSpecs, type SpecsErrors } from "./SpecsEditor";
 import VariantsEditor, { variantKey, type VariantErrors } from "./VariantsEditor";
 import { useAdminError } from "./useAdminError";
 
@@ -55,6 +56,7 @@ export default function ProductEditor({ id }: { id: number | null }) {
   const [saved, setSaved] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [variantErrors, setVariantErrors] = useState<VariantErrors>({});
+  const [specsErrors, setSpecsErrors] = useState<SpecsErrors>({});
   const [confirmDelete, setConfirmDelete] = useState(false);
   // Saved photos removed in this edit: their files are deleted after the next save.
   const removedFiles = useRef<string[]>([]);
@@ -129,9 +131,11 @@ export default function ProductEditor({ id }: { id: number | null }) {
       if (!v.sku.trim()) e.sku = t("admin.form.required");
       if (Object.keys(e).length) ve[variantKey(v)] = e;
     }
+    const se = validateSpecs(f.specs, t);
     setFieldErrors(fe);
     setVariantErrors(ve);
-    return Object.keys(fe).length === 0 && Object.keys(ve).length === 0;
+    setSpecsErrors(se);
+    return Object.keys(fe).length === 0 && Object.keys(ve).length === 0 && Object.keys(se).length === 0;
   }
 
   async function handleSave(event: React.FormEvent) {
@@ -271,6 +275,15 @@ export default function ProductEditor({ id }: { id: number | null }) {
             sx={{ minHeight: 44, m: 0 }}
           />
         </div>
+      </Section>
+
+      <Section title={t("admin.specs.title")}>
+        <SpecsEditor
+          specs={form.specs}
+          sizes={options.sizes}
+          errors={specsErrors}
+          onChange={(specs) => set({ specs })}
+        />
       </Section>
 
       <Section title={t("admin.form.variantsTitle")}>

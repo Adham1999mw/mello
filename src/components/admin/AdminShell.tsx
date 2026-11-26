@@ -88,7 +88,9 @@ function TopBar({ onSignOut }: { onSignOut: () => void }) {
   const { t, locale } = useTranslation();
   const { pathname } = useRouter();
   const links = [
-    { href: "/admin", label: t("admin.products"), active: pathname !== "/[locale]/admin/settings" },
+    { href: "/admin", label: t("admin.products"), active: pathname === "/[locale]/admin" || pathname === "/[locale]/admin/product" },
+    { href: "/admin/reviews", label: t("admin.reviewsNav"), active: pathname === "/[locale]/admin/reviews" },
+    { href: "/admin/delivery", label: t("admin.deliveryNav"), active: pathname === "/[locale]/admin/delivery" },
     { href: "/admin/settings", label: t("admin.settingsShort"), active: pathname === "/[locale]/admin/settings" },
   ];
 

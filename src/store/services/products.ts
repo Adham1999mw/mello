@@ -1,6 +1,13 @@
 import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { getFilterOptions, getProductBySlug, listProducts } from "@/lib/catalog/products";
-import type { FilterOptions, ProductDetail, ProductFilters, ProductPage } from "@/lib/catalog/types";
+import { getStoreSettings } from "@/lib/catalog/settings";
+import type {
+  FilterOptions,
+  ProductDetail,
+  ProductFilters,
+  ProductPage,
+  StoreSettings,
+} from "@/lib/catalog/types";
 import { api } from "./api";
 
 /**
@@ -11,7 +18,7 @@ import { api } from "./api";
  *   const { data: product } = useGetProductQuery("layla-maxi-dress");
  */
 // Same error shape as the base API, so components handle every error the same way.
-function toError(error: unknown): FetchBaseQueryError {
+export function toError(error: unknown): FetchBaseQueryError {
   const e = (error ?? {}) as { message?: string; code?: string };
   return { status: "CUSTOM_ERROR", error: e.message ?? String(error), data: { code: e.code } };
 }
@@ -47,7 +54,24 @@ export const productsApi = api.injectEndpoints({
       // Categories, colors and sizes rarely change.
       keepUnusedDataFor: 60 * 30,
     }),
+    /** Delivery & returns text, delivery days, free exchange days (one row for the store). */
+    getStoreSettings: build.query<StoreSettings, void>({
+      async queryFn() {
+        try {
+          return { data: await getStoreSettings() };
+        } catch (error) {
+          return { error: toError(error) };
+        }
+      },
+      providesTags: ["StoreSettings"],
+      keepUnusedDataFor: 60 * 30,
+    }),
   }),
 });
 
-export const { useListProductsQuery, useGetProductQuery, useGetFilterOptionsQuery } = productsApi;
+export const {
+  useListProductsQuery,
+  useGetProductQuery,
+  useGetFilterOptionsQuery,
+  useGetStoreSettingsQuery,
+} = productsApi;

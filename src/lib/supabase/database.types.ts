@@ -7,6 +7,28 @@
  */
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 
+/** reviews.status: only "approved" reviews are public (20261129000000_reviews.sql). */
+export type ReviewStatus = "pending" | "approved" | "rejected";
+/** list_reviews(sort): newest first by default. */
+export type ReviewSort = "newest" | "highest" | "lowest";
+
+/** Care symbols allowed by products_care_icons_check (20261128000000_product_specs.sql). */
+export type CareIcon =
+  | "wash_30"
+  | "wash_40"
+  | "hand_wash"
+  | "no_wash"
+  | "no_bleach"
+  | "no_tumble_dry"
+  | "tumble_dry_low"
+  | "dry_flat"
+  | "line_dry"
+  | "iron_low"
+  | "iron_medium"
+  | "no_iron"
+  | "dry_clean"
+  | "no_dry_clean";
+
 export type Database = {
   __InternalSupabase: {
     PostgrestVersion: "13";
@@ -105,6 +127,19 @@ export type Database = {
           feature_image_alt_ar: string | null;
           feature_image_alt_en: string | null;
           feature_image_fit: "cover" | "contain";
+          // Added by 20261128000000_product_specs.sql
+          fabric_ar: string | null;
+          fabric_en: string | null;
+          fabric_weight_gsm: number | null;
+          origin_ar: string | null;
+          origin_en: string | null;
+          care_ar: string | null;
+          care_en: string | null;
+          care_icons: CareIcon[];
+          model_height_cm: number | null;
+          model_size_code: string | null;
+          delivery_note_ar: string | null;
+          delivery_note_en: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -122,6 +157,18 @@ export type Database = {
           feature_image_alt_ar?: string | null;
           feature_image_alt_en?: string | null;
           feature_image_fit?: "cover" | "contain";
+          fabric_ar?: string | null;
+          fabric_en?: string | null;
+          fabric_weight_gsm?: number | null;
+          origin_ar?: string | null;
+          origin_en?: string | null;
+          care_ar?: string | null;
+          care_en?: string | null;
+          care_icons?: CareIcon[];
+          model_height_cm?: number | null;
+          model_size_code?: string | null;
+          delivery_note_ar?: string | null;
+          delivery_note_en?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -293,6 +340,72 @@ export type Database = {
         };
         Relationships: [];
       };
+      // Added by 20261128000000_product_specs.sql: exactly one row (id = true).
+      store_settings: {
+        Row: {
+          id: true;
+          delivery_ar: string;
+          delivery_en: string;
+          free_shipping_threshold: number | null;
+          cairo_days_min: number;
+          cairo_days_max: number;
+          other_days_min: number;
+          other_days_max: number;
+          exchange_days: number;
+          cod_enabled: boolean;
+          updated_at: string;
+        };
+        // RLS allows no inserts: the row is created by the migration.
+        Insert: never;
+        Update: {
+          delivery_ar?: string;
+          delivery_en?: string;
+          free_shipping_threshold?: number | null;
+          cairo_days_min?: number;
+          cairo_days_max?: number;
+          other_days_min?: number;
+          other_days_max?: number;
+          exchange_days?: number;
+          cod_enabled?: boolean;
+        };
+        Relationships: [];
+      };
+      // Added by 20261129000000_reviews.sql. user_id is not readable (column privileges),
+      // so it is left out of Row. Customers insert product_id + rating + body only.
+      reviews: {
+        Row: {
+          id: number;
+          product_id: number;
+          display_name: string | null;
+          rating: number;
+          body: string;
+          is_verified: boolean;
+          status: ReviewStatus;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          product_id: number;
+          rating: number;
+          body: string;
+        };
+        Update: {
+          rating?: number;
+          body?: string;
+          // Admins only (the trigger ignores these for customers)
+          status?: ReviewStatus;
+          is_verified?: boolean;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "reviews_product_id_fkey";
+            columns: ["product_id"];
+            isOneToOne: false;
+            referencedRelation: "products";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
     };
     Views: {
       product_listing: {
@@ -331,6 +444,22 @@ export type Database = {
         };
         Relationships: [];
       };
+      // Added by 20261129000000_reviews.sql: approved reviews only, one row per active product.
+      product_review_stats: {
+        Row: {
+          product_id: number | null;
+          slug: string | null;
+          review_count: number | null;
+          avg_rating: number | null;
+          count_5: number | null;
+          count_4: number | null;
+          count_3: number | null;
+          count_2: number | null;
+          count_1: number | null;
+          verified_count: number | null;
+        };
+        Relationships: [];
+      };
     };
     Functions: {
       is_admin: {
@@ -359,6 +488,30 @@ export type Database = {
           isOneToOne: false;
           isSetofReturn: true;
         };
+      };
+      // Added by 20261129000000_reviews.sql
+      list_reviews: {
+        Args: { product_slug: string; sort?: ReviewSort; page?: number; page_size?: number };
+        Returns: {
+          id: number;
+          display_name: string | null;
+          rating: number;
+          body: string;
+          is_verified: boolean;
+          created_at: string;
+          total_count: number;
+        }[];
+      };
+      my_review: {
+        Args: { product_slug: string };
+        Returns: {
+          id: number;
+          rating: number;
+          body: string;
+          status: ReviewStatus;
+          created_at: string;
+          updated_at: string;
+        }[];
       };
     };
     Enums: { [_ in never]: never };

@@ -1,4 +1,7 @@
 import type { Locale } from "@/i18n/config";
+import type { CareIcon, ReviewSort, ReviewStatus } from "@/lib/supabase/database.types";
+
+export type { CareIcon, ReviewSort, ReviewStatus };
 
 /** A color as shown in filters and swatches. */
 export type CatalogColor = {
@@ -163,6 +166,8 @@ export type ProductDetail = {
   description_ar: string | null;
   description_en: string | null;
   is_featured: boolean;
+  /** "Fabric & care" tab. Every field is optional. */
+  specs: ProductSpecs;
   category: CatalogCategory | null;
   images: ProductImage[];
   variants: ProductVariant[];
@@ -173,6 +178,87 @@ export type ProductDetail = {
   min_price: number;
   max_price: number;
   in_stock: boolean;
+};
+
+/** Fabric, care and fit details of one product (all optional). */
+export type ProductSpecs = {
+  fabric_ar: string | null;
+  fabric_en: string | null;
+  /** g/m² */
+  fabric_weight_gsm: number | null;
+  origin_ar: string | null;
+  origin_en: string | null;
+  care_ar: string | null;
+  care_en: string | null;
+  care_icons: CareIcon[];
+  /** "The model is 170 cm and wears S" */
+  model_height_cm: number | null;
+  model_size_code: string | null;
+  /** Extra delivery note for this product only, shown under the store's delivery text. */
+  delivery_note_ar: string | null;
+  delivery_note_en: string | null;
+};
+
+/** Delivery & returns, shared by every product page (table store_settings). */
+export type StoreSettings = {
+  delivery_ar: string;
+  delivery_en: string;
+  /** EGP; null = no free delivery */
+  free_shipping_threshold: number | null;
+  cairo_days_min: number;
+  cairo_days_max: number;
+  other_days_min: number;
+  other_days_max: number;
+  exchange_days: number;
+  cod_enabled: boolean;
+};
+
+/** Review summary of one product (approved reviews only). */
+export type ReviewStats = {
+  review_count: number;
+  /** 0 when there are no reviews, else 1.0 to 5.0 */
+  avg_rating: number;
+  /** How many reviews gave 5, 4, 3, 2 and 1 stars: counts[0] = 5 stars. */
+  counts: [number, number, number, number, number];
+  verified_count: number;
+};
+
+/** One public review. */
+export type Review = {
+  id: number;
+  /** Null when the customer has no name in her profile. */
+  display_name: string | null;
+  rating: number;
+  body: string;
+  is_verified: boolean;
+  created_at: string;
+};
+
+export type ReviewPage = {
+  items: Review[];
+  total: number;
+  page: number;
+  pageSize: number;
+  pageCount: number;
+};
+
+export type ReviewQuery = {
+  slug: string;
+  sort?: ReviewSort;
+  /** 1-based. Default 1. */
+  page?: number;
+  /** Default 3 (the product page), max 50. */
+  pageSize?: number;
+};
+
+/** The signed-in customer's own review of a product, in any status. */
+export type MyReview = {
+  id: number;
+  rating: number;
+  body: string;
+  status: ReviewStatus;
+  created_at: string;
+  updated_at: string;
 };
 
 export type FilterOptions = {

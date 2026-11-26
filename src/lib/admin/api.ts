@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/client";
-import type { Json, Tables } from "@/lib/supabase/database.types";
+import type { CareIcon, Json, ReviewStatus, Tables } from "@/lib/supabase/database.types";
 import { productImageUrl } from "@/lib/catalog/products";
 import type { ImageFit } from "@/lib/catalog/types";
 
@@ -42,9 +42,62 @@ export type ProductForm = {
   feature_image_alt_ar: string;
   feature_image_alt_en: string;
   feature_image_fit: ImageFit;
+  /** "Fabric & care" + fit details (text fields; "" = not set). */
+  specs: SpecsForm;
   variants: VariantForm[];
   images: ImageForm[];
 };
+
+export type SpecsForm = {
+  fabric_ar: string;
+  fabric_en: string;
+  /** g/m², digits only */
+  fabric_weight_gsm: string;
+  origin_ar: string;
+  origin_en: string;
+  care_ar: string;
+  care_en: string;
+  care_icons: CareIcon[];
+  /** cm, digits only */
+  model_height_cm: string;
+  /** a size code, "" = not set */
+  model_size_code: string;
+  delivery_note_ar: string;
+  delivery_note_en: string;
+};
+
+/** Care symbols the admin can pick, in this order (allowed by the database check). */
+export const CARE_ICONS: CareIcon[] = [
+  "wash_30",
+  "wash_40",
+  "hand_wash",
+  "no_wash",
+  "no_bleach",
+  "no_tumble_dry",
+  "tumble_dry_low",
+  "dry_flat",
+  "line_dry",
+  "iron_low",
+  "iron_medium",
+  "no_iron",
+  "dry_clean",
+  "no_dry_clean",
+];
+
+const emptySpecs = (): SpecsForm => ({
+  fabric_ar: "",
+  fabric_en: "",
+  fabric_weight_gsm: "",
+  origin_ar: "",
+  origin_en: "",
+  care_ar: "",
+  care_en: "",
+  care_icons: [],
+  model_height_cm: "",
+  model_size_code: "",
+  delivery_note_ar: "",
+  delivery_note_en: "",
+});
 
 export type VariantForm = {
   color_id: number;
@@ -80,6 +133,7 @@ export const emptyProduct = (): ProductForm => ({
   feature_image_alt_ar: "",
   feature_image_alt_en: "",
   feature_image_fit: "contain",
+  specs: emptySpecs(),
   variants: [],
   images: [],
 });
@@ -163,6 +217,20 @@ export async function getAdminProduct(id: number): Promise<ProductForm | null> {
     feature_image_alt_ar: data.feature_image_alt_ar ?? "",
     feature_image_alt_en: data.feature_image_alt_en ?? "",
     feature_image_fit: data.feature_image_fit === "cover" ? "cover" : "contain",
+    specs: {
+      fabric_ar: data.fabric_ar ?? "",
+      fabric_en: data.fabric_en ?? "",
+      fabric_weight_gsm: data.fabric_weight_gsm == null ? "" : String(data.fabric_weight_gsm),
+      origin_ar: data.origin_ar ?? "",
+      origin_en: data.origin_en ?? "",
+      care_ar: data.care_ar ?? "",
+      care_en: data.care_en ?? "",
+      care_icons: data.care_icons ?? [],
+      model_height_cm: data.model_height_cm == null ? "" : String(data.model_height_cm),
+      model_size_code: data.model_size_code ?? "",
+      delivery_note_ar: data.delivery_note_ar ?? "",
+      delivery_note_en: data.delivery_note_en ?? "",
+    },
     variants: data.variants.map((v) => ({
       color_id: v.color_id,
       size_id: v.size_id,
@@ -204,6 +272,19 @@ export async function saveProduct(form: ProductForm, removedImages: string[] = [
     feature_image_alt_ar: form.feature_image_alt_ar.trim(),
     feature_image_alt_en: form.feature_image_alt_en.trim(),
     feature_image_fit: form.feature_image_fit,
+    // Specs: "" clears a field (see admin_save_product in 20261128000000_product_specs.sql).
+    fabric_ar: form.specs.fabric_ar.trim(),
+    fabric_en: form.specs.fabric_en.trim(),
+    fabric_weight_gsm: form.specs.fabric_weight_gsm.trim(),
+    origin_ar: form.specs.origin_ar.trim(),
+    origin_en: form.specs.origin_en.trim(),
+    care_ar: form.specs.care_ar.trim(),
+    care_en: form.specs.care_en.trim(),
+    care_icons: form.specs.care_icons,
+    model_height_cm: form.specs.model_height_cm.trim(),
+    model_size_code: form.specs.model_size_code,
+    delivery_note_ar: form.specs.delivery_note_ar.trim(),
+    delivery_note_en: form.specs.delivery_note_en.trim(),
   };
   const variants = form.variants.map((v) => ({
     color_id: v.color_id,
@@ -298,6 +379,99 @@ export async function saveOption<T extends OptionTable>(table: T, row: OptionInp
 
 export async function deleteOption(table: OptionTable, id: number) {
   const { error } = await supabase().from(table).delete().eq("id", id);
+  if (error) throw error;
+}
+
+// ---------- delivery settings (store_settings, one row) ----------
+
+export type DeliverySettingsForm = {
+  delivery_ar: string;
+  delivery_en: string;
+  /** EGP, "" = no free delivery */
+  free_shipping_threshold: string;
+  cairo_days_min: string;
+  cairo_days_max: string;
+  other_days_min: string;
+  other_days_max: string;
+  exchange_days: string;
+  cod_enabled: boolean;
+};
+
+export async function getDeliverySettings(): Promise<DeliverySettingsForm> {
+  const { data, error } = await supabase().from("store_settings").select("*").single();
+  if (error) throw error;
+  return {
+    delivery_ar: data.delivery_ar,
+    delivery_en: data.delivery_en,
+    free_shipping_threshold: data.free_shipping_threshold == null ? "" : String(Number(data.free_shipping_threshold)),
+    cairo_days_min: String(data.cairo_days_min),
+    cairo_days_max: String(data.cairo_days_max),
+    other_days_min: String(data.other_days_min),
+    other_days_max: String(data.other_days_max),
+    exchange_days: String(data.exchange_days),
+    cod_enabled: data.cod_enabled,
+  };
+}
+
+export async function saveDeliverySettings(form: DeliverySettingsForm) {
+  const int = (v: string) => Math.max(0, Math.floor(Number(v) || 0));
+  const { error } = await supabase()
+    .from("store_settings")
+    .update({
+      delivery_ar: form.delivery_ar.trim(),
+      delivery_en: form.delivery_en.trim(),
+      free_shipping_threshold: form.free_shipping_threshold.trim() === "" ? null : Number(form.free_shipping_threshold),
+      cairo_days_min: int(form.cairo_days_min),
+      cairo_days_max: int(form.cairo_days_max),
+      other_days_min: int(form.other_days_min),
+      other_days_max: int(form.other_days_max),
+      exchange_days: int(form.exchange_days),
+      cod_enabled: form.cod_enabled,
+    })
+    .eq("id", true);
+  if (error) throw error;
+}
+
+// ---------- reviews ----------
+
+export type AdminReview = {
+  id: number;
+  display_name: string | null;
+  rating: number;
+  body: string;
+  is_verified: boolean;
+  status: ReviewStatus;
+  created_at: string;
+  product: { id: number; slug: string; name_ar: string; name_en: string } | null;
+};
+
+/** Reviews in one status, newest first (admins see every status). */
+export async function listAdminReviews(opts: { status: ReviewStatus; page: number; pageSize: number }) {
+  const from = (opts.page - 1) * opts.pageSize;
+  const { data, count, error } = await supabase()
+    .from("reviews")
+    .select(
+      `id, display_name, rating, body, is_verified, status, created_at,
+       product:products ( id, slug, name_ar, name_en )`,
+      { count: "exact" },
+    )
+    .eq("status", opts.status)
+    .order("created_at", { ascending: false })
+    .order("id", { ascending: false })
+    .range(from, from + opts.pageSize - 1);
+  if (error?.code === "PGRST103") return { items: [] as AdminReview[], total: 0 };
+  if (error) throw error;
+  return { items: (data ?? []) as AdminReview[], total: count ?? 0 };
+}
+
+/** Approve / reject a review, or mark it "Verified buyer". */
+export async function updateAdminReview(id: number, patch: { status?: ReviewStatus; is_verified?: boolean }) {
+  const { error } = await supabase().from("reviews").update(patch).eq("id", id);
+  if (error) throw error;
+}
+
+export async function deleteAdminReview(id: number) {
+  const { error } = await supabase().from("reviews").delete().eq("id", id);
   if (error) throw error;
 }
 
